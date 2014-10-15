@@ -1,5 +1,6 @@
 config_dir = File.dirname(__FILE__)
 chef_server_url 'http://localhost:7799'
+log_level :info
 node_name        'metal-provisioner'
 cookbook_path [File.join(config_dir, '..', 'cookbooks')]
 key_name = 'wrightp-metal-provisioner' # CHANGEME

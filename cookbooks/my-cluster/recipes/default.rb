@@ -4,4 +4,4 @@
 #
 # Copyright (c) 2014 The Authors, All Rights Reserved.
 
-node.override['chef-server-cluster']['metal-provisioner-key-name'] = 'wrightp-metal-provisioner' # CHANGEME
+Chef::Log.info "metal-provisioner-key-name: #{node['chef-server-cluster']['metal-provisioner-key-name']}"
