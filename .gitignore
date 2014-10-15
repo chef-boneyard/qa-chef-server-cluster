@@ -1,9 +1,1 @@
-.vagrant
-/cookbooks
-
-# Bundler
-bin/*
-.bundle/*
-
-.kitchen/
-.kitchen.local.yml
+/data_bags/secrets/*provisioner.json
