@@ -6,4 +6,4 @@
 
 include_recipe 'my-cluster::default'
 
-include_recipe 'chef-server-cluster::metal-provision'
+include_recipe 'chef-server-cluster::cluster-provision'

@@ -1,2 +1,3 @@
 /data_bags/secrets/
 Berksfile.lock
+Gemfile.lock

@@ -1,9 +1,9 @@
-config_dir = File.dirname(__FILE__)
+current_dir = File.dirname(__FILE__)
 chef_server_url 'http://localhost:7799'
 log_level :info
 node_name        'metal-provisioner'
-cookbook_path [File.join(config_dir, '..', 'cookbooks')]
+cookbook_path [File.join(current_dir, '..', 'cookbooks')]
 key_name = 'wrightp-metal-provisioner' # CHANGEME
 private_keys key_name => '/tmp/ssh/id_rsa'
 public_keys  key_name => '/tmp/ssh/id_rsa.pub'
-client_key '/Users/patrickwright/test/id_rsa' # CHANGEME
+client_key '/Users/patrickwright/.ssh/id_rsa' # CHANGEME
