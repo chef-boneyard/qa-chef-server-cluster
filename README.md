@@ -23,13 +23,19 @@ https://github.com/opscode-cookbooks/chef-server-cluster#create-a-secrets-data-b
 ### Data bags
 I've pushed the non-sensitive data bags to the project
 
-### Provision steps
+### Setup
 1. Edit my-cluster attributes
 1. don't forget your client key settings
+
+### Provision Steps
 1. knife upload data_bags cookbooks
 1. berks install # note chef-cluster-server is forked for example sake
 1. berks upload
 1. chef-client -c .chef/knife.rb -o my-cluster::provision
 
+Or run `rake provision`
+
 #### Clean up after yourself
 1. chef-client -c .chef/knife.rb -o my-cluster::clean
+
+Or run `rake clean`
