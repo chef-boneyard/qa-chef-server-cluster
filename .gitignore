@@ -5,3 +5,7 @@ Gemfile.lock
 /nodes/
 /clients/
 /.chef/
+
+.kitchen/
+.kitchen.local.yml
+
