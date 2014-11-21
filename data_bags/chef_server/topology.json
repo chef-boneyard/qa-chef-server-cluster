@@ -1,6 +1,6 @@
 {
   "id": "topology",
-  "topology": "tier",
+  "topology": "standalone",
   "disabled_svcs": [],
   "enabled_svcs": [],
   "vips": [],

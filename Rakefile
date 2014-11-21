@@ -1,9 +1,14 @@
-desc "Do it all (assumes chef-zero started)"
+desc "Do it all"
 task :provision do
-  sh('rm -f Gemfile.lock && bundle install && knife upload data_bags cookbooks && rm -f Berksfile.lock && berks install && berks upload && chef-client -c .chef/knife.rb -o my-cluster::provision')
+  sh('rm -f Gemfile.lock && bundle install && rm -rf Berksfile.lock berks-cookbooks && berks vendor && chef-client -z -o qa-chef-server-cluster::standalone-cluster')
 end
 
-desc "Clean it up (assumes chef-zero started)"
+desc "Run chef-pedant"
+task :provision_test do
+  sh('chef-client -z -o qa-chef-server-cluster::standalone-test')
+end
+
+desc "Clean it up"
 task :clean do
-  sh('chef-client -c .chef/knife.rb -o my-cluster::clean')
+  sh('chef-client -z -o qa-chef-server-cluster::standalone-clean')
 end
