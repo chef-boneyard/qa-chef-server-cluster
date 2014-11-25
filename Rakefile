@@ -1,16 +1,21 @@
 desc "Do it all"
-task :provision do
-  sh('rm -f Gemfile.lock && bundle install && rm -rf Berksfile.lock berks-cookbooks && berks vendor && chef-client -z -o qa-chef-server-cluster::standalone-cluster')
+task :provision, [:topo] do |t, args|
+  sh("chef-client -z -o qa-chef-server-cluster::#{args[:topo]}-cluster")
 end
 
 desc "Run chef-pedant"
-task :provision_test do
-  sh('chef-client -z -o qa-chef-server-cluster::standalone-test')
+task :pedant, [:topo] do |t, args|
+  sh("chef-client -z -o qa-chef-server-cluster::#{args[:topo]}-test")
 end
 
 desc "Clean it up"
-task :clean do
-  sh('chef-client -z -o qa-chef-server-cluster::standalone-clean')
+task :clean, [:topo] do |t, args|
+  sh("chef-client -z -o qa-chef-server-cluster::#{args[:topo]}-clean")
+end
+
+desc 'bundle and berks on-demand'
+task :prep do
+  sh("rm -f Gemfile.lock && bundle install && rm -rf Berksfile.lock berks-cookbooks && berks vendor")
 end
 
 begin
