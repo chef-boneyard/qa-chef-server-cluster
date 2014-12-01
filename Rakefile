@@ -18,9 +18,10 @@ task :prep do
   sh("rm -f Gemfile.lock && bundle install && rm -rf Berksfile.lock berks-cookbooks && berks vendor")
 end
 
-begin
-  require 'kitchen/rake_tasks'
-  Kitchen::RakeTasks.new
-rescue LoadError
-  puts ">>>>> Kitchen gem not loaded, omitting tasks" unless ENV['CI']
-end
+# Slows down rake auto-complete.  Comment for now.
+# begin
+#   require 'kitchen/rake_tasks'
+#   Kitchen::RakeTasks.new
+# rescue LoadError
+#   puts ">>>>> Kitchen gem not loaded, omitting tasks" unless ENV['CI']
+# end
