@@ -11,7 +11,7 @@ chef_server_ingredient 'opscode-manage' do
   notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
 end
 
-file '/etc/opscode/private-chef.rb' do
+file '/etc/opscode/chef-server.rb' do
   content <<-EOH
 api_fqdn '#{node['fqdn']}'
 dark_launch['actions'] = true
