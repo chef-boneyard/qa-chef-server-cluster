@@ -3,11 +3,15 @@ directory '/etc/opscode' do
   recursive true
 end
 
+chef_server_package = data_bag_item('chef_server', 'package').to_hash
+
 chef_server_ingredient 'chef-server-core' do
+  version chef_server_package['chef_server_core']['version']
   notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
 end
 
 chef_server_ingredient 'opscode-manage' do
+  version chef_server_package['opscode_manage']['version']
   notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
 end
 

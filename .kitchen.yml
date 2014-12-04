@@ -13,12 +13,4 @@ suites:
     run_list:
       - recipe[qa-chef-server-cluster::standalone-provision]
     attributes:
-  - name: bootstrap
-    run_list:
-      - recipe[qa-chef-server-cluster::bootstrap-backend-provision]
-    attributes:
-  - name: frontend
-    run_list:
-      - recipe[qa-chef-server-cluster::frontend-provision]
-    attributes:
 

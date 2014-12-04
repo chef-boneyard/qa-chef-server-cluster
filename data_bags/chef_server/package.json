@@ -1,0 +1,9 @@
+{
+  "id": "package",
+  "chef_server_core": {
+    "version": null
+  },
+  "opscode_manage": {
+    "version": null
+  }
+}
