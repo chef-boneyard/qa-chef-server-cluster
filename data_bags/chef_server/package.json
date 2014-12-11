@@ -1,9 +1,11 @@
 {
   "id": "package",
   "chef_server_core": {
-    "version": null
+    "version": null,
+    "source": "https://web-dl.packagecloud.io/chef/stable/packages/ubuntu/trusty/chef-server-core_12.0.0-1_amd64.deb"
   },
   "opscode_manage": {
-    "version": null
+    "version": null,
+    "source": "https://some.jenkins.url"
   }
 }

@@ -7,5 +7,4 @@ include_recipe 'chef-server-cluster::cluster-provision'
 machine 'frontend' do
   recipe 'qa-chef-server-cluster::hosts-api-hack'
   action :converge
-  converge true
 end
