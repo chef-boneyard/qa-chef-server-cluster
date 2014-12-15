@@ -37,16 +37,6 @@ Defaults to false. The upgrade will be skipped when false.
   }
 ```
 Defaults to true. The cluster will be destroyed upon a successfully pedant run.
-#### Example
-This blah
-```json
-{
-  "qa-chef-server-cluster": {
-    "enable-upgrade": true
-    BLAH BLAH
-  }
-}
-```
 
 ### Recipe Components
 `standalone-cluster`: Creates and install the initial cluster
@@ -98,6 +88,7 @@ chef-client -z -j my-attrs.json -o qa-chef-server-cluster::standalone-end-to-end
 1. run pedant
 1. destroy cluster
 
+Review some common [config patterns](config-patterns.md)
 # IGNORE BELOW THIS LINE
 
 ## Installing a Tier Cluster
