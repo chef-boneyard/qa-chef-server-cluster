@@ -63,21 +63,40 @@ This blah
 `chef-client -z -j some-attrs.json -o qa-chef-server-cluster::standalone-end-to-end`
 
 ## Generate JSON Attributes
-args:
-* --server-install-version: specify chef-server-core version from packagecloud chef/stable repo
-* --manage-install-version: specify opscode-manage version from packagecloud chef/stable repo
-* --server-install-source: specify chef-server-core url location. Ignores version options
-* --manage-install-source: specify opscode-manage url location. Ignores version options
+`bin/generate-config --help`
 
-* --server-upgrade-version: specify chef-server-core upgrade version from packagecloud chef/stable repo
-* --manage-upgrade-version: specify opscode-manage upgrade version from packagecloud chef/stable repo
-* --server-upgrade-source: specify chef-server-core upgrade url location. Ignores version options
-* --manage-upgrade-source: specify opscode-manage upgrade url location. Ignores version options
+Command:
+```bash
+$ bin/generate-config -j my-attrs.json  \
+-f \
+--server-upgrade-source 'https://jenkins.ci/package.deb' \
+--enable-upgrade
+```
 
-* --enable-upgade: turtles
-* --auto-destroy: Forces destroys cluster instances after a successful pedant run
+Generates:
+```json
+{
+  "qa-chef-server-cluster": {
+    "chef-server-core": {
+      "upgrade-source": "https://jenkins.ci/package.deb"
+    },
+    "opscode-manage": {
+    },
+    "enable-upgrade": true
+  }
+}
+```
 
+Executing:
+```
+chef-client -z -j my-attrs.json -o qa-chef-server-cluster::standalone-end-to-end
+```
 
+1. installs a standalone cluster using the latest stable server and manage packages from packagecloud
+1. enable the upgrade process
+1. upgrade chef server with the package downloaed from the source link
+1. run pedant
+1. destroy cluster
 
 # IGNORE BELOW THIS LINE
 
