@@ -3,9 +3,12 @@ directory '/etc/opscode' do
   recursive true
 end
 
-if node['qa-chef-server-cluster']['chef-server-core']['source']
+chef_server_core_source = node['qa-chef-server-cluster']['chef-server-core']['source']
+opscode_manage_source   = node['qa-chef-server-cluster']['opscode-manage']['source']
+
+if chef_server_core_source
   remote_file '/tmp/chef-server-core.deb' do
-    source node['qa-chef-server-cluster']['chef-server-core']['source']
+    source chef_server_core_source
   end
 
   # fix when we support another platform
@@ -22,9 +25,9 @@ chef_server_ingredient 'chef-server-core' do
   action :reconfigure
 end
 
-if node['qa-chef-server-cluster']['opscode-manage']['source']
+if opscode_manage_source
   remote_file '/tmp/opscode-manage.deb' do
-    source node['qa-chef-server-cluster']['opscode-manage']['source']
+    source opscode_manage_source
   end
 
   # fix when we support another platform

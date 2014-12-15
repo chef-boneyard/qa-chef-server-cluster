@@ -1,8 +1,8 @@
 {
-  "qa-chef-server-cluster": { 
+  "qa-chef-server-cluster": {
+    "enable-upgrade": true,
     "opscode-manage": { 
       "version": "1.6.1-1" 
-      }
-    },
-  "enable-upgrade": true
+    }
+  }
 }

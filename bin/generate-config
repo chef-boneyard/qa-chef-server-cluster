@@ -1,0 +1,87 @@
+require 'mixlib/cli'
+
+class GenerateConfig
+  include Mixlib::CLI
+
+  option :server_install_version,
+    :short => '',
+    :long => '--server-install-version',
+    :description => 'specify chef-server-core version from packagecloud chef/stable repo',
+    :proc => Proc.new { |siv| {'qa-chef-server-cluster' => {'chef-server-core' => {'version' => siv.to_s } } } }
+
+  option :manage_install_version,
+    :short => '',
+    :long => '--manage-install-version',
+    :description => 'specify opscode-manage version from packagecloud chef/stable repo',
+    :proc => Proc.new { |miv| {'qa-chef-server-cluster' => {'opscode-manage' => {'version' => miv.to_s } } } }
+
+  option :server_install_source,
+    :short => '',
+    :long => '--server-install-source',
+    :description => 'specify chef-server-core url location. Ignores version options',
+    :proc => Proc.new { |v| {'qa-chef-server-cluster' => {'chef-server-core' => {'source' => v.to_s } } } }
+
+  option :manage_install_source,
+    :short => '',
+    :long => '--manage-install-source',
+    :description => 'specify opscode-manage url location. Ignores version options',
+    :proc => Proc.new { |v| {'qa-chef-server-cluster' => {'opscode-manage' => {'source' => v.to_s } } } }
+
+  option :server_upgrade_version,
+    :short => '',
+    :long => '--server-upgrade-version',
+    :description => 'specify chef-server-core upgrade version from packagecloud chef/stable repo',
+    :proc => Proc.new { |v| {'qa-chef-server-cluster' => {'chef-server-core' => {'upgrade-version' => v.to_s } } } }
+
+  option :manage_upgrade_version,
+    :short => '',
+    :long => '--manage-upgrade-version',
+    :description => 'specify opscode-manage upgrade version from packagecloud chef/stable repo',
+    :proc => Proc.new { |v| {'qa-chef-server-cluster' => {'opscode-manage' => {'upgrade-version' => v.to_s } } } }
+
+  option :server_upgrade_source,
+    :short => '',
+    :long => '--server-upgrade-source',
+    :description => 'specify chef-server-core upgrade url location. Ignores version options',
+    :proc => Proc.new { |v| {'qa-chef-server-cluster' => {'chef-server-core' => {'upgrade-source' => v.to_s } } } }
+
+  option :manage_upgrade_source,
+    :short => '',
+    :long => '--manage-upgrade-source',
+    :description => 'specify opscode-manage upgrade url location. Ignores version options',
+    :proc => Proc.new { |v| {'qa-chef-server-cluster' => {'opscode-manage' => {'upgrade-source' => v.to_s } } } }
+
+  option :enable_upgrade,
+    :long => '--enable-upgrade',
+    :boolean => true
+
+  option :disable_auto_destroy,
+    :long => '--disable-auto-destroy',
+    :boolean => true
+
+  option :attributes_file,
+    :short => '-j',
+    :long => '--json-attributes',
+    :description => 'output path for attributes file',
+    :default => 'attributes.json'
+
+  option :overwrite_attributes_file,
+    :short => '-f',
+    :description => 'overwrite existing attributes file',
+    :boolean => true
+
+  option :help,
+    :short => "-h",
+    :long => "--help",
+    :description => "Show this message",
+    :on => :tail,
+    :boolean => true,
+    :show_options => true,
+    :exit => 0
+
+end
+
+cli = GenerateConfig.new
+cli.parse_options
+puts cli.config
+# STUFF
