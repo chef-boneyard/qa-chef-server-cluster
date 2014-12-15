@@ -40,10 +40,12 @@ class GenerateConfig
 
   option :enable_upgrade,
     :long => '--enable-upgrade',
+    :description => 'enables the upgrade process',
     :boolean => true
 
   option :disable_auto_destroy,
     :long => '--disable-auto-destroy',
+    :description => 'disables auto destroy of clusters after tests',
     :boolean => true
 
   option :attributes_file,
