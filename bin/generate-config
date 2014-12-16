@@ -14,6 +14,7 @@ class GenerateConfig
   option :manage_install_version,
     :long => '--manage-install-version OPSCODE MANAGE VERSION',
     :description => 'specify opscode-manage version from packagecloud chef/stable repo'
+
   option :server_install_source,
     :long => '--server-install-source CHEF SERVER CORE SOURCE',
     :description => 'specify chef-server-core url location. Ignores version options'
