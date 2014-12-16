@@ -18,7 +18,6 @@ end
 
 machine 'frontend' do
   recipe 'qa-chef-server-cluster::frontend'
-  recipe 'qa-chef-server-cluster::hosts-api-hack'
   ohai_hints 'ec2' => '{}'
   action :converge
   files(

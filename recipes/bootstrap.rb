@@ -114,3 +114,8 @@ file '/etc/opscode/pivotal.pem' do
   only_if { ::File.exists?('/etc/opscode/pivotal.pem') }
   subscribes :create, 'chef_server_ingredient[chef-server-core]', :immediately
 end
+
+chef_server_ingredient 'chef-server-core' do
+  action :reconfigure
+end
+

@@ -2,18 +2,20 @@
 
 require 'rubygems'
 require 'mixlib/cli'
+require 'mixlib/shellout'
 require 'json'
+require 'artifactory'
 
 class GenerateConfig
   include Mixlib::CLI
 
-  option :server_install_version,
-    :long => '--server-install-version CHEF SERVER CORE VERSION',
-    :description => 'specify chef-server-core version from packagecloud chef/stable repo'
+  # option :server_install_version,
+  #   :long => '--server-install-version CHEF SERVER CORE VERSION',
+  #   :description => 'specify chef-server-core version from packagecloud chef/stable repo'
 
-  option :manage_install_version,
-    :long => '--manage-install-version OPSCODE MANAGE VERSION',
-    :description => 'specify opscode-manage version from packagecloud chef/stable repo'
+  # option :manage_install_version,
+  #   :long => '--manage-install-version OPSCODE MANAGE VERSION',
+  #   :description => 'specify opscode-manage version from packagecloud chef/stable repo'
 
   option :server_install_source,
     :long => '--server-install-source CHEF SERVER CORE SOURCE',
@@ -23,13 +25,13 @@ class GenerateConfig
     :long => '--manage-install-source OPSCODE MANAGE SOURCE',
     :description => 'specify opscode-manage url location. Ignores version options'
 
-  option :server_upgrade_version,
-    :long => '--server-upgrade-version CHEF SERVER CORE UPGRADE VERSION',
-    :description => 'specify chef-server-core upgrade version from packagecloud chef/stable repo'
+  # option :server_upgrade_version,
+  #   :long => '--server-upgrade-version CHEF SERVER CORE UPGRADE VERSION',
+  #   :description => 'specify chef-server-core upgrade version from packagecloud chef/stable repo'
 
-  option :manage_upgrade_version,
-    :long => '--manage-upgrade-version OPSCODE MANAGE UPGRADE VERSION',
-    :description => 'specify opscode-manage upgrade version from packagecloud chef/stable repo'
+  # option :manage_upgrade_version,
+  #   :long => '--manage-upgrade-version OPSCODE MANAGE UPGRADE VERSION',
+  #   :description => 'specify opscode-manage upgrade version from packagecloud chef/stable repo'
 
   option :server_upgrade_source,
     :long => '--server-upgrade-source CHEF SERVER CORE UPGRADE SOURCE',
@@ -60,6 +62,11 @@ class GenerateConfig
     :description => 'overwrite existing attributes file',
     :boolean => true
 
+  option :run_recipe,
+    :short => '-r',
+    :long => '--run-recipe RUN RECIPE',
+    :description => 'run chef-client with run recipe'
+
   option :help,
     :short => "-h",
     :long => "--help",
@@ -71,22 +78,78 @@ class GenerateConfig
 
 end
 
+
+ ##################################
+ # Yes, this needs some love.  
+ # Hacked together to figure this thing out.
+ ###################################
+
+class ArtifactoryResolver
+  # https://gist.github.com/schisamo/179233af7a7c6eac0923
+
+  # These items should be configurable
+  ARTIFACTORY_ENDPOINT     = 'http://artifactory.opscode.us'
+  ARTIFACTORY_OMNIBUS_REPO = 'omnibus-current-local'
+
+  def initialize
+    @client = Artifactory::Client.new(endpoint: ARTIFACTORY_ENDPOINT)
+  end
+
+  def search_uri(name)
+    # Fetch latest stable (release or pre-release) version 
+    latest_version = @client.artifact_latest_version(
+      repos: ARTIFACTORY_OMNIBUS_REPO,
+      group: 'com.getchef',
+      name:  name
+    )
+
+    # Fetch latest build/integration version in the series
+    build_version = @client.artifact_latest_version(
+      repos: ARTIFACTORY_OMNIBUS_REPO,
+      group:   'com.getchef',
+      name:    name,
+      version: latest_version
+    )
+
+    # locate a specific package
+    artifact = @client.artifact_property_search(
+      'repos' => ARTIFACTORY_OMNIBUS_REPO,
+      'omnibus.project' => name,
+      'omnibus.platform' => 'ubuntu',
+      'omnibus.platform_version' => '14.04',
+      'omnibus.version' => build_version.gsub(/_/,'-')
+    )
+
+    return artifact[0].uri
+  end
+
+end
+
+
 cli = GenerateConfig.new
 cli.parse_options
 
 attrs = { 'qa-chef-server-cluster' => {'chef-server-core' => {}, 'opscode-manage' => {} } }
 
-attrs['qa-chef-server-cluster']['chef-server-core']['version'] = cli.config[:server_install_version] if cli.config[:server_install_version]
-attrs['qa-chef-server-cluster']['opscode-manage']['version'] = cli.config[:manage_install_version] if cli.config[:manage_install_version]
+@resolver = ArtifactoryResolver.new
 
-attrs['qa-chef-server-cluster']['chef-server-core']['source'] = cli.config[:server_install_source] if cli.config[:server_install_source]
-attrs['qa-chef-server-cluster']['opscode-manage']['source'] = cli.config[:manage_install_source] if cli.config[:manage_install_source]
+# attrs['qa-chef-server-cluster']['chef-server-core']['version'] = cli.config[:server_install_version] if cli.config[:server_install_version]
+# attrs['qa-chef-server-cluster']['opscode-manage']['version'] = cli.config[:manage_install_version] if cli.config[:manage_install_version]
 
-attrs['qa-chef-server-cluster']['chef-server-core']['upgrade-version'] = cli.config[:server_upgrade_version] if cli.config[:server_upgrade_version]
-attrs['qa-chef-server-cluster']['opscode-manage']['upgrade-version'] = cli.config[:manage_upgrade_version] if cli.config[:manage_upgrade_version]
+def get_uri(source, artifact_id)
+  uri = source
+  uri = @resolver.search_uri(artifact_id) if source.match(/^artifactory/)
+  return uri
+end
 
-attrs['qa-chef-server-cluster']['chef-server-core']['upgrade-source'] = cli.config[:server_upgrade_source] if cli.config[:server_upgrade_source]
-attrs['qa-chef-server-cluster']['opscode-manage']['upgrade-source'] = cli.config[:manage_upgrade_source] if cli.config[:manage_upgrade_source]
+attrs['qa-chef-server-cluster']['chef-server-core']['source'] = get_uri(cli.config[:server_install_source], 'chef-server') if cli.config[:server_install_source]
+attrs['qa-chef-server-cluster']['opscode-manage']['source'] = get_uri(cli.config[:manage_install_source], 'opscode-manage') if cli.config[:manage_install_source]
+
+# attrs['qa-chef-server-cluster']['chef-server-core']['upgrade-version'] = cli.config[:server_upgrade_version] if cli.config[:server_upgrade_version]
+# attrs['qa-chef-server-cluster']['opscode-manage']['upgrade-version'] = cli.config[:manage_upgrade_version] if cli.config[:manage_upgrade_version]
+
+attrs['qa-chef-server-cluster']['chef-server-core']['upgrade-source'] =  get_uri(cli.config[:server_upgrade_source], 'chef-server') if cli.config[:server_upgrade_source]
+attrs['qa-chef-server-cluster']['opscode-manage']['upgrade-source'] = get_uri(cli.config[:manage_upgrade_source], 'opscode-manage') if cli.config[:manage_upgrade_source]
 
 attrs['qa-chef-server-cluster']['enable-upgrade'] = true if cli.config[:enable_upgrade]
 attrs['qa-chef-server-cluster']['auto-destroy'] = false if cli.config[:disable_auto_destroy]
@@ -98,3 +161,7 @@ open(cli.config[:attributes_file], 'w') do |f|
 end
 
 puts "Attributes written to file #{cli.config[:attributes_file]}."
+
+if cli.config[:run_recipe]
+  system("chef-client -z -j #{cli.config[:attributes_file]} -o qa-chef-server-cluster::#{cli.config[:run_recipe]}")
+end

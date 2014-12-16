@@ -4,19 +4,19 @@ This document defines sets of common configuration that will executed for testin
 ### Install using latest stable packages
 NOTHING!  That's right. Just run the end-to-end recipe without a config.
 
-### Install stable server and manage then upgrade server from dev build
+### Install stable server and manage then upgrade server from the latest integration build published to artifactory
 ```
-$ generate-config --server-upgrade-source 'http://package.location' --enable-upgrade
+$ generate-config --server-upgrade-source artifactory --enable-upgrade
 ```
 
 ### Install server from dev build and stable manage
 ```
-$ generate-config --server-install-source 'http://package.location'
+$ generate-config --server-install-source artifactory
 ```
 
-### Install stable server then upgrade server and manage from dev builds
+### Install stable server then upgrade server from artifactory and manage from some remote location (one-off from jenkins perhaps)
 ```
-$ generate-config --server-upgrade-source 'http://package.location' --manage-upgrade-source 'http://package.location' --enable-upgrade 
+$ generate-config --server-upgrade-source artifactory --manage-upgrade-source 'http://package.location' --enable-upgrade 
 ```
 
 ### Poke around
