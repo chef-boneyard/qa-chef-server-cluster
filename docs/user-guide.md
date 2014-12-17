@@ -119,18 +119,3 @@ This hash follows the same `source`, `upgrade-source` as chef-server-core.
 `enable-upgrade`: Set to true to enable the upgrade process.
 
 `auto-destroy`: Set to false to disable the cluster tear down at the end of a successfull pedant run.
-
-# Credit
-This wrapper cookbook deserves the recognition of Paul Mooring <paul@chef.io> and 
-Joshua Timberman <joshua@chef.io> for their great work on the chef-server-cluster and chef-server-ingredient cookbooks.
-
-# License and Author
-Author: Patrick Wright patrick@chef.io.com
-
-Copyright (C) 2014 Chef Software, Inc. legal@chef.io
-
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
