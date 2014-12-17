@@ -55,7 +55,7 @@ Defaults to true. The cluster will be destroyed upon a successfully pedant run.
 ## Generate JSON Attributes
 `bin/generate-config --help`
 
-Command:
+_Command_
 ```bash
 $ bin/generate-config -j my-attrs.json  \
 -f \
@@ -63,9 +63,9 @@ $ bin/generate-config -j my-attrs.json  \
 --enable-upgrade
 ```
 
-*Setting `--server-[install|upgrade]-source artifactory` will retrieve the latest integration build from artifactory.*
+_Setting `--server-[install|upgrade]-source artifactory` will retrieve the latest integration build from artifactory._
 
-Generates:
+_Generates_
 ```json
 {
   "qa-chef-server-cluster": {
@@ -79,9 +79,9 @@ Generates:
 }
 ```
 
-Execution:
+_Execute_
 ```
-chef-client -z -j my-attrs.json -o qa-chef-server-cluster::<TOPOLOGY>-end-to-end
+chef-client -z -j my-attrs.json -o qa-chef-server-cluster::<topology>-end-to-end
 ```
 
 1. installs a standalone cluster using the latest stable server and manage packages from packagecloud
@@ -120,53 +120,17 @@ This hash follows the same `source`, `upgrade-source` as chef-server-core.
 
 `auto-destroy`: Set to false to disable the cluster tear down at the end of a successfull pedant run.
 
-# IGNORE BELOW THIS LINE
+# Credit
+This wrapper cookbook deserves the recognition of Paul Mooring <paul@chef.io> and 
+Joshua Timberman <joshua@chef.io> for their great work on the chef-server-cluster and chef-server-ingredient cookbooks.
 
+# License and Author
+Author: Patrick Wright patrick@chef.io.com
 
-CI Process Flow
-## New Install from Dev build (standalone)
-*cs12 build / test pipeline successful (jenkins exports links to build artifact - assume we have access to this)*
+Copyright (C) 2014 Chef Software, Inc. legal@chef.io
 
-start upgrade test pipeline
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
-1. install new cluster
-* pre generated data bags
-* update url location (data bag value)
-* pedant test all
+http://www.apache.org/licenses/LICENSE-2.0
 
-
-
-
-### GA install to Dev build upgrade (standalone)
-
-*cs12 build / test pipeline successful (jenkins exports links to build artifact - assume we have access to this)*
-
-start upgrade test pipeline
-
-1. install new cluster
-* pre generated data bags
-* cs12 stable packagecloud
-* quick pedant test
-2. upgrade cluster
-* requires change to data bag (MANUAL PART)
-* download from cs12 dev from jenkins
-* run upgrade recipe
-* pedant test all
-
-upgrade test pipeline complete
-
-
-## versioning removed for now.
-
-#### Package Cloud chef/stable
-* Default execution will install the latest chef/stable packages from packagecloud. 
-* The package versions can also be specified by overridding the node attributes.
-```json 
-{ "qa-chef-server-cluster": { "chef-server-core": { "version": "VERSION" } } }
-```
-
-
-
-`chef-server-core['version']`: Specify version to download from package cloud chef/stable
-`chef-server-core['upgrade-version']`: Specify version to download from package cloud chef/stable when performing an upgrade
- 
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.

@@ -12,12 +12,6 @@ node.default['qa-chef-server-cluster']['aws']['machine_options'] = {
                                                                      }
                                                                    }
 
-node.default['qa-chef-server-cluster']['chef-server-core']['version'] = nil
-node.default['qa-chef-server-cluster']['opscode-manage']['version'] = nil
-
-node.default['qa-chef-server-cluster']['chef-server-core']['upgrade-version'] = nil
-node.default['qa-chef-server-cluster']['opscode-manage']['upgrade-version'] = nil
-
 node.default['qa-chef-server-cluster']['chef-server-core']['source'] = nil
 node.default['qa-chef-server-cluster']['opscode-manage']['source'] = nil
 

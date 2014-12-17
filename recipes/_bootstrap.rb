@@ -2,7 +2,8 @@
 # Cookbook Name:: qa-chef-server-cluster
 # Recipes:: bootstrap
 #
-# Author: Joshua Timberman <joshua@getchef.com>
+# Author: Joshua Timberman <joshua@chef.io>
+# Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -105,7 +106,6 @@ end
 execute 'chef-server-ctl restart rabbitmq' do
   action :nothing
 end
-
 
 file '/etc/opscode/pivotal.pem' do
   mode 00644

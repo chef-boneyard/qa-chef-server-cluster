@@ -2,7 +2,8 @@
 # Cookbook Name:: qa-chef-server-cluster
 # Recipes:: frontend
 #
-# Author: Joshua Timberman <joshua@getchef.com>
+# Author: Joshua Timberman <joshua@chef.io>
+# Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,9 +18,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+# TODO default
 directory '/etc/opscode' do
   mode 0755
   recursive true
+end
+
+chef_server_core_source = node['qa-chef-server-cluster']['chef-server-core']['source']
+opscode_manage_source   = node['qa-chef-server-cluster']['opscode-manage']['source']
+
+# TODO Library
+if chef_server_core_source
+  remote_file '/tmp/chef-server-core.deb' do
+    source chef_server_core_source
+  end
+
+  # fix when we support another platform
+  dpk_package 'chef-server-core' do
+    source '/tmp/chef-server-core.deb'
+  end
+else
+  chef_server_ingredient 'chef-server-core' do
+    version node['qa-chef-server-cluster']['chef-server-core']['version']
+  end
+end
+
+chef_server_ingredient 'chef-server-core' do
+  action :reconfigure
 end
 
 include_recipe 'chef-vault'
@@ -64,30 +90,10 @@ template '/etc/opscode/chef-server.rb' do
   cookbook 'chef-server-cluster'
   source 'chef-server.rb.erb'
   variables :chef_server_config => node['chef-server-cluster'], :chef_servers => chef_servers
+  notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
 end
 
-chef_server_core_source = node['qa-chef-server-cluster']['chef-server-core']['source']
-opscode_manage_source   = node['qa-chef-server-cluster']['opscode-manage']['source']
-
-if chef_server_core_source
-  remote_file '/tmp/chef-server-core.deb' do
-    source chef_server_core_source
-  end
-
-  # fix when we support another platform
-  dpk_package 'chef-server-core' do
-    source '/tmp/chef-server-core.deb'
-  end
-else
-  chef_server_ingredient 'chef-server-core' do
-    version node['qa-chef-server-cluster']['chef-server-core']['version']
-  end
-end
-
-chef_server_ingredient 'chef-server-core' do
-  action :reconfigure
-end
-
+# TODO Library
 if opscode_manage_source
   remote_file '/tmp/opscode-manage.deb' do
     source opscode_manage_source
@@ -105,9 +111,5 @@ else
 end
 
 chef_server_ingredient 'opscode-manage' do
-  action :reconfigure
-end
-
-chef_server_ingredient 'chef-server-core' do
   action :reconfigure
 end
