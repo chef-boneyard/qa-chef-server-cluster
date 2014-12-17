@@ -11,8 +11,8 @@ platforms:
 suites:
   - name: standalone
     run_list:
-      - recipe[qa-chef-server-cluster::_standalone-provision]
-      - recipe[qa-chef-server-cluster::_standalone-provision-upgrade]
+      - recipe[qa-chef-server-cluster::_standalone]
+      - recipe[qa-chef-server-cluster::_standalone-upgrade]
     attributes:
   - name: bootstrap-backend
     run_list:
@@ -24,5 +24,3 @@ suites:
       - recipe[qa-chef-server-cluster::_frontend]
       - recipe[qa-chef-server-cluster::_frontend-upgrade]
     attributes:
-
-

@@ -1,9 +1,8 @@
 #
-# Cookbook Name:: qa-chef-server-cluster
+# Cookbook Name:: chef-server-cluster
 # Recipes:: frontend
 #
-# Author: Joshua Timberman <joshua@chef.io>
-# Author: Patrick Wright <patrick@chef.io>
+# Author: Joshua Timberman <joshua@getchef.com>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,16 +18,18 @@
 # limitations under the License.
 #
 
-# TODO default
 directory '/etc/opscode' do
   mode 0755
+  recursive true
+end
+
+directory '/etc/opscode-analytics' do
   recursive true
 end
 
 chef_server_core_source = node['qa-chef-server-cluster']['chef-server-core']['source']
 opscode_manage_source   = node['qa-chef-server-cluster']['opscode-manage']['source']
 
-# TODO Library
 if chef_server_core_source
   remote_file '/tmp/chef-server-core.deb' do
     source chef_server_core_source
@@ -37,15 +38,12 @@ if chef_server_core_source
   # fix when we support another platform
   dpk_package 'chef-server-core' do
     source '/tmp/chef-server-core.deb'
+    notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
   end
 else
   chef_server_ingredient 'chef-server-core' do
-    version node['qa-chef-server-cluster']['chef-server-core']['version']
+    notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
   end
-end
-
-chef_server_ingredient 'chef-server-core' do
-  action :reconfigure
 end
 
 include_recipe 'chef-vault'
@@ -91,9 +89,9 @@ template '/etc/opscode/chef-server.rb' do
   source 'chef-server.rb.erb'
   variables :chef_server_config => node['chef-server-cluster'], :chef_servers => chef_servers
   notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
+  notifies :run, 'execute[add hosts entry]'
 end
 
-# TODO Library
 if opscode_manage_source
   remote_file '/tmp/opscode-manage.deb' do
     source opscode_manage_source
@@ -102,14 +100,16 @@ if opscode_manage_source
   # fix when we support another platform
   dpk_package 'opscode-manage' do
     source '/tmp/opscode-manage.deb'
+    notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
   end
 else
-  # use ctl or not?  using ingredient we get more version control
   chef_server_ingredient 'opscode-manage' do
-    version node['qa-chef-server-cluster']['opscode-manage']['version']
+    notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
   end
 end
 
-chef_server_ingredient 'opscode-manage' do
-  action :reconfigure
+# Run again for all I care!!!  Hack for lack of dns
+execute 'add hosts entry' do
+  command "echo '#{node['ipaddress']} #{chef_server_config['api_fqdn']}' >> /etc/hosts"
+  action :nothing
 end

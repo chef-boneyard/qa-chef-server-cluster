@@ -19,13 +19,21 @@
 # limitations under the License.
 #
 
-
 include_recipe 'qa-chef-server-cluster::_cluster-setup'
 
 machine 'bootstrap-backend' do
   recipe 'qa-chef-server-cluster::_bootstrap'
-  ohai_hints 'ec2' => '{}'
   action :converge
+end
+
+%w{ actions-source.json webui_priv.pem }.each do |analytics_file|
+
+  machine_file "/etc/opscode-analytics/#{analytics_file}" do
+    local_path "/tmp/stash/#{analytics_file}"
+    machine 'bootstrap-backend'
+    action :download
+  end
+
 end
 
 %w{ pivotal.pem webui_pub.pem }.each do |opscode_file|
@@ -40,9 +48,9 @@ end
 
 machine 'frontend' do
   recipe 'qa-chef-server-cluster::_frontend'
-  ohai_hints 'ec2' => '{}'
   action :converge
   files(
+        '/etc/opscode/webui_priv.pem' => '/tmp/stash/webui_priv.pem',
         '/etc/opscode/webui_pub.pem' => '/tmp/stash/webui_pub.pem',
         '/etc/opscode/pivotal.pem' => '/tmp/stash/pivotal.pem'
        )

@@ -60,6 +60,10 @@ class GenerateConfig
     :show_options => true,
     :exit => 0
 
+    # TODO add node.default['qa-chef-server-cluster']['chef-provisioner-key-name'] override
+    # or perhaps a default insecure key
+
+    # TODO :bootstrap_options => { :key_name override
 end
 
 

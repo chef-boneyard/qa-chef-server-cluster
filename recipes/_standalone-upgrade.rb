@@ -1,8 +1,7 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: standalone-provision
+# Recipes:: standalone-provision-upgrade
 #
-# Author: Joshua Timberman <joshua@chef.io>
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
 #
@@ -19,13 +18,12 @@
 # limitations under the License.
 #
 
-directory '/etc/opscode' do
-  mode 0755
-  recursive true
+execute 'stop services' do
+  command 'chef-server-ctl stop'
 end
 
-chef_server_core_source = node['qa-chef-server-cluster']['chef-server-core']['source']
-opscode_manage_source   = node['qa-chef-server-cluster']['opscode-manage']['source']
+chef_server_core_source = node['qa-chef-server-cluster']['chef-server-core']['upgrade-source']
+opscode_manage_source   = node['qa-chef-server-cluster']['opscode-manage']['upgrade-source']
 
 if chef_server_core_source
   remote_file '/tmp/chef-server-core.deb' do
@@ -38,12 +36,16 @@ if chef_server_core_source
   end
 else
   chef_server_ingredient 'chef-server-core' do
-    version node['qa-chef-server-cluster']['chef-server-core']['version']
+    version node['qa-chef-server-cluster']['chef-server-core']['upgrade-version']
   end
 end
 
-chef_server_ingredient 'chef-server-core' do
-  action :reconfigure
+execute 'upgrade server' do
+  command 'chef-server-ctl upgrade'
+end
+
+execute 'start services' do
+  command 'chef-server-ctl start'
 end
 
 if opscode_manage_source
@@ -54,18 +56,16 @@ if opscode_manage_source
   # fix when we support another platform
   dpk_package 'opscode-manage' do
     source '/tmp/opscode-manage.deb'
+    notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
   end
 else
   # use ctl or not?  using ingredient we get more version control
   chef_server_ingredient 'opscode-manage' do
-    version node['qa-chef-server-cluster']['opscode-manage']['version']
+    version node['qa-chef-server-cluster']['opscode-manage']['upgrade-version']
+    notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
   end
 end
 
-chef_server_ingredient 'opscode-manage' do
-  action :reconfigure
-end
-
-chef_server_ingredient 'chef-server-core' do
-  action :reconfigure
+execute 'cleanup server' do
+  command 'chef-server-ctl cleanup'
 end

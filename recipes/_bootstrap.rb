@@ -1,9 +1,8 @@
 #
-# Cookbook Name:: qa-chef-server-cluster
+# Cookbook Name:: chef-server-cluster
 # Recipes:: bootstrap
 #
-# Author: Joshua Timberman <joshua@chef.io>
-# Author: Patrick Wright <patrick@chef.io>
+# Author: Joshua Timberman <joshua@getchef.com>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +23,10 @@ directory '/etc/opscode' do
   recursive true
 end
 
+directory '/etc/opscode-analytics' do
+  recursive true
+end
+
 chef_server_core_source = node['qa-chef-server-cluster']['chef-server-core']['source']
 
 if chef_server_core_source
@@ -34,15 +37,12 @@ if chef_server_core_source
   # fix when we support another platform
   dpk_package 'chef-server-core' do
     source '/tmp/chef-server-core.deb'
+    notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
   end
 else
   chef_server_ingredient 'chef-server-core' do
-    version node['qa-chef-server-cluster']['chef-server-core']['version']
+    notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
   end
-end
-
-chef_server_ingredient 'chef-server-core' do
-  action :reconfigure
 end
 
 include_recipe 'chef-vault'
@@ -107,6 +107,19 @@ execute 'chef-server-ctl restart rabbitmq' do
   action :nothing
 end
 
+# These two resources set permissions on the files to make them
+# readable as a workaround for
+# https://github.com/opscode/chef-provisioning/issues/174
+file '/etc/opscode-analytics/actions-source.json' do
+  mode 00644
+  subscribes :create, 'chef_server_ingredient[chef-server-core]', :immediately
+end
+
+file'/etc/opscode-analytics/webui_priv.pem' do
+  mode 00644
+  subscribes :create, 'chef_server_ingredient[chef-server-core]', :immediately
+end
+
 file '/etc/opscode/pivotal.pem' do
   mode 00644
   # without this guard, we create an empty file, causing bootstrap to
@@ -114,8 +127,3 @@ file '/etc/opscode/pivotal.pem' do
   only_if { ::File.exists?('/etc/opscode/pivotal.pem') }
   subscribes :create, 'chef_server_ingredient[chef-server-core]', :immediately
 end
-
-chef_server_ingredient 'chef-server-core' do
-  action :reconfigure
-end
-

@@ -92,8 +92,8 @@ chef-client -z -j my-attrs.json -o qa-chef-server-cluster::<topology>-end-to-end
 
 Review some common [config patterns](config-patterns.md)
 
-### One Shot, One Kill
-Add the `--run-recipe` option and the chef-client will automatically run with the generated json attributes
+## Initiate Chef Run with Generated Config
+Add the `--run-recipe` option and the chef-client will automatically run the recipe along with the generated json attributes.
 
 ```
 $ generate-config --server-upgrade-source artifactory --enable-upgrade --run-recipe standalone-end-to-end -f
@@ -103,7 +103,7 @@ $ generate-config --server-upgrade-source artifactory --enable-upgrade --run-rec
 See attributes/default.rb for default values.
 Here's how this cookbook's attributes (node['qa-chef-server-cluster']) work and/or affect behavior.
 
-`chef-provisioner-key-name`: Set the ec2 key name
+`chef-provisioner-key-name`:
 
 `aws['machine_options']`: Configure the provisioner machine options
 
