@@ -24,8 +24,13 @@ Current supported topologies are `standalone` and `tier`.
 
 ## Configuration
 ### Data Bags
-1. [SSH Keys](https://github.com/opscode-cookbooks/chef-server-cluster/#create-a-secrets-data-bag-and-populate-it-with-the-ssh-keys)
-1. [Chef Server](https://github.com/opscode-cookbooks/chef-server-cluster/#create-a-private-chef-secrets-data-bag-item)
+This project will use an insecure ssh key by default.  If your instances are public it is recommened to create a new ssh key data bag
+and change the key name settings in .chef/knife.rb, chef-provisioner-key-name and bootstrap_options => key_name values.  This will be
+configurable in a later version.
+ * [SSH Keys](https://github.com/opscode-cookbooks/chef-server-cluster/#create-a-secrets-data-bag-and-populate-it-with-the-ssh-keys)
+
+This project will also use a default set of private chef secrets. For testing purposes (and because we are behind a firewall) this is acceptable.
+ * [Chef Server](https://github.com/opscode-cookbooks/chef-server-cluster/#create-a-private-chef-secrets-data-bag-item)
 
 ### Setting JSON attributes via chef-client
 
@@ -103,7 +108,7 @@ $ generate-config --server-upgrade-source artifactory --enable-upgrade --run-rec
 See attributes/default.rb for default values.
 Here's how this cookbook's attributes (node['qa-chef-server-cluster']) work and/or affect behavior.
 
-`chef-provisioner-key-name`:
+`chef-provisioner-key-name`: Data Bag containing ssh keys. Defaults to `insecure-chef-provisioner`
 
 `aws['machine_options']`: Configure the provisioner machine options
 
