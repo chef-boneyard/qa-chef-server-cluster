@@ -33,11 +33,9 @@ if chef_server_core_source
   # fix when we support another platform
   dpk_package 'chef-server-core' do
     source '/tmp/chef-server-core.deb'
-    notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
   end
 else
   chef_server_ingredient 'chef-server-core' do
-    notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
   end
 end
 
