@@ -1,8 +1,9 @@
 #
-# Cookbook Name:: chef-server-cluster
-# Recipes:: bootstrap
+# Cookbook Name:: qa-chef-server-cluster
+# Recipes:: _bootstrap
 #
 # Author: Joshua Timberman <joshua@getchef.com>
+# Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,17 +19,20 @@
 # limitations under the License.
 #
 
+# TODO (pwright) Move to similar default recipe
 directory '/etc/opscode' do
   mode 0755
   recursive true
 end
 
+# TODO (pwright) Move to similar default recipe ^
 directory '/etc/opscode-analytics' do
   recursive true
 end
 
 chef_server_core_source = node['qa-chef-server-cluster']['chef-server-core']['source']
 
+# TODO (pwright) refactor into a LWRP class
 if chef_server_core_source
   remote_file '/tmp/chef-server-core.deb' do
     source chef_server_core_source
@@ -52,6 +56,7 @@ node.default['chef-server-cluster']['bootstrap']['enable'] = true
 
 # TODO: (jtimberman) chef_vault_item. We sort this so we don't
 # get regenerated content in the private-chef-secrets.json later.
+# TODO (pwright) add configurable chef env overrude in json config
 chef_secrets = Hash[data_bag_item('secrets', "private-chef-secrets-#{node.chef_environment}")['data'].sort]
 
 # It's easier to deal with a hash rather than a data bag item, since

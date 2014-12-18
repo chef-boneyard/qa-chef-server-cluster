@@ -1,8 +1,9 @@
 #
-# Cookbook Name:: chef-server-cluster
-# Recipes:: frontend
+# Cookbook Name:: qa-chef-server-cluster
+# Recipes:: _frontend
 #
 # Author: Joshua Timberman <joshua@getchef.com>
+# Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +19,13 @@
 # limitations under the License.
 #
 
+# TODO (pwright) Move to similar default recipe
 directory '/etc/opscode' do
   mode 0755
   recursive true
 end
 
+# TODO (pwright) Move to similar default recipe
 directory '/etc/opscode-analytics' do
   recursive true
 end
@@ -30,6 +33,7 @@ end
 chef_server_core_source = node['qa-chef-server-cluster']['chef-server-core']['source']
 opscode_manage_source   = node['qa-chef-server-cluster']['opscode-manage']['source']
 
+# TODO (pwright) refactor into a LWRP class
 if chef_server_core_source
   remote_file '/tmp/chef-server-core.deb' do
     source chef_server_core_source
@@ -92,6 +96,7 @@ template '/etc/opscode/chef-server.rb' do
   notifies :run, 'execute[add hosts entry]'
 end
 
+# TODO (pwright) refactor into a LWRP class
 if opscode_manage_source
   remote_file '/tmp/opscode-manage.deb' do
     source opscode_manage_source
@@ -108,7 +113,7 @@ else
   end
 end
 
-# Run again for all I care!!!  Hack for lack of dns
+# TODO (pwright) Run again for all I care!!!  Not really.  Temp hack for lack of dns
 execute 'add hosts entry' do
   command "echo '#{node['ipaddress']} #{chef_server_config['api_fqdn']}' >> /etc/hosts"
   action :nothing

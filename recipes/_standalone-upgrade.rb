@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: standalone-provision-upgrade
+# Recipes:: _standalone-upgrade
 #
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
@@ -25,6 +25,7 @@ end
 chef_server_core_source = node['qa-chef-server-cluster']['chef-server-core']['upgrade-source']
 opscode_manage_source   = node['qa-chef-server-cluster']['opscode-manage']['upgrade-source']
 
+# TODO (pwright) refactor into a LWRP class
 if chef_server_core_source
   remote_file '/tmp/chef-server-core.deb' do
     source chef_server_core_source
@@ -47,6 +48,7 @@ execute 'start services' do
   command 'chef-server-ctl start'
 end
 
+# TODO (pwright) refactor into a LWRP class
 if opscode_manage_source
   remote_file '/tmp/opscode-manage.deb' do
     source opscode_manage_source

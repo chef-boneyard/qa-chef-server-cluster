@@ -19,6 +19,7 @@
 # limitations under the License.
 #
 
+# TODO (pwright) Move to similar default recipe
 directory '/etc/opscode' do
   mode 0755
   recursive true
@@ -27,6 +28,7 @@ end
 chef_server_core_source = node['qa-chef-server-cluster']['chef-server-core']['source']
 opscode_manage_source   = node['qa-chef-server-cluster']['opscode-manage']['source']
 
+# TODO (pwright) refactor into a LWRP class
 if chef_server_core_source
   remote_file '/tmp/chef-server-core.deb' do
     source chef_server_core_source
@@ -43,6 +45,7 @@ else
   end
 end
 
+# TODO (pwright) refactor into a LWRP class
 if opscode_manage_source
   remote_file '/tmp/opscode-manage.deb' do
     source opscode_manage_source
