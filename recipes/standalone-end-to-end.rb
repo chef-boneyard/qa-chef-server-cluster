@@ -20,5 +20,13 @@
 
 include_recipe 'qa-chef-server-cluster::standalone-cluster'
 include_recipe 'qa-chef-server-cluster::standalone-cluster-upgrade' if node['qa-chef-server-cluster']['enable-upgrade']
+
+#TODO (pwright)
+ruby_block "race condition - boo" do
+  block do
+    sleep 60
+  end
+end
+
 include_recipe 'qa-chef-server-cluster::standalone-test'
 include_recipe 'qa-chef-server-cluster::standalone-destroy' if node['qa-chef-server-cluster']['auto-destroy']

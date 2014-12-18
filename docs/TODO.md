@@ -30,16 +30,37 @@
 * still the best option?
 
 ### Rspec
-* Rspec tests for running install and upgrade iterations
+* Rspec tests for running install and upgrade configurations
 
 ### Always pull from artitactory
 * stable releases too
 
-# stable install, latest upgrade, standalone
+### Remove static knife.rb dependency
+* Run chef-client programatically or
+* generate knife.rb
+
+### Initial CI Tests
+* stable install, latest upgrade, standalone
+
+```
 generate-config --server-upgrade-source artifactory --enable-upgrade --run-recipe standalone-end-to-end
+```
 
-# latest install, standalone
+* latest install, standalone
+
+```
 generate-config --server-install-source artifactory --run-recipe standalone-end-to-end
+```
 
-# latest install, tier
+* latest install, tier
+
+```
 generate-config --server-install-source artifactory --run-recipe tier-end-to-end
+```
+
+* force cleanup. even though this runs at the end, it will not if the converge fails
+ * Requires node data
+
+```
+chef-client -z -o qa-chef-server-cluster::<topology>-destroy
+```

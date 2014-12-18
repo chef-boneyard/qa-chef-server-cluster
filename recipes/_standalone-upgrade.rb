@@ -67,6 +67,8 @@ else
   end
 end
 
-execute 'cleanup server' do
-  command 'chef-server-ctl cleanup'
-end
+# TODO (pwright) to clean up ot not to clean up (before running pedant)
+# execute 'cleanup server' do
+#   command 'chef-server-ctl cleanup'
+#   action :nothing
+# end
