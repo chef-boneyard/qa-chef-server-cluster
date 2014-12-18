@@ -16,6 +16,9 @@ Recipes for installing, upgrading and testing Chef Server 12 topologies.
 # Test Kitchen
 `kitchen list` to see available test suites
 
+# TODOs and Enhancements
+[Doc here](docs/TODO.md)
+
 # Credit
 This wrapper cookbook deserves the recognition of Paul Mooring <paul@chef.io> and 
 Joshua Timberman <joshua@chef.io> for their great work on the chef-server-cluster and chef-server-ingredient cookbooks.
