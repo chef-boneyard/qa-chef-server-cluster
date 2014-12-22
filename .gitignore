@@ -1,6 +1,7 @@
 /data_bags/secrets/
-Berksfile.lock
 /berks-cookbooks/
+/cookbooks
+/vendor/cookbooks
 /nodes/
 /clients/
 /.chef/
@@ -8,4 +9,3 @@ Berksfile.lock
 .kitchen/
 .kitchen.local.yml
 *.json
-

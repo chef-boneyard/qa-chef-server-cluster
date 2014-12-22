@@ -1,0 +1,23 @@
+DEPENDENCIES
+  apt
+  chef-server-cluster
+    git: git://github.com/opscode-cookbooks/chef-server-cluster.git
+    revision: d01bcfdacd5150ca24acf006632184b4788ee97e
+  chef-server-ingredient
+    git: git://github.com/opscode-cookbooks/chef-server-ingredient.git
+    revision: b8feff084ed429ef574ec4bac83ddcde341c1f29
+  chef-vault (~> 1.1.5)
+  qa-chef-server-cluster
+    path: .
+    metadata: true
+
+GRAPH
+  apt (2.6.0)
+  chef-server-cluster (0.0.7)
+    chef-server-ingredient (>= 0.0.0)
+    chef-vault (>= 0.0.0)
+  chef-server-ingredient (0.0.1)
+    apt (>= 0.0.0)
+  chef-vault (1.1.5)
+  qa-chef-server-cluster (0.1.0)
+    chef-server-cluster (>= 0.0.0)
