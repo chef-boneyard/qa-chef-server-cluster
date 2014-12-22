@@ -1,6 +1,5 @@
 /data_bags/secrets/
 Berksfile.lock
-Gemfile.lock
 /berks-cookbooks/
 /nodes/
 /clients/
