@@ -1,7 +1,7 @@
 /data_bags/secrets/
-Berksfile.lock
-Gemfile.lock
 /berks-cookbooks/
+/cookbooks
+/vendor/cookbooks
 /nodes/
 /clients/
 /.chef/
@@ -9,4 +9,3 @@ Gemfile.lock
 .kitchen/
 .kitchen.local.yml
 *.json
-
