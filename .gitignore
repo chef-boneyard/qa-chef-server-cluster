@@ -5,6 +5,8 @@
 /nodes/
 /clients/
 /.chef/
+/vendor
+/.bundle
 
 .kitchen/
 .kitchen.local.yml
