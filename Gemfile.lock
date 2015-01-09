@@ -57,7 +57,7 @@ GEM
       plist (~> 3.1.0)
       pry (~> 0.9)
       rest-client (>= 1.0.4, <= 1.6.7)
-    chef-provisioning (0.17)
+    chef-provisioning (0.16)
       cheffish (~> 0.8)
       inifile (~> 2.0)
       net-scp (~> 1.0)
