@@ -6,24 +6,25 @@ require 'mixlib/shellout'
 require 'json'
 require 'artifactory'
 
+# TODO: THERE BE DRAGONS BELOW!  I SHALL SLAY THEM ALL! (pwright)
 class GenerateConfig
   include Mixlib::CLI
 
   option :server_install_source,
     :long => '--server-install-source CHEF SERVER CORE SOURCE',
-    :description => 'specify chef-server-core url location. Ignores version options'
+    :description => 'specify chef-server-core url location'
 
   option :manage_install_source,
     :long => '--manage-install-source OPSCODE MANAGE SOURCE',
-    :description => 'specify opscode-manage url location. Ignores version options'
+    :description => 'specify opscode-manage url location'
 
   option :server_upgrade_source,
     :long => '--server-upgrade-source CHEF SERVER CORE UPGRADE SOURCE',
-    :description => 'specify chef-server-core upgrade url location. Ignores version options'
+    :description => 'specify chef-server-core upgrade url location'
 
   option :manage_upgrade_source,
     :long => '--manage-upgrade-source OPSCODE MANAGE UPGRADE SOURCE',
-    :description => 'specify opscode-manage upgrade url location. Ignores version options'
+    :description => 'specify opscode-manage upgrade url location'
 
   option :enable_upgrade,
     :long => '--enable-upgrade',
@@ -50,6 +51,17 @@ class GenerateConfig
     :short => '-r',
     :long => '--run-recipe RUN RECIPE',
     :description => 'run chef-client with run recipe'
+
+  # Placeholder
+  # option :chef_repo_path,
+  #   :long => '--chef-repo-path',
+  #   :description => "set the chef_repo_path. create path if it doesn't exist."
+
+  option :platform,
+    :short => '-p',
+    :long => '--platform PLATFORM-VERSION',
+    :description => 'Platform and version',
+    :default => 'ubuntu-12.04'
 
   option :help,
     :short => "-h",
@@ -79,8 +91,9 @@ class ArtifactoryResolver
   ARTIFACTORY_ENDPOINT     = 'http://artifactory.opscode.us'
   ARTIFACTORY_OMNIBUS_REPO = 'omnibus-current-local'
 
-  def initialize
+  def initialize(config)
     @client = Artifactory::Client.new(endpoint: ARTIFACTORY_ENDPOINT)
+    @config = config
   end
 
   def search_uri(name)
@@ -103,8 +116,8 @@ class ArtifactoryResolver
     artifact = @client.artifact_property_search(
       'repos' => ARTIFACTORY_OMNIBUS_REPO,
       'omnibus.project' => name,
-      'omnibus.platform' => 'ubuntu',
-      'omnibus.platform_version' => '14.04',
+      'omnibus.platform' => @config[:platform].split('-').first,
+      'omnibus.platform_version' => @config[:platform].split('-').last,
       'omnibus.version' => build_version.gsub(/_/,'-')
     )
 
@@ -116,15 +129,47 @@ end
 cli = GenerateConfig.new
 cli.parse_options
 
-attrs = { 'qa-chef-server-cluster' => {'chef-server-core' => {}, 'opscode-manage' => {} } }
+attrs = { 'qa-chef-server-cluster' => {'chef-server-core' => {}, 'opscode-manage' => {}, 'aws' => {} } }
 
-@resolver = ArtifactoryResolver.new
+@resolver = ArtifactoryResolver.new(cli.config)
 
 def get_uri(source, artifact_id)
   uri = source
   uri = @resolver.search_uri(artifact_id) if source.match(/^artifactory/)
   return uri
 end
+
+IMAGE_MAP = {
+  'ubuntu-12.04' => 'ami-ad42009d',
+  'ubuntu-10.04' => 'ami-05a3ff35'
+}
+
+def ssh_user_for(image)
+  case image
+  when /^ubuntu/
+    'ubuntu'
+
+  when /rhel/
+    version = image.match(/rhel-(?<version>.+)/)[:version]
+    raise "Unknown image #{image}!" if version.nil?
+
+    version.to_i == 5 ? 'root' : 'ec2-user'
+
+  else
+    'ec2-user'
+  end
+end
+
+aws_hash = { 
+  'aws' => {
+    'machine_options' => {
+      'ssh_username' => ssh_user_for(cli.config[:platform]),
+      'bootstrap_options' => {
+        'image_id' => IMAGE_MAP[cli.config[:platform]]
+       }
+    } 
+  }
+}
 
 attrs['qa-chef-server-cluster']['chef-server-core']['source'] = get_uri(cli.config[:server_install_source], 'chef-server') if cli.config[:server_install_source]
 attrs['qa-chef-server-cluster']['opscode-manage']['source'] = get_uri(cli.config[:manage_install_source], 'opscode-manage') if cli.config[:manage_install_source]
@@ -134,6 +179,9 @@ attrs['qa-chef-server-cluster']['opscode-manage']['upgrade-source'] = get_uri(cl
 
 attrs['qa-chef-server-cluster']['enable-upgrade'] = true if cli.config[:enable_upgrade]
 attrs['qa-chef-server-cluster']['auto-destroy'] = false if cli.config[:disable_auto_destroy]
+
+
+attrs['qa-chef-server-cluster'].merge!(aws_hash)
 
 raise "#{cli.config[:attributes_file]} exists. Change file path or use -f option" if File.exist?(cli.config[:attributes_file]) and not cli.config[:overwrite_attributes_file]
 
