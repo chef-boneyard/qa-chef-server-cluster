@@ -8,7 +8,7 @@ node.default['qa-chef-server-cluster']['aws']['machine_options'] = {
                                                                        :key_name => 'qa-chef-server-cluster-default',
                                                                        :subnet_id => 'subnet-6fab6818',
                                                                        :security_group_ids => ['sg-99aadefc'],
-                                                                       :image_id => 'ami-b99ed989',
+                                                                       :image_id => 'ami-ad42009d',
                                                                        :flavor_id => 'm3.medium'
                                                                      }
                                                                    }
