@@ -121,7 +121,7 @@ class ArtifactoryResolver
       'omnibus.version' => build_version.gsub(/_/,'-')
     )
 
-    return artifact[0].uri
+    return artifact.first.download_uri
   end
 
 end
@@ -140,8 +140,14 @@ def get_uri(source, artifact_id)
 end
 
 IMAGE_MAP = {
-  'ubuntu-12.04' => 'ami-ad42009d',
-  'ubuntu-10.04' => 'ami-05a3ff35'
+  'ubuntu-10.04' => 'ami-eb5b19db', # ebs-io1; ebs-ssd not mounting the root fs
+  'ubuntu-12.04' => 'ami-0f47053f', # ebs-hvm-ssd
+  'ubuntu-14.04' => 'ami-3d50120d', # ebs-hvm-ssd
+
+  # RedHat
+  'el-5' => 'ami-87d948b7', # ebs-magnetic
+  'el-6' => 'ami-aa8bfe9a', # ebs-magnetic
+  'el-7' => 'ami-77d7a747', # ebs-hvm-magnetic
 }
 
 def ssh_user_for(image)
@@ -149,7 +155,7 @@ def ssh_user_for(image)
   when /^ubuntu/
     'ubuntu'
 
-  when /rhel/
+  when /^el/
     version = image.match(/rhel-(?<version>.+)/)[:version]
     raise "Unknown image #{image}!" if version.nil?
 

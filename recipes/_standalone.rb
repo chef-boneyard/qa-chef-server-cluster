@@ -28,36 +28,36 @@ end
 chef_server_core_source = node['qa-chef-server-cluster']['chef-server-core']['source']
 opscode_manage_source   = node['qa-chef-server-cluster']['opscode-manage']['source']
 
-# TODO (pwright) refactor into a LWRP class
-if chef_server_core_source
-  remote_file '/tmp/chef-server-core.deb' do
-    source chef_server_core_source
-  end
+chef_server_core_path = File.join(Chef::Config[:file_cache_path], File.basename(chef_server_core_source))
 
-  # fix when we support another platform
-  dpk_package 'chef-server-core' do
-    source '/tmp/chef-server-core.deb'
-    notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
-  end
-else
-  chef_server_ingredient 'chef-server-core' do
-    notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
-  end
+remote_file chef_server_core_path do
+  source chef_server_core_source
 end
 
-# TODO (pwright) refactor into a LWRP class
-if opscode_manage_source
-  remote_file '/tmp/opscode-manage.deb' do
-    source opscode_manage_source
-  end
-
-  # fix when we support another platform
-  dpk_package 'opscode-manage' do
-    source '/tmp/opscode-manage.deb'
-    notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
-  end
-else
-  chef_server_ingredient 'opscode-manage' do
-    notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
-  end
+package 'chef-server-core' do
+  source chef_server_core_path
+  provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg, :rhel => Chef::Provider::Package::Rpm)
 end
+
+chef_server_ingredient 'chef-server-core' do
+  action :reconfigure
+end
+
+# # TODO (pwright) refactor into a LWRP class
+# if opscode_manage_source
+#   opscode_manage_path = File.join(Chef::Config[:file_cache_path], File.basename(opscode_manage_source))
+
+#   remote_file opscode_manage_path do
+#     source opscode_manage_source
+#   end
+
+#   package 'opscode-manage' do
+#     source opscode_manage_path
+#     provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg, :rhel => Chef::Provider::Package::Rpm)
+#     notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
+#   end
+# else
+#   chef_server_ingredient 'opscode-manage' do
+#     notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
+#   end
+# end
