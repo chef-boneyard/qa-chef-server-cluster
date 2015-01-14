@@ -22,10 +22,12 @@ include_recipe 'qa-chef-server-cluster::_cluster-setup'
 
 machine 'bootstrap-backend' do
   recipe 'qa-chef-server-cluster::_bootstrap-upgrade'
+  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   action :converge
 end
 
 machine 'frontend' do
   recipe 'qa-chef-server-cluster::_frontend-upgrade'
+  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   action :converge
 end

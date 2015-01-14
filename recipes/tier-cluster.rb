@@ -23,6 +23,7 @@ include_recipe 'qa-chef-server-cluster::_cluster-setup'
 
 machine 'bootstrap-backend' do
   recipe 'qa-chef-server-cluster::_bootstrap'
+  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   action :converge
 end
 
@@ -48,6 +49,7 @@ end
 
 machine 'frontend' do
   recipe 'qa-chef-server-cluster::_frontend'
+  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   action :converge
   files(
         '/etc/opscode/webui_priv.pem' => '/tmp/stash/webui_priv.pem',

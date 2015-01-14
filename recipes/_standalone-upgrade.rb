@@ -22,22 +22,21 @@ execute 'stop services' do
   command 'chef-server-ctl stop'
 end
 
-chef_server_core_source = node['qa-chef-server-cluster']['chef-server-core']['upgrade-source']
-opscode_manage_source   = node['qa-chef-server-cluster']['opscode-manage']['upgrade-source']
+chef_server_core_path = File.join(Chef::Config[:file_cache_path],
+  File.basename(node['qa-chef-server-cluster']['chef-server-core']['upgrade-source']))
 
-# TODO (pwright) refactor into a LWRP class
-if chef_server_core_source
-  remote_file '/tmp/chef-server-core.deb' do
-    source chef_server_core_source
-  end
+remote_file chef_server_core_path do
+  source node['qa-chef-server-cluster']['chef-server-core']['upgrade-source']
+end
 
-  # fix when we support another platform
-  dpk_package 'chef-server-core' do
-    source '/tmp/chef-server-core.deb'
-  end
-else
-  chef_server_ingredient 'chef-server-core' do
-  end
+execute 'import keys for rhel' do
+  command 'rpm --import https://downloads.chef.io/packages-chef-io-public.key'
+  only_if { platform_family?('rhel') }
+end
+
+package 'chef-server-core' do
+  source chef_server_core_path
+  provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
 end
 
 execute 'upgrade server' do
@@ -48,23 +47,24 @@ execute 'start services' do
   command 'chef-server-ctl start'
 end
 
-# TODO (pwright) refactor into a LWRP class
-if opscode_manage_source
-  remote_file '/tmp/opscode-manage.deb' do
-    source opscode_manage_source
-  end
+opscode_manage_path = File.join(Chef::Config[:file_cache_path],
+  File.basename(node['qa-chef-server-cluster']['opscode-manage']['upgrade-source']))
 
-  # fix when we support another platform
-  dpk_package 'opscode-manage' do
-    source '/tmp/opscode-manage.deb'
-    notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
-  end
-else
-  # use ctl or not?  using ingredient we get more version control
-  chef_server_ingredient 'opscode-manage' do
-    version node['qa-chef-server-cluster']['opscode-manage']['upgrade-version']
-    notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
-  end
+remote_file opscode_manage_path do
+  source node['qa-chef-server-cluster']['opscode-manage']['upgrade-source']
+end
+
+package 'opscode-manage' do
+  source opscode_manage_path
+  provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
+end
+
+chef_server_ingredient 'opscode-manage' do
+ action :reconfigure
+end
+
+chef_server_ingredient 'chef-server-core' do
+ action :reconfigure
 end
 
 # TODO (pwright) to clean up ot not to clean up (before running pedant)

@@ -25,39 +25,45 @@ directory '/etc/opscode' do
   recursive true
 end
 
-chef_server_core_source = node['qa-chef-server-cluster']['chef-server-core']['source']
-opscode_manage_source   = node['qa-chef-server-cluster']['opscode-manage']['source']
-
-chef_server_core_path = File.join(Chef::Config[:file_cache_path], File.basename(chef_server_core_source))
+# TODO (lwrp potential) start--
+chef_server_core_path = File.join(Chef::Config[:file_cache_path],
+  File.basename(node['qa-chef-server-cluster']['chef-server-core']['source']))
 
 remote_file chef_server_core_path do
-  source chef_server_core_source
+  source node['qa-chef-server-cluster']['chef-server-core']['source']
+end
+
+execute 'import keys for rhel' do
+  command 'rpm --import https://downloads.chef.io/packages-chef-io-public.key'
+  only_if { platform_family?('rhel') }
 end
 
 package 'chef-server-core' do
   source chef_server_core_path
-  provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg, :rhel => Chef::Provider::Package::Rpm)
+  provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
 end
+# --end
 
 chef_server_ingredient 'chef-server-core' do
   action :reconfigure
 end
 
-# # TODO (pwright) refactor into a LWRP class
-# if opscode_manage_source
-#   opscode_manage_path = File.join(Chef::Config[:file_cache_path], File.basename(opscode_manage_source))
+opscode_manage_path = File.join(Chef::Config[:file_cache_path],
+  File.basename(node['qa-chef-server-cluster']['opscode-manage']['source']))
 
-#   remote_file opscode_manage_path do
-#     source opscode_manage_source
-#   end
+remote_file opscode_manage_path do
+  source node['qa-chef-server-cluster']['opscode-manage']['source']
+end
 
-#   package 'opscode-manage' do
-#     source opscode_manage_path
-#     provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg, :rhel => Chef::Provider::Package::Rpm)
-#     notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
-#   end
-# else
-#   chef_server_ingredient 'opscode-manage' do
-#     notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
-#   end
-# end
+package 'opscode-manage' do
+  source opscode_manage_path
+  provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
+end
+
+chef_server_ingredient 'opscode-manage' do
+ action :reconfigure
+end
+
+chef_server_ingredient 'chef-server-core' do
+ action :reconfigure
+end

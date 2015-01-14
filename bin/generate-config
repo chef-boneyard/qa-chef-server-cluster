@@ -10,6 +10,11 @@ require 'artifactory'
 class GenerateConfig
   include Mixlib::CLI
 
+  banner "
+    If you are having to edit the json attributes file then I'm doing it wrong.
+    Please submit an issue: https://github.com/opscode/qa-chef-server-cluster/issues
+    "
+
   option :server_install_source,
     :long => '--server-install-source CHEF SERVER CORE SOURCE',
     :description => 'specify chef-server-core url location'
@@ -104,6 +109,7 @@ class ArtifactoryResolver
       name:  name
     )
 
+puts latest_version
     # Fetch latest build/integration version in the series
     build_version = @client.artifact_latest_version(
       repos: ARTIFACTORY_OMNIBUS_REPO,
@@ -112,13 +118,20 @@ class ArtifactoryResolver
       version: latest_version
     )
 
+    # this means that there are no integration builds for this version
+    build_version = latest_version if build_version.nil?
+
+    # replace invalid chars
+    build_version.include?('_') ? build_version.gsub!(/_/,'-') : build_version
+
+puts build_version
     # locate a specific package
     artifact = @client.artifact_property_search(
       'repos' => ARTIFACTORY_OMNIBUS_REPO,
       'omnibus.project' => name,
       'omnibus.platform' => @config[:platform].split('-').first,
       'omnibus.platform_version' => @config[:platform].split('-').last,
-      'omnibus.version' => build_version.gsub(/_/,'-')
+      'omnibus.version' =>  build_version
     )
 
     return artifact.first.download_uri
@@ -156,7 +169,7 @@ def ssh_user_for(image)
     'ubuntu'
 
   when /^el/
-    version = image.match(/rhel-(?<version>.+)/)[:version]
+    version = image.match(/el-(?<version>.+)/)[:version]
     raise "Unknown image #{image}!" if version.nil?
 
     version.to_i == 5 ? 'root' : 'ec2-user'
@@ -177,6 +190,7 @@ aws_hash = {
   }
 }
 
+# not going to do it this way.  I like the aws_hash approach better.
 attrs['qa-chef-server-cluster']['chef-server-core']['source'] = get_uri(cli.config[:server_install_source], 'chef-server') if cli.config[:server_install_source]
 attrs['qa-chef-server-cluster']['opscode-manage']['source'] = get_uri(cli.config[:manage_install_source], 'opscode-manage') if cli.config[:manage_install_source]
 
