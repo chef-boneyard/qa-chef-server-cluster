@@ -22,21 +22,10 @@ execute 'stop services' do
   command 'chef-server-ctl stop'
 end
 
-chef_server_core_path = File.join(Chef::Config[:file_cache_path],
-  File.basename(node['qa-chef-server-cluster']['chef-server-core']['upgrade-source']))
-
-remote_file chef_server_core_path do
-  source node['qa-chef-server-cluster']['chef-server-core']['upgrade-source']
-end
-
-execute 'import keys for rhel' do
-  command 'rpm --import https://downloads.chef.io/packages-chef-io-public.key'
-  only_if { platform_family?('rhel') }
-end
-
-package 'chef-server-core' do
-  source chef_server_core_path
-  provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
+artifact 'chef-server' do
+  integration_builds true # dervied from cli version
+  version :latest # derived from cli version
+  install true
 end
 
 execute 'upgrade server' do
@@ -47,16 +36,10 @@ execute 'start services' do
   command 'chef-server-ctl start'
 end
 
-opscode_manage_path = File.join(Chef::Config[:file_cache_path],
-  File.basename(node['qa-chef-server-cluster']['opscode-manage']['upgrade-source']))
-
-remote_file opscode_manage_path do
-  source node['qa-chef-server-cluster']['opscode-manage']['upgrade-source']
-end
-
-package 'opscode-manage' do
-  source opscode_manage_path
-  provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
+artifact 'opscode-manage' do
+  integration_builds true # dervied from cli version
+  version '1.7.1' # derived from cli version
+  install true
 end
 
 chef_server_ingredient 'opscode-manage' do

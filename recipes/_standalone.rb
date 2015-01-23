@@ -25,39 +25,20 @@ directory '/etc/opscode' do
   recursive true
 end
 
-# TODO (lwrp potential) start--
-chef_server_core_path = File.join(Chef::Config[:file_cache_path],
-  File.basename(node['qa-chef-server-cluster']['chef-server-core']['source']))
-
-remote_file chef_server_core_path do
-  source node['qa-chef-server-cluster']['chef-server-core']['source']
+artifact 'chef-server' do
+  integration_builds false # dervied from cli version
+  version :latest # derived from cli version
+  install true
 end
-
-execute 'import keys for rhel' do
-  command 'rpm --import https://downloads.chef.io/packages-chef-io-public.key'
-  only_if { platform_family?('rhel') }
-end
-
-package 'chef-server-core' do
-  source chef_server_core_path
-  provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
-end
-# --end
 
 chef_server_ingredient 'chef-server-core' do
   action :reconfigure
 end
 
-opscode_manage_path = File.join(Chef::Config[:file_cache_path],
-  File.basename(node['qa-chef-server-cluster']['opscode-manage']['source']))
-
-remote_file opscode_manage_path do
-  source node['qa-chef-server-cluster']['opscode-manage']['source']
-end
-
-package 'opscode-manage' do
-  source opscode_manage_path
-  provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
+artifact 'opscode-manage' do
+  integration_builds false # dervied from cli version
+  version '1.6.2' # derived from cli version
+  install true
 end
 
 chef_server_ingredient 'opscode-manage' do

@@ -15,23 +15,24 @@ class GenerateConfig
     Please submit an issue: https://github.com/opscode/qa-chef-server-cluster/issues
     "
 
-  option :server_install_source,
-    :long => '--server-install-source CHEF SERVER CORE SOURCE',
-    :description => 'specify chef-server-core url location'
+  # option :server_install_source,
+  #   :long => '--server-install-source CHEF SERVER CORE SOURCE',
+  #   :description => 'specify chef-server-core url location'
 
-  option :manage_install_source,
-    :long => '--manage-install-source OPSCODE MANAGE SOURCE',
-    :description => 'specify opscode-manage url location'
+  # option :manage_install_source,
+  #   :long => '--manage-install-source OPSCODE MANAGE SOURCE',
+  #   :description => 'specify opscode-manage url location'
 
-  option :server_upgrade_source,
-    :long => '--server-upgrade-source CHEF SERVER CORE UPGRADE SOURCE',
-    :description => 'specify chef-server-core upgrade url location'
+  # option :server_upgrade_source,
+  #   :long => '--server-upgrade-source CHEF SERVER CORE UPGRADE SOURCE',
+  #   :description => 'specify chef-server-core upgrade url location'
 
-  option :manage_upgrade_source,
-    :long => '--manage-upgrade-source OPSCODE MANAGE UPGRADE SOURCE',
-    :description => 'specify opscode-manage upgrade url location'
+  # option :manage_upgrade_source,
+  #   :long => '--manage-upgrade-source OPSCODE MANAGE UPGRADE SOURCE',
+  #   :description => 'specify opscode-manage upgrade url location'
 
   option :enable_upgrade,
+    :short => '-u',
     :long => '--enable-upgrade',
     :description => 'enables the upgrade process',
     :boolean => true
