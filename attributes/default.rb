@@ -25,4 +25,4 @@ node.default['qa-chef-server-cluster']['manage']['upgrade']['integration_builds'
 node.default['qa-chef-server-cluster']['manage']['skip-deploy']
 
 node.default['qa-chef-server-cluster']['enable-upgrade']
-node.default['qa-chef-server-cluster']['auto-destroy']
+node.default['qa-chef-server-cluster']['disable-auto-destroy']

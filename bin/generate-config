@@ -35,7 +35,7 @@ class GenerateConfig
     :description => 'latest-stable, latest-current, 12.0.1, 12.0.1+, 12.0.1+20150123091710.git.58.af97194',
     :default => 'latest-current'
 
-  option :skip_manage,
+  option :skip_manage_deploy,
     :long => '--skip-manage SKIP MANAGE DEPLOYMENT',
     :boolean => true
 
@@ -125,8 +125,9 @@ end
 
 attrs = {
   'qa-chef-server-cluster' => {
-    'enable-upgrade' => truefalse,
-    'auto-destroy' => truefalse,
+    'enable-upgrade' => cli.config[:enable_upgrade],
+    'disable-auto-destroy' => cli.config[:disable_auto_destroy],
+
     'chef-server-core' => {
       'install' => {
         'version' => version,
@@ -137,8 +138,9 @@ attrs = {
         'integration_builds' => truefalse,
       }
     },
+
     'opscode-manage' => {
-      'skip-deploy' => truefalse,
+      'skip-deploy' => cli.config[:skip_manage_deploy],
       'install' => {
         'version' => version,
         'integration_builds' => truefalse,
@@ -148,6 +150,7 @@ attrs = {
         'integration_builds' => truefalse,
       }
     },
+
     'aws' => {
       'machine_options' => {
         'ssh_username' => ssh_user_for(cli.config[:platform]),

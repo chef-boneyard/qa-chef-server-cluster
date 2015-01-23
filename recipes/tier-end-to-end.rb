@@ -29,4 +29,4 @@ ruby_block "race condition - boo" do
 end
 
 include_recipe 'qa-chef-server-cluster::tier-test'
-include_recipe 'qa-chef-server-cluster::tier-destroy' if node['qa-chef-server-cluster']['auto-destroy']
+include_recipe 'qa-chef-server-cluster::tier-destroy' unless node['qa-chef-server-cluster']['disable-auto-destroy']
