@@ -15,21 +15,29 @@ class GenerateConfig
     Please submit an issue: https://github.com/opscode/qa-chef-server-cluster/issues
     "
 
-  # option :server_install_source,
-  #   :long => '--server-install-source CHEF SERVER CORE SOURCE',
-  #   :description => 'specify chef-server-core url location'
+  option :server_install_version,
+    :long => '--server-install-version SERVER INSTALL VERSION',
+    :description => 'latest-stable, latest-current, 12.0.1, 12.0.1+, 12.0.1+20150123091710.git.58.af97194',
+    :default => 'latest-stable'
 
-  # option :manage_install_source,
-  #   :long => '--manage-install-source OPSCODE MANAGE SOURCE',
-  #   :description => 'specify opscode-manage url location'
+  option :server_upgrade_version,
+    :long => '--server-upgrade-version SERVER UPGRADE VERSION',
+    :description => 'latest-stable, latest-current, 12.0.1, 12.0.1+, 12.0.1+20150123091710.git.58.af97194',
+    :default => 'latest-current'
 
-  # option :server_upgrade_source,
-  #   :long => '--server-upgrade-source CHEF SERVER CORE UPGRADE SOURCE',
-  #   :description => 'specify chef-server-core upgrade url location'
+  option :manage_install_version,
+    :long => '--manage-install-version MANAGE INSTALL VERSION',
+    :description => 'latest-stable, latest-current, 12.0.1, 12.0.1+, 12.0.1+20150123091710.git.58.af97194',
+    :default => 'latest-stable'
 
-  # option :manage_upgrade_source,
-  #   :long => '--manage-upgrade-source OPSCODE MANAGE UPGRADE SOURCE',
-  #   :description => 'specify opscode-manage upgrade url location'
+  option :manage_upgrade_version,
+    :long => '--manage-upgrade-version MANAGE UPGRADE VERSION',
+    :description => 'latest-stable, latest-current, 12.0.1, 12.0.1+, 12.0.1+20150123091710.git.58.af97194',
+    :default => 'latest-current'
+
+  option :skip_manage,
+    :long => '--skip-manage SKIP MANAGE DEPLOYMENT',
+    :boolean => true
 
   option :enable_upgrade,
     :short => '-u',
@@ -85,73 +93,8 @@ class GenerateConfig
 end
 
 
- ##################################
- # Yes, this needs some love.  
- # Hacked together to figure this thing out.
- ###################################
-
-class ArtifactoryResolver
-  # https://gist.github.com/schisamo/179233af7a7c6eac0923
-
-  # These items should be configurable
-  ARTIFACTORY_ENDPOINT     = 'http://artifactory.opscode.us'
-  ARTIFACTORY_OMNIBUS_REPO = 'omnibus-current-local'
-
-  def initialize(config)
-    @client = Artifactory::Client.new(endpoint: ARTIFACTORY_ENDPOINT)
-    @config = config
-  end
-
-  def search_uri(name)
-    # Fetch latest stable (release or pre-release) version 
-    latest_version = @client.artifact_latest_version(
-      repos: ARTIFACTORY_OMNIBUS_REPO,
-      group: 'com.getchef',
-      name:  name
-    )
-
-puts latest_version
-    # Fetch latest build/integration version in the series
-    build_version = @client.artifact_latest_version(
-      repos: ARTIFACTORY_OMNIBUS_REPO,
-      group:   'com.getchef',
-      name:    name,
-      version: latest_version
-    )
-
-    # this means that there are no integration builds for this version
-    build_version = latest_version if build_version.nil?
-
-    # replace invalid chars
-    build_version.include?('_') ? build_version.gsub!(/_/,'-') : build_version
-
-puts build_version
-    # locate a specific package
-    artifact = @client.artifact_property_search(
-      'repos' => ARTIFACTORY_OMNIBUS_REPO,
-      'omnibus.project' => name,
-      'omnibus.platform' => @config[:platform].split('-').first,
-      'omnibus.platform_version' => @config[:platform].split('-').last,
-      'omnibus.version' =>  build_version
-    )
-
-    return artifact.first.download_uri
-  end
-
-end
-
 cli = GenerateConfig.new
 cli.parse_options
-
-attrs = { 'qa-chef-server-cluster' => {'chef-server-core' => {}, 'opscode-manage' => {}, 'aws' => {} } }
-
-@resolver = ArtifactoryResolver.new(cli.config)
-
-def get_uri(source, artifact_id)
-  uri = source
-  uri = @resolver.search_uri(artifact_id) if source.match(/^artifactory/)
-  return uri
-end
 
 IMAGE_MAP = {
   'ubuntu-10.04' => 'ami-eb5b19db', # ebs-io1; ebs-ssd not mounting the root fs
@@ -180,29 +123,51 @@ def ssh_user_for(image)
   end
 end
 
-aws_hash = { 
-  'aws' => {
-    'machine_options' => {
-      'ssh_username' => ssh_user_for(cli.config[:platform]),
-      'bootstrap_options' => {
+attrs = {
+  'qa-chef-server-cluster' => {
+    'enable-upgrade' => truefalse,
+    'auto-destroy' => truefalse,
+    'chef-server-core' => {
+      'install' => {
+        'version' => version,
+        'integration_builds' => truefalse,
+      },
+      'upgrade' => {
+        'version' => version,
+        'integration_builds' => truefalse,
+      }
+    },
+    'opscode-manage' => {
+      'skip-deploy' => truefalse,
+      'install' => {
+        'version' => version,
+        'integration_builds' => truefalse,
+      },
+      'upgrade' => {
+        'version' => version,
+        'integration_builds' => truefalse,
+      }
+    },
+    'aws' => {
+      'machine_options' => {
+        'ssh_username' => ssh_user_for(cli.config[:platform]),
+        'bootstrap_options' => {
         'image_id' => IMAGE_MAP[cli.config[:platform]]
-       }
+      }
     } 
   }
 }
 
-# not going to do it this way.  I like the aws_hash approach better.
-attrs['qa-chef-server-cluster']['chef-server-core']['source'] = get_uri(cli.config[:server_install_source], 'chef-server') if cli.config[:server_install_source]
-attrs['qa-chef-server-cluster']['opscode-manage']['source'] = get_uri(cli.config[:manage_install_source], 'opscode-manage') if cli.config[:manage_install_source]
 
-attrs['qa-chef-server-cluster']['chef-server-core']['upgrade-source'] =  get_uri(cli.config[:server_upgrade_source], 'chef-server') if cli.config[:server_upgrade_source]
-attrs['qa-chef-server-cluster']['opscode-manage']['upgrade-source'] = get_uri(cli.config[:manage_upgrade_source], 'opscode-manage') if cli.config[:manage_upgrade_source]
+def server_install_version
+  version = 'latest'
+  version REGEXP = unless cli.config[:server_install_version].start_with?('latest')
+  return version
+end
 
-attrs['qa-chef-server-cluster']['enable-upgrade'] = true if cli.config[:enable_upgrade]
-attrs['qa-chef-server-cluster']['auto-destroy'] = false if cli.config[:disable_auto_destroy]
+# def version : returns latest (to be converted to symbol), 12.0.1 or 12.0.1+20150123091710.git.58.af97194
+# def integration_builds : returns true or false
 
-
-attrs['qa-chef-server-cluster'].merge!(aws_hash)
 
 raise "#{cli.config[:attributes_file]} exists. Change file path or use -f option" if File.exist?(cli.config[:attributes_file]) and not cli.config[:overwrite_attributes_file]
 

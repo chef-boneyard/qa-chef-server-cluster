@@ -8,7 +8,7 @@ class Chef
      attribute :project,             name_attribute: true
      attribute :version,             kind_of: [String, Symbol]
      attribute :integration_builds,  kind_of: [TrueClass, FalseClass]
-     attribute :install,             kind_of: [TrueClass, FalseClass]
+     attribute :install,             kind_of: [TrueClass, FalseClass], default: true
   end
 
   class Provider::Artifact < Provider::LWRPBase

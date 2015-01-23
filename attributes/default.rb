@@ -13,12 +13,16 @@ node.default['qa-chef-server-cluster']['aws']['machine_options'] = {
                                                                      }
                                                                    }
 
-node.default['qa-chef-server-cluster']['chef-server-core']['source'] = nil
-node.default['qa-chef-server-cluster']['opscode-manage']['source'] = nil
+node.default['qa-chef-server-cluster']['chef-server']['install']['version']
+node.default['qa-chef-server-cluster']['chef-server']['install']['integration_builds']
+node.default['qa-chef-server-cluster']['chef-server']['upgrade']['version']
+node.default['qa-chef-server-cluster']['chef-server']['upgrade']['integration_builds']
 
-node.default['qa-chef-server-cluster']['chef-server-core']['upgrade-source'] = nil
-node.default['qa-chef-server-cluster']['opscode-manage']['upgrade-source'] = nil
+node.default['qa-chef-server-cluster']['manage']['install']['version']
+node.default['qa-chef-server-cluster']['manage']['install']['integration_builds']
+node.default['qa-chef-server-cluster']['manage']['upgrade']['version']
+node.default['qa-chef-server-cluster']['manage']['upgrade']['integration_builds']
+node.default['qa-chef-server-cluster']['manage']['skip-deploy']
 
-node.default['qa-chef-server-cluster']['enable-upgrade'] = false
-
-node.default['qa-chef-server-cluster']['auto-destroy'] = true
+node.default['qa-chef-server-cluster']['enable-upgrade']
+node.default['qa-chef-server-cluster']['auto-destroy']

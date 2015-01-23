@@ -25,7 +25,6 @@ end
 artifact 'chef-server' do
   integration_builds true # dervied from cli version
   version :latest # derived from cli version
-  install true
 end
 
 execute 'upgrade server' do
@@ -39,7 +38,6 @@ end
 artifact 'opscode-manage' do
   integration_builds true # dervied from cli version
   version '1.7.1' # derived from cli version
-  install true
 end
 
 chef_server_ingredient 'opscode-manage' do
