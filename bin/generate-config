@@ -158,6 +158,12 @@ attrs = {
   }
 }
 
+# MAPPINGS
+# latest-stable version                  => latest, integration_builds => false
+# latest-current                         => latest, integration_builds => true
+# 12.0.1                                 => 12.0.1, integration_builds => false
+# 12.0.1+                                => 12.0.1, integration_builds => true
+# 12.0.1+20150123091710.git.58.af97194   => 12.0.1+20150123091710.git.58.af97194, integration_builds => true
 
 def server_install_version
   version = 'latest'
@@ -169,7 +175,8 @@ end
 # def integration_builds : returns true or false
 
 
-raise "#{cli.config[:attributes_file]} exists. Change file path or use -f option" if File.exist?(cli.config[:attributes_file]) and not cli.config[:overwrite_attributes_file]
+raise "#{cli.config[:attributes_file]} exists. Change file path or use -f option" if File.exist?(cli.config[:attributes_file]) and not
+                                                                                       cli.config[:overwrite_attributes_file]
 
 open(cli.config[:attributes_file], 'w') do |f|
   f.puts JSON.pretty_generate(attrs)
