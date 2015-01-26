@@ -18,11 +18,13 @@
 # limitations under the License.
 #
 
+include_recipe 'qa-chef-server-cluster::_default'
+
 execute 'stop services' do
   command 'chef-server-ctl stop'
 end
 
-artifact 'chef-server' do
+omnibus_artifact 'chef-server' do
   integration_builds true # dervied from cli version
   version :latest # derived from cli version
 end
@@ -35,7 +37,7 @@ execute 'start services' do
   command 'chef-server-ctl start'
 end
 
-artifact 'opscode-manage' do
+omnibus_artifact 'opscode-manage' do
   integration_builds true # dervied from cli version
   version '1.7.1' # derived from cli version
 end

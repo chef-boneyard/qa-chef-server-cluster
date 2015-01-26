@@ -19,13 +19,9 @@
 # limitations under the License.
 #
 
-# TODO (pwright) Move to similar default recipe
-directory '/etc/opscode' do
-  mode 0755
-  recursive true
-end
+include_recipe 'qa-chef-server-cluster::_default'
 
-artifact 'chef-server' do
+omnibus_artifact 'chef-server' do
   integration_builds false # dervied from cli version
   version :latest # derived from cli version
 end
@@ -34,7 +30,7 @@ chef_server_ingredient 'chef-server-core' do
   action :reconfigure
 end
 
-artifact 'opscode-manage' do
+omnibus_artifact 'opscode-manage' do
   integration_builds false # dervied from cli version
   version '1.6.2' # derived from cli version
 end
