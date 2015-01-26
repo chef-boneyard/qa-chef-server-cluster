@@ -39,8 +39,6 @@ class Chef
       end if new_resource.install
     end
 
-    private
-
     def path
       @path ||= ::File.join(Chef::Config[:file_cache_path],
         "#{new_resource.project}#{value_for_platform_family(:debian => '.deb', :rhel => '.rpm')}")
