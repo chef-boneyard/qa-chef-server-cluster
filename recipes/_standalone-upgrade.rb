@@ -37,7 +37,7 @@ execute 'start services' do
   command 'chef-server-ctl start'
 end
 
-if node['qa-chef-server-cluster']['manage']['upgrade']['version']
+unless node['qa-chef-server-cluster']['manage']['upgrade']['version'].blank?
   omnibus_artifact 'opscode-manage' do
     integration_builds node['qa-chef-server-cluster']['manage']['upgrade']['integration_builds']
     version node['qa-chef-server-cluster']['manage']['upgrade']['version']

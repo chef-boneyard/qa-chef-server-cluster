@@ -29,7 +29,7 @@ chef_server_ingredient 'chef-server-core' do
   action :reconfigure
 end
 
-if node['qa-chef-server-cluster']['manage']['install']['version']
+unless node['qa-chef-server-cluster']['manage']['install']['version'].blank?
   omnibus_artifact 'opscode-manage' do
     integration_builds node['qa-chef-server-cluster']['manage']['install']['integration_builds']
     version node['qa-chef-server-cluster']['manage']['install']['version']

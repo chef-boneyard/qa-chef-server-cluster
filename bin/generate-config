@@ -148,14 +148,14 @@ end
 attrs = {
   'qa-chef-server-cluster' => {
     'enable-upgrade' => cli.config[:enable_upgrade] ? true : false,
-    'disable-auto-destroy' => cli.config[:disable_auto_destroy] ? true : false,
+    'auto-destroy' => cli.config[:disable_auto_destroy] ? false : true,
 
-    'chef-server-core' => {
+    'chef-server' => {
       'install' => version_for(cli.config[:server_install_version]),
       'upgrade' => version_for(cli.config[:server_upgrade_version])
     },
 
-    'opscode-manage' => {
+    'manage' => {
       'install' => version_for(cli.config[:manage_install_version]),
       'upgrade' => version_for(cli.config[:manage_upgrade_version])
     },
