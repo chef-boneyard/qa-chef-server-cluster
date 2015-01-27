@@ -41,20 +41,22 @@ class Chef
         platform_version node['platform_version']
       end
 
-      converge_by("Install #{path}") do
-        properties = artifact.properties
+      if new_resource.install
+        converge_by("Install #{path}") do
+          properties = artifact.properties
 
-        execute 'import keys for rhel' do
-          command 'rpm --import https://downloads.chef.io/packages-chef-io-public.key'
-          only_if { platform_family?('rhel') }
-        end
+          execute 'import keys for rhel' do
+            command 'rpm --import https://downloads.chef.io/packages-chef-io-public.key'
+            only_if { platform_family?('rhel') }
+          end
 
-        package ::File.basename(path) do
-          source path
-          provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
-          version "#{properties['omnibus.version']}-#{properties['omnibus.iteration']}"
+          package ::File.basename(path) do
+            source path
+            provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
+            version "#{properties['omnibus.version']}-#{properties['omnibus.iteration']}"
+          end
         end
-      end if new_resource.install
+      end
     end
 
     def path

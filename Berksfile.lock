@@ -1,7 +1,8 @@
 DEPENDENCIES
   apt
   artifactory
-    path: ../releng-chef-repo/cookbooks/artifactory
+    git: git@github.com:opscode-cookbooks/artifactory.git
+    revision: 25f0193388394f0536a193ce7bd6f2105c4109ae
   chef-server-cluster
     git: git://github.com/opscode-cookbooks/chef-server-cluster.git
     revision: d01bcfdacd5150ca24acf006632184b4788ee97e
@@ -10,7 +11,9 @@ DEPENDENCIES
     revision: bbb304a5d7cc541d165fa5a6cf37af289d6b9077
   chef-vault (~> 1.1.5)
   oc-artifactory
-    path: ../releng-chef-repo/cookbooks/oc-artifactory
+    git: git@github.com:opscode-cookbooks/oc-artifactory.git
+    revision: 071f000bffe11d5366701fd314b3c48335dfbdb8
+    branch: pw/omnibus_artifactory_artifact
   qa-chef-server-cluster
     path: .
     metadata: true
