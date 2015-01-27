@@ -113,7 +113,7 @@ Versions are mainly categorized by two parameters: which version and integration
 |dynamically resolve the latest current build (or development version). |`latest-current`|
 |download the current build for a specfic version by appending `+` |`1.2.3+`|
 |download specfic stable release|`1.2.3`|
-|download specfic development build by setting full version |`1.2.3++20150120085009`|
+|download specfic development build by setting full version |`1.2.3+20150120085009`|
 
 
 _Execute_
