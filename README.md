@@ -8,7 +8,7 @@ Recipes for installing, upgrading and testing Chef Server 12 topologies.
 
 # Usage
 1. Run `rake` to install dependencies
-1. Run `chef-client -z -o qa-chef-server-cluster::standalone-end-to-end` for out of the box functionality
+1. Run `chef-client -z -o qa-chef-server-cluster::standalone-server-end-to-end` for out of the box functionality
 1. Review [User Guide](docs/user-guide.md)
  * [JSON Attributes](docs/user-guide.md#setting-json-attributes-via-chef-client)
  * [JSON Generator](docs/user-guide.md#generate-json-attributes)
@@ -17,9 +17,6 @@ Recipes for installing, upgrading and testing Chef Server 12 topologies.
 
 # Test Kitchen
 `kitchen list` to see available test suites
-
-# TODOs and Enhancements
-[Doc here](docs/TODO.md)
 
 # Credit
 This wrapper cookbook deserves the recognition of Paul Mooring <paul@chef.io> and 
