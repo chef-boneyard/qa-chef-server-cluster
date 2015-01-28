@@ -7,6 +7,5 @@ cookbook 'apt'
 cookbook 'chef-server-ingredient', github: 'opscode-cookbooks/chef-server-ingredient'
 cookbook 'chef-server-cluster', github: 'opscode-cookbooks/chef-server-cluster'
 
-# todo - how to I clone private repos?
-cookbook 'oc-artifactory', path: '/Users/patrickwright/Chef/github/chef/releng-chef-repo/cookbooks/oc-artifactory'
-cookbook 'artifactory', path: '/Users/patrickwright/Chef/github/chef/releng-chef-repo/cookbooks/artifactory'
+cookbook 'oc-artifactory', git: 'git@github.com:opscode-cookbooks/oc-artifactory.git'
+cookbook 'artifactory', git: 'git@github.com:opscode-cookbooks/artifactory.git'

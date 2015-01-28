@@ -7,11 +7,11 @@ The following process applies to all topologies.
 1. Destroy cluster
 
 ### Main Cluster Recipes
-Current supported topologies are `standalone` and `tier`.
+Current supported topologies are `standalone-server` and `tier-cluster`.
 
-`<topology>-cluster`: Creates and install the initial cluster
+`<topology>`: Creates and install the initial cluster
 
-`<topology>-cluster-upgrade`: Upgrades an existing cluster
+`<topology>-upgrade`: Upgrades an existing cluster
 
 `<topology>-test`: Executes cluster tests (currently runs pedant)
 
@@ -62,27 +62,59 @@ Defaults to true. The cluster will be destroyed upon a successfully pedant run.
 
 _Command_
 ```bash
-$ bin/generate-config -j my-attrs.json  \
--f \
---server-upgrade-source 'https://domain.ci/package.deb' \
---enable-upgrade
+$ bin/generate-config OPTIONS
 ```
-
-_Setting `--server-[install|upgrade]-source artifactory` will retrieve the latest integration build from artifactory._
 
 _Generates_
 ```json
 {
   "qa-chef-server-cluster": {
-    "chef-server-core": {
-      "upgrade-source": "https://domain.ci/package.deb"
+    "enable-upgrade": false,
+    "auto-destroy": true,
+    "chef-server": {
+      "install": {
+        "version": "latest",
+        "integration_builds": false
+      },
+      "upgrade": {
+        "version": "latest",
+        "integration_builds": true
+      }
     },
-    "opscode-manage": {
+    "manage": {
+      "install": {
+        "version": "",
+        "integration_builds": false
+      },
+      "upgrade": {
+        "version": "",
+        "integration_builds": false
+      }
     },
-    "enable-upgrade": true
+    "aws": {
+      "machine_options": {
+        "ssh_username": "ubuntu",
+        "bootstrap_options": {
+          "image_id": "ami-0f47053f"
+        }
+      }
+    }
   }
 }
 ```
+
+### Version Resolution
+This cookbook wraps the `oc-artifactory::omnibus_artifactory_artifact` resource to resolve and download packages from Artifactory repos. 
+Versions are mainly categorized by two parameters: which version and integration build support.  These params are derived based on the version input.
+
+|Description|Value|
+|-----------|-----|
+|dynamically resolve the latest stable release.|`latest-stable`|
+|dynamically resolve the latest current build (or development version). |`latest-current`|
+|download the current build for a specfic version by appending `+` |`1.2.3+`|
+|download specfic stable release|`1.2.3`|
+|download specfic development build by setting full version |`1.2.3+20150120085009`|
+
 
 _Execute_
 ```
@@ -103,24 +135,3 @@ Add the `--run-recipe` option and the chef-client will automatically run the rec
 ```
 $ generate-config --server-upgrade-source artifactory --enable-upgrade --run-recipe standalone-end-to-end -f
 ```
-
-## Cookbook Attributes
-See attributes/default.rb for default values.
-Here's how this cookbook's attributes (node['qa-chef-server-cluster']) work and/or affect behavior.
-
-`chef-provisioner-key-name`: Data Bag containing ssh keys. Defaults to `insecure-chef-provisioner`
-
-`aws['machine_options']`: Configure the provisioner machine options
-
-`[chef-server-core]`: Hash to configure which chef server packages to install or upgrade
-
-`chef-server-core['source']`: Directly download link to source package
-
-`chef-server-core['upgrade-source']`: Directly download link to source package when performing an upgrade
-
-`[opscode-manage]`: Hash to configure which manage packages to install or upgrade. 
-This hash follows the same `source`, `upgrade-source` as chef-server-core.
-
-`enable-upgrade`: Set to true to enable the upgrade process.
-
-`auto-destroy`: Set to false to disable the cluster tear down at the end of a successfull pedant run.

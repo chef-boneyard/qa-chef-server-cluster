@@ -1,10 +1,9 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: standalone-provision
+# Recipes:: _standalone
 #
-# Author: Joshua Timberman <joshua@chef.io>
 # Author: Patrick Wright <patrick@chef.io>
-# Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
+# Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,32 +18,28 @@
 # limitations under the License.
 #
 
-# TODO (pwright) Move to similar default recipe
-directory '/etc/opscode' do
-  mode 0755
-  recursive true
-end
+include_recipe 'qa-chef-server-cluster::_default'
 
-artifact 'chef-server' do
-  integration_builds false # dervied from cli version
-  version :latest # derived from cli version
-  install true
+omnibus_artifact 'chef-server' do
+  integration_builds node['qa-chef-server-cluster']['chef-server']['install']['integration_builds']
+  version node['qa-chef-server-cluster']['chef-server']['install']['version']
 end
 
 chef_server_ingredient 'chef-server-core' do
   action :reconfigure
 end
 
-artifact 'opscode-manage' do
-  integration_builds false # dervied from cli version
-  version '1.6.2' # derived from cli version
-  install true
-end
+unless node['qa-chef-server-cluster']['manage']['install']['version'].empty?
+  omnibus_artifact 'opscode-manage' do
+    integration_builds node['qa-chef-server-cluster']['manage']['install']['integration_builds']
+    version node['qa-chef-server-cluster']['manage']['install']['version']
+  end
 
-chef_server_ingredient 'opscode-manage' do
- action :reconfigure
-end
+  chef_server_ingredient 'opscode-manage' do
+   action :reconfigure
+  end
 
-chef_server_ingredient 'chef-server-core' do
- action :reconfigure
+  chef_server_ingredient 'chef-server-core' do
+   action :reconfigure
+  end
 end

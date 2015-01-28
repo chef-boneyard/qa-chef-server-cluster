@@ -18,8 +18,8 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::standalone-cluster'
-include_recipe 'qa-chef-server-cluster::standalone-cluster-upgrade' if node['qa-chef-server-cluster']['enable-upgrade']
+include_recipe 'qa-chef-server-cluster::standalone-server'
+include_recipe 'qa-chef-server-cluster::standalone-server-upgrade' if node['qa-chef-server-cluster']['enable-upgrade']
 
 #TODO (pwright)
 ruby_block "race condition - boo" do
@@ -28,5 +28,5 @@ ruby_block "race condition - boo" do
   end
 end
 
-include_recipe 'qa-chef-server-cluster::standalone-test'
-include_recipe 'qa-chef-server-cluster::standalone-destroy' if node['qa-chef-server-cluster']['auto-destroy']
+include_recipe 'qa-chef-server-cluster::standalone-server-test'
+include_recipe 'qa-chef-server-cluster::standalone-server-destroy' if node['qa-chef-server-cluster']['auto-destroy']

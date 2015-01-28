@@ -3,7 +3,7 @@
 # Recipes:: _standalone-upgrade
 #
 # Author: Patrick Wright <patrick@chef.io>
-# Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
+# Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,14 +18,15 @@
 # limitations under the License.
 #
 
+include_recipe 'qa-chef-server-cluster::_default'
+
 execute 'stop services' do
   command 'chef-server-ctl stop'
 end
 
-artifact 'chef-server' do
-  integration_builds true # dervied from cli version
-  version :latest # derived from cli version
-  install true
+omnibus_artifact 'chef-server' do
+  integration_builds node['qa-chef-server-cluster']['chef-server']['upgrade']['integration_builds']
+  version node['qa-chef-server-cluster']['chef-server']['upgrade']['version']
 end
 
 execute 'upgrade server' do
@@ -36,18 +37,19 @@ execute 'start services' do
   command 'chef-server-ctl start'
 end
 
-artifact 'opscode-manage' do
-  integration_builds true # dervied from cli version
-  version '1.7.1' # derived from cli version
-  install true
-end
+unless node['qa-chef-server-cluster']['manage']['upgrade']['version'].empty?
+  omnibus_artifact 'opscode-manage' do
+    integration_builds node['qa-chef-server-cluster']['manage']['upgrade']['integration_builds']
+    version node['qa-chef-server-cluster']['manage']['upgrade']['version']
+  end
 
-chef_server_ingredient 'opscode-manage' do
- action :reconfigure
-end
+  chef_server_ingredient 'opscode-manage' do
+   action :reconfigure
+  end
 
-chef_server_ingredient 'chef-server-core' do
- action :reconfigure
+  chef_server_ingredient 'chef-server-core' do
+   action :reconfigure
+  end
 end
 
 # TODO (pwright) to clean up ot not to clean up (before running pedant)
