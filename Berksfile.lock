@@ -12,8 +12,7 @@ DEPENDENCIES
   chef-vault (~> 1.1.5)
   oc-artifactory
     git: git@github.com:opscode-cookbooks/oc-artifactory.git
-    revision: 071f000bffe11d5366701fd314b3c48335dfbdb8
-    branch: pw/omnibus_artifactory_artifact
+    revision: 9972c00d4e8fcbfa0a75a99808c054b149507bcf
   qa-chef-server-cluster
     path: .
     metadata: true
@@ -37,6 +36,10 @@ GRAPH
   chef-sugar (2.5.0)
   chef-vault (1.1.5)
   chef_handler (1.1.6)
+  datadog (2.0.0)
+    apt (>= 0.0.0)
+    chef_handler (~> 1.1.0)
+    yum (>= 0.0.0)
   dpkg_autostart (0.1.12)
   homebrew (1.11.0)
     build-essential (>= 2.1.2)
@@ -47,11 +50,12 @@ GRAPH
     ohai (~> 2.0)
     runit (~> 1.2)
     yum-epel (~> 0.3)
-  oc-artifactory (1.1.4)
+  oc-artifactory (1.7.0)
     apt (~> 2.3)
     artifactory (~> 1.0)
     aws (~> 2.3)
     chef-sugar (~> 2.0)
+    datadog (~> 2.0)
     dpkg_autostart (~> 0.1)
     nginx (~> 2.4)
     omnibus (~> 2.2)
