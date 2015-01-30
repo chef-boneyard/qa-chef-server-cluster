@@ -45,15 +45,6 @@ unless node['qa-chef-server-cluster']['manage']['upgrade']['version'].empty?
 
   chef_server_ingredient 'opscode-manage' do
    action :reconfigure
-  end
-
-  chef_server_ingredient 'chef-server-core' do
-   action :reconfigure
+   notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
   end
 end
-
-# TODO (pwright) to clean up ot not to clean up (before running pedant)
-# execute 'cleanup server' do
-#   command 'chef-server-ctl cleanup'
-#   action :nothing
-# end

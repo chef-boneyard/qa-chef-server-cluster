@@ -6,8 +6,8 @@ node.default['qa-chef-server-cluster']['aws']['machine_options'] = {
                                                                      :ssh_username => 'ubuntu',
                                                                      :bootstrap_options => {
                                                                        :key_name => 'qa-chef-server-cluster-default',
-                                                                       :subnet_id => 'subnet-6fab6818',
-                                                                       :security_group_ids => ['sg-99aadefc'],
+                                                                       :subnet_id => 'subnet-6fab6818', # QA Private
+                                                                       :security_group_ids => ['sg-52a8f837'], # qa-chef-server-cluster
                                                                        :image_id => 'ami-eb5b19db',
                                                                        :flavor_id => 'm3.medium'
                                                                      }
@@ -25,3 +25,6 @@ node.default['qa-chef-server-cluster']['manage']['upgrade']['integration_builds'
 
 node.default['qa-chef-server-cluster']['enable-upgrade'] = false
 node.default['qa-chef-server-cluster']['auto-destroy'] = true
+
+node.default['qa-chef-server-cluster']['chef-server-config']['topology'] = 'tier'
+node.default['qa-chef-server-cluster']['chef-server-config']['api_fqdn'] = 'api.chef.sh'
