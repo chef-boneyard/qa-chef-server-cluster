@@ -38,7 +38,7 @@ class Chef
         integration_builds new_resource.integration_builds
         version new_version
         platform value_for_platform_family(:debian => 'ubuntu', :rhel => 'el')
-        platform_version node['platform_version']
+        platform_version value_for_platform_family(:debian => node['platform_version'], :rhel => node['platform_version'][0])
       end
 
       if new_resource.install

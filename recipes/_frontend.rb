@@ -19,49 +19,14 @@
 # limitations under the License.
 #
 
-# TODO (pwright) Move to similar default recipe
-directory '/etc/opscode' do
-  mode 0755
-  recursive true
+include_recipe 'qa-chef-server-cluster::_default'
+
+omnibus_artifact 'chef-server' do
+  integration_builds node['qa-chef-server-cluster']['chef-server']['install']['integration_builds']
+  version node['qa-chef-server-cluster']['chef-server']['install']['version']
 end
-
-# TODO (pwright) Move to similar default recipe
-directory '/etc/opscode-analytics' do
-  recursive true
-end
-
-chef_server_core_source = node['qa-chef-server-cluster']['chef-server-core']['source']
-opscode_manage_source   = node['qa-chef-server-cluster']['opscode-manage']['source']
-
-# TODO (pwright) refactor into a LWRP class
-if chef_server_core_source
-  remote_file '/tmp/chef-server-core.deb' do
-    source chef_server_core_source
-  end
-
-  # fix when we support another platform
-  dpk_package 'chef-server-core' do
-    source '/tmp/chef-server-core.deb'
-    notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
-  end
-else
-  chef_server_ingredient 'chef-server-core' do
-    notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
-  end
-end
-
-include_recipe 'chef-vault'
 
 node.default['chef-server-cluster']['role'] = 'frontend'
-
-# TODO: (jtimberman) chef_vault_item. We sort this so we don't
-# get regenerated content in the private-chef-secrets.json later.
-chef_secrets = Hash[data_bag_item('secrets', "private-chef-secrets-#{node.chef_environment}")['data'].sort]
-
-# It's easier to deal with a hash rather than a data bag item, since
-# we're not going to need any of the methods, we just need raw data.
-chef_server_config = data_bag_item('chef_server', 'topology').to_hash
-chef_server_config.delete('id')
 
 # TODO: (jtimberman) Replace this with partial search.
 chef_servers = search('node', 'chef-server-cluster_role:backend').map do |server| #~FC003
@@ -80,41 +45,29 @@ chef_servers << {
                :role => 'frontend'
               }
 
-node.default['chef-server-cluster'].merge!(chef_server_config)
-
-file '/etc/opscode/private-chef-secrets.json' do
-  content JSON.pretty_generate(chef_secrets)
-  notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
-  sensitive true
-end
+node.default['chef-server-cluster'].merge!(node['qa-chef-server-cluster']['chef-server-config'])
 
 template '/etc/opscode/chef-server.rb' do
-  cookbook 'chef-server-cluster'
   source 'chef-server.rb.erb'
   variables :chef_server_config => node['chef-server-cluster'], :chef_servers => chef_servers
   notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
   notifies :run, 'execute[add hosts entry]'
 end
 
-# TODO (pwright) refactor into a LWRP class
-if opscode_manage_source
-  remote_file '/tmp/opscode-manage.deb' do
-    source opscode_manage_source
+unless node['qa-chef-server-cluster']['manage']['install']['version'].empty?
+  omnibus_artifact 'opscode-manage' do
+    integration_builds node['qa-chef-server-cluster']['manage']['install']['integration_builds']
+    version node['qa-chef-server-cluster']['manage']['install']['version']
   end
 
-  # fix when we support another platform
-  dpk_package 'opscode-manage' do
-    source '/tmp/opscode-manage.deb'
-    notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
-  end
-else
   chef_server_ingredient 'opscode-manage' do
-    notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
+   action :reconfigure
+   notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
   end
 end
 
 # TODO (pwright) Run again for all I care!!!  Not really.  Temp hack for lack of dns
 execute 'add hosts entry' do
-  command "echo '#{node['ipaddress']} #{chef_server_config['api_fqdn']}' >> /etc/hosts"
+  command "echo '#{node['ipaddress']} #{node['qa-chef-server-cluster']['chef-server-config']['api_fqdn']}' >> /etc/hosts"
   action :nothing
 end

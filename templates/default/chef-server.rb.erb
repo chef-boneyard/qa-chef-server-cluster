@@ -1,0 +1,24 @@
+# Copied from chef-server-cluster cookbook
+topology '<%= @chef_server_config['topology'] %>'
+api_fqdn '<%= @chef_server_config['api_fqdn'] %>'
+
+<% if @chef_server_config.has_key?('vips') -%>
+<%   @chef_server_config['vips'].each do |vip_name, vip_add| -%>
+<%=    vip_name %>['vip'] = '<%= vip_add %>'
+<%   end -%>
+<% end -%>
+
+# Server blocks
+<% @chef_servers.each do |server| -%>
+server '<%= server[:fqdn] %>',
+  :ipaddress => '<%= server[:ipaddress] %>',
+  <% if server[:bootstrap] -%>
+  :bootstrap => true,
+  <% end -%>
+  :role => '<%= server[:role] %>'
+<%   if server[:role] == 'backend' -%>
+backend_vip '<%= server[:fqdn] %>',
+  :ipaddress => '<%= server[:ipaddress] %>'
+<%   end -%>
+
+<% end -%>
