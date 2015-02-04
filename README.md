@@ -1,4 +1,5 @@
-[![Stories in Ready](https://badge.waffle.io/opscode/qa-chef-server-cluster.png?label=ready&title=Ready)](https://waffle.io/opscode/qa-chef-server-cluster)
+[![Stories in Ready](https://badge.waffle.io/chef/qa-chef-server-cluster.svg?label=ready&title=Ready)](http://waffle.io/chef/qa-chef-server-cluster)
+[![Stories in Ready](https://badge.waffle.io/chef/qa-chef-server-cluster.svg?label=in%20progress&title=In%20Progress)](http://waffle.io/chef/qa-chef-server-cluster)
 Quality Advocacy Chef Server Cluster
 ========
 Recipes for installing, upgrading and testing Chef Server 12 topologies.
