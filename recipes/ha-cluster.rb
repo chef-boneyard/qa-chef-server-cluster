@@ -24,75 +24,59 @@ include_recipe 'qa-chef-server-cluster::_cluster-setup'
 node.default['qa-chef-server-cluster']['chef-server-config']['topology'] = 'ha'
 
 machine_batch do
-  machines 'bootstrap-backend'#, 'secondary-backend'
+  machines 'bootstrap-backend', 'secondary-backend'
 end
 
-require 'chef/provisioning/fog_driver/providers/aws'
-
-aws_creds = Chef::Provisioning::FogDriver::Providers::AWS.get_aws_credentials
-
-aws_ebs_volume 'bootstrap-backend' do
-  aws_access_key aws_creds[:aws_access_key_id]
-  aws_secret_access_key aws_creds[:aws_secret_access_key]
-  size 10
-  device '/dev/sdd'
-  volume_type 'io1'
-  piops 300
-  action [ :create, :attach ]
+machine 'bootstrap-backend' do
+  recipe 'qa-chef-server-cluster::_chef-ha'
+  recipe 'qa-chef-server-cluster::_backend'
+  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
+  attribute %w[ chef-server-cluster bootstrap enable ], true
+  action :converge
 end
 
-# machine 'bootstrap-backend' do
-#   recipe 'qa-chef-server-cluster::_chef-ha'
-#   recipe 'qa-chef-server-cluster::_backend'
-#   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-#   attribute %w[ chef-server-cluster bootstrap enable ], true
-#   action :converge
-# end
+%w{ actions-source.json webui_priv.pem }.each do |analytics_file|
 
-# %w{ actions-source.json webui_priv.pem }.each do |analytics_file|
+  machine_file "/etc/opscode-analytics/#{analytics_file}" do
+    local_path "/tmp/stash/#{analytics_file}"
+    machine 'bootstrap-backend'
+    action :download
+  end
 
-#   machine_file "/etc/opscode-analytics/#{analytics_file}" do
-#     local_path "/tmp/stash/#{analytics_file}"
-#     machine 'bootstrap-backend'
-#     action :download
-#   end
+end
 
-# end
+%w{ pivotal.pem webui_pub.pem private-chef-secrets.json }.each do |opscode_file|
 
-# %w{ pivotal.pem webui_pub.pem private-chef-secrets.json }.each do |opscode_file|
+  machine_file "/etc/opscode/#{opscode_file}" do
+    local_path "/tmp/stash/#{opscode_file}"
+    machine 'bootstrap-backend'
+    action :download
+  end
 
-#   machine_file "/etc/opscode/#{opscode_file}" do
-#     local_path "/tmp/stash/#{opscode_file}"
-#     machine 'bootstrap-backend'
-#     action :download
-#   end
+end
 
-# end
+machine 'secondary-backend' do
+  recipe 'qa-chef-server-cluster::_chef-ha'
+  recipe 'qa-chef-server-cluster::_backend'
+  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
+  attribute %w[ chef-server-cluster bootstrap enable ], false
+  action :converge
+    files(
+        '/etc/opscode/webui_priv.pem' => '/tmp/stash/webui_priv.pem',
+        '/etc/opscode/webui_pub.pem' => '/tmp/stash/webui_pub.pem',
+        '/etc/opscode/pivotal.pem' => '/tmp/stash/pivotal.pem',
+        '/etc/opscode/private-chef-secrets.json' => '/tmp/stash/private-chef-secrets.json'
+       )
+end
 
-# machine 'secondary-backend' do
-#   recipe 'qa-chef-server-cluster::_chef-ha'
-#   recipe 'qa-chef-server-cluster::_backend'
-#   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-#   attribute %w[ chef-server-cluster bootstrap enable ], false
-#   action :converge
-#     files(
-#         '/etc/opscode/webui_priv.pem' => '/tmp/stash/webui_priv.pem',
-#         '/etc/opscode/webui_pub.pem' => '/tmp/stash/webui_pub.pem',
-#         '/etc/opscode/pivotal.pem' => '/tmp/stash/pivotal.pem',
-#         '/etc/opscode/private-chef-secrets.json' => '/tmp/stash/private-chef-secrets.json'
-#        )
-# end
-
-
-
-# machine 'frontend' do
-#   recipe 'qa-chef-server-cluster::_frontend'
-#   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-#   action :converge
-#   files(
-#         '/etc/opscode/webui_priv.pem' => '/tmp/stash/webui_priv.pem',
-#         '/etc/opscode/webui_pub.pem' => '/tmp/stash/webui_pub.pem',
-#         '/etc/opscode/pivotal.pem' => '/tmp/stash/pivotal.pem',
-#         '/etc/opscode/private-chef-secrets.json' => '/tmp/stash/private-chef-secrets.json'
-#        )
-# end
+machine 'frontend' do
+  recipe 'qa-chef-server-cluster::_frontend'
+  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
+  action :converge
+  files(
+        '/etc/opscode/webui_priv.pem' => '/tmp/stash/webui_priv.pem',
+        '/etc/opscode/webui_pub.pem' => '/tmp/stash/webui_pub.pem',
+        '/etc/opscode/pivotal.pem' => '/tmp/stash/pivotal.pem',
+        '/etc/opscode/private-chef-secrets.json' => '/tmp/stash/private-chef-secrets.json'
+       )
+end

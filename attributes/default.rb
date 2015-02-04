@@ -23,6 +23,7 @@ node.default['qa-chef-server-cluster']['manage']['install']['integration_builds'
 node.default['qa-chef-server-cluster']['manage']['upgrade']['version'] = ''
 node.default['qa-chef-server-cluster']['manage']['upgrade']['integration_builds']
 
+# todo (generate-config options)
 node.default['qa-chef-server-cluster']['chef-ha']['install']['version'] = '1.0.0'
 node.default['qa-chef-server-cluster']['chef-ha']['install']['integration_builds'] = false
 
