@@ -3,6 +3,7 @@ DEPENDENCIES
   artifactory
     git: git@github.com:opscode-cookbooks/artifactory.git
     revision: 3fe786e9891017aa42419c90e975614492882c08
+  aws
   chef-server-cluster
     git: git://github.com/opscode-cookbooks/chef-server-cluster.git
     revision: d01bcfdacd5150ca24acf006632184b4788ee97e

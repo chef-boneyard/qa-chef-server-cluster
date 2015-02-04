@@ -2,6 +2,15 @@
 topology '<%= @chef_server_config['topology'] %>'
 api_fqdn '<%= @chef_server_config['api_fqdn'] %>'
 
+<% if @chef_server_config['topology'] == 'ha' -%>
+# HA AWS config
+ha['provider'] = 'aws'
+ha['aws_access_key_id'] = '<%= @aws_creds['aws_access_key_id'] %>'
+ha['aws_secret_access_key'] = '<%= @aws_creds['aws_secret_access_key'] %>'
+ha['ebs_volume_id'] = ''
+ha['ebs_device'] = '<%= DEV %>'
+<% end -%>
+
 <% if @chef_server_config.has_key?('vips') -%>
 <%   @chef_server_config['vips'].each do |vip_name, vip_add| -%>
 <%=    vip_name %>['vip'] = '<%= vip_add %>'

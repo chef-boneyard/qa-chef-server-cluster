@@ -22,8 +22,9 @@
 include_recipe 'qa-chef-server-cluster::_cluster-setup'
 
 machine 'bootstrap-backend' do
-  recipe 'qa-chef-server-cluster::_bootstrap'
+  recipe 'qa-chef-server-cluster::_backend'
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
+  attribute %w[ chef-server-cluster bootstrap enable ], true
   action :converge
 end
 

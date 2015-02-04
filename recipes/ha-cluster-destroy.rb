@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes::tier-cluster-upgrade
+# Recipes:: ha-cluster-destroy
 #
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
@@ -18,16 +18,9 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::_cluster-setup'
+require 'chef/provisioning'
 
-machine 'bootstrap-backend' do
-  recipe 'qa-chef-server-cluster::_backend-upgrade'
-  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-  action :converge
-end
-
-machine 'frontend' do
-  recipe 'qa-chef-server-cluster::_frontend-upgrade'
-  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-  action :converge
+machine_batch do
+  machines 'bootstrap-backend', 'secondary-backend', 'frontend'
+  action :destroy
 end
