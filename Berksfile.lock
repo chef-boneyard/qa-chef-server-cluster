@@ -8,7 +8,7 @@ DEPENDENCIES
     revision: d01bcfdacd5150ca24acf006632184b4788ee97e
   chef-server-ingredient
     git: git://github.com/opscode-cookbooks/chef-server-ingredient.git
-    revision: bbb304a5d7cc541d165fa5a6cf37af289d6b9077
+    revision: 10743e37f67f5c4f476aa52a663f10c1be81aafe
   chef-vault (~> 1.1.5)
   oc-artifactory
     git: git@github.com:opscode-cookbooks/oc-artifactory.git
@@ -30,7 +30,7 @@ GRAPH
   chef-server-cluster (0.0.7)
     chef-server-ingredient (>= 0.0.0)
     chef-vault (>= 0.0.0)
-  chef-server-ingredient (0.0.1)
+  chef-server-ingredient (0.0.2)
     apt (>= 0.0.0)
     packagecloud (>= 0.0.0)
   chef-sugar (2.5.0)
