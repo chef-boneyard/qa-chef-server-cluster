@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'berkshelf',             '~> 3.2'
-gem 'chef',                  '~> 11.16'
+gem 'chef',                  '~> 12.0.3'
 gem 'chef-provisioning',     :git => 'https://github.com/chef/chef-provisioning.git'
 gem 'chef-provisioning-fog', '~> 0.11'
 gem 'test-kitchen',          '~> 1.2'
