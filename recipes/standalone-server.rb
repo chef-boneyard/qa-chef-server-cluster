@@ -23,5 +23,4 @@ include_recipe 'qa-chef-server-cluster::_cluster-setup'
 machine 'standalone' do
   recipe 'qa-chef-server-cluster::_standalone'
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-  action :converge
 end

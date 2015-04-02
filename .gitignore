@@ -11,3 +11,4 @@
 .kitchen/
 .kitchen.local.yml
 *.json
+.idea/

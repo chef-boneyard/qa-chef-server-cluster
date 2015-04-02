@@ -25,7 +25,6 @@ machine 'bootstrap-backend' do
   recipe 'qa-chef-server-cluster::_backend'
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   attribute %w[ chef-server-cluster bootstrap enable ], true
-  action :converge
 end
 
 %w{ actions-source.json webui_priv.pem }.each do |analytics_file|
@@ -51,7 +50,6 @@ end
 machine 'frontend' do
   recipe 'qa-chef-server-cluster::_frontend'
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-  action :converge
   files(
         '/etc/opscode/webui_priv.pem' => '/tmp/stash/webui_priv.pem',
         '/etc/opscode/webui_pub.pem' => '/tmp/stash/webui_pub.pem',

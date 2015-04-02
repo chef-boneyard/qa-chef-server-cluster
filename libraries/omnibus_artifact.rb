@@ -69,7 +69,7 @@ class Chef
 
     def path
       @path ||= ::File.join(Chef::Config[:file_cache_path],
-        "#{new_resource.project}#{value_for_platform_family(:debian => '.deb', :rhel => '.rpm')}")
+        "#{new_resource.project}-#{new_resource.version}.#{value_for_platform_family(:debian => 'deb', :rhel => 'rpm')}")
     end
   end
 end

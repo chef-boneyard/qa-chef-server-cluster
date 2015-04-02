@@ -18,9 +18,17 @@
 # limitations under the License.
 #
 
-require 'chef/provisioning'
+include_recipe 'qa-chef-server-cluster::_cluster-setup'
 
 machine_batch do
   machines 'bootstrap-backend', 'secondary-backend', 'frontend'
+  action :destroy
+end
+
+aws_ebs_volume 'ha-ebs' do
+  action :destroy
+end
+
+aws_network_interface 'ha-eni' do
   action :destroy
 end

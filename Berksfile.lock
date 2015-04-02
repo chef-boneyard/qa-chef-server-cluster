@@ -2,17 +2,16 @@ DEPENDENCIES
   apt
   artifactory
     git: git@github.com:opscode-cookbooks/artifactory.git
-    revision: 3fe786e9891017aa42419c90e975614492882c08
+    revision: 2a1cdcc551c41c2263ae0b1c247f31d04f8a37c6
   chef-server-cluster
     git: git://github.com/opscode-cookbooks/chef-server-cluster.git
-    revision: d01bcfdacd5150ca24acf006632184b4788ee97e
+    revision: d1f56aec89502a5e0fcfde4fec875859e4660187
   chef-server-ingredient
     git: git://github.com/opscode-cookbooks/chef-server-ingredient.git
-    revision: 10743e37f67f5c4f476aa52a663f10c1be81aafe
+    revision: 7ef6d79bb5285b5142fc1c2ee2f04ec50d917cef
   chef-vault (~> 1.1.5)
   oc-artifactory
-    git: git@github.com:opscode-cookbooks/oc-artifactory.git
-    revision: 9972c00d4e8fcbfa0a75a99808c054b149507bcf
+    path: ../releng-chef-repo/cookbooks/oc-artifactory
   qa-chef-server-cluster
     path: .
     metadata: true
@@ -20,20 +19,18 @@ DEPENDENCIES
 GRAPH
   7-zip (1.0.2)
     windows (>= 1.2.2)
-  apt (2.6.1)
-  artifactory (1.1.0)
+  apt (2.7.0)
+  artifactory (1.1.1)
     runit (~> 1.5)
-  aws (2.5.0)
   bluepill (2.3.1)
     rsyslog (>= 0.0.0)
-  build-essential (2.1.3)
-  chef-server-cluster (0.0.7)
+  build-essential (2.2.2)
+  chef-server-cluster (0.0.9)
     chef-server-ingredient (>= 0.0.0)
     chef-vault (>= 0.0.0)
-  chef-server-ingredient (0.0.2)
-    apt (>= 0.0.0)
+  chef-server-ingredient (0.3.0)
     packagecloud (>= 0.0.0)
-  chef-sugar (2.5.0)
+  chef-sugar (3.1.0)
   chef-vault (1.1.5)
   chef_handler (1.1.6)
   datadog (2.0.0)
@@ -43,50 +40,49 @@ GRAPH
   dpkg_autostart (0.1.12)
   homebrew (1.12.0)
     build-essential (>= 2.1.2)
-  nginx (2.7.4)
+  nginx (2.7.6)
     apt (~> 2.2)
     bluepill (~> 2.3)
     build-essential (~> 2.0)
     ohai (~> 2.0)
     runit (~> 1.2)
     yum-epel (~> 0.3)
-  oc-artifactory (1.7.0)
+  oc-artifactory (1.8.0)
     apt (~> 2.3)
     artifactory (~> 1.0)
-    aws (~> 2.3)
-    chef-sugar (~> 2.0)
+    chef-sugar (~> 3.1)
     datadog (~> 2.0)
     dpkg_autostart (~> 0.1)
     nginx (~> 2.4)
-    omnibus (~> 2.2)
+    omnibus (~> 2.6)
     postgresql (~> 3.3)
   ohai (2.0.1)
-  omnibus (2.5.1)
+  omnibus (2.6.2)
     7-zip (~> 1.0)
     build-essential (~> 2.0)
-    chef-sugar (~> 2.0)
+    chef-sugar (~> 3.0)
     homebrew (~> 1.9)
     windows (~> 1.30)
     wix (~> 1.1)
-  openssl (2.0.2)
+  openssl (4.0.0)
     chef-sugar (>= 0.0.0)
   packagecloud (0.0.17)
-  postgresql (3.4.14)
+  postgresql (3.4.18)
     apt (>= 1.9.0)
     build-essential (>= 0.0.0)
-    openssl (>= 0.0.0)
+    openssl (~> 4.0.0)
   qa-chef-server-cluster (0.1.0)
     chef-server-cluster (>= 0.0.0)
     oc-artifactory (>= 0.0.0)
-  rsyslog (1.14.0)
-  runit (1.5.14)
+  rsyslog (1.15.0)
+  runit (1.5.18)
     build-essential (>= 0.0.0)
     yum (~> 3.0)
     yum-epel (>= 0.0.0)
-  windows (1.36.1)
+  windows (1.36.6)
     chef_handler (>= 0.0.0)
   wix (1.1.0)
     windows (>= 1.2.2)
-  yum (3.5.2)
+  yum (3.5.3)
   yum-epel (0.6.0)
     yum (~> 3.0)

@@ -49,9 +49,10 @@ node.default['chef-server-cluster'].merge!(node['qa-chef-server-cluster']['chef-
 
 template '/etc/opscode/chef-server.rb' do
   source 'chef-server.rb.erb'
-  variables :chef_server_config => node['chef-server-cluster'], :chef_servers => chef_servers
-  notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
+  variables :chef_server_config => node['chef-server-cluster'], :chef_servers => chef_servers, :ha_config => node['ha-config'] || {}
+  notifies :reconfigure, 'chef_server_ingredient[chef-server-core]', :immediately
   notifies :run, 'execute[add hosts entry]'
+  sensitive true
 end
 
 unless node['qa-chef-server-cluster']['manage']['install']['version'].empty?

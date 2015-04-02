@@ -51,21 +51,14 @@ if chef_servers.empty?
                  ]
 end
 
-aws_creds = {}
-if node['qa-chef-server-cluster']['chef-server-config']['topology'] == 'ha'
-  # Don't want to store this in attributes
-  aws_creds = { 
-    'access_key_id' => Chef::Provisioning::FogDriver::Providers::AWS::Credentials[:aws_access_key_id],
-    'secret_access_key' => Chef::Provisioning::FogDriver::Providers::AWS::Credentials[:aws_secret_access_key]
-  }
-end
-
 node.default['chef-server-cluster'].merge!(node['qa-chef-server-cluster']['chef-server-config'])
 
 template '/etc/opscode/chef-server.rb' do
   source 'chef-server.rb.erb'
-  variables :chef_server_config => node['chef-server-cluster'], :chef_servers => chef_servers, :aws_creds => aws_creds
-  notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
+  variables :chef_server_config => node['chef-server-cluster'],
+            :chef_servers => chef_servers,
+            :ha_config => node['ha-config'] || {}
+  notifies :reconfigure, 'chef_server_ingredient[chef-server-core]', :immediately
   sensitive true
 end
 
@@ -76,3 +69,6 @@ file '/etc/opscode/pivotal.pem' do
   only_if { ::File.exists?('/etc/opscode/pivotal.pem') }
   subscribes :create, 'chef_server_ingredient[chef-server-core]', :immediately
 end
+
+
+# TODO LVM

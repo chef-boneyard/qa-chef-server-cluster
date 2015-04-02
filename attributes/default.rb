@@ -1,6 +1,7 @@
 node.default['qa-chef-server-cluster']['chef-provisioner-key-name'] = 'insecure-chef-provisioner'
 
 node.default['qa-chef-server-cluster']['aws']['region'] = 'us-west-2'
+node.default['qa-chef-server-cluster']['aws']['availability_zone'] = 'b'
 node.default['qa-chef-server-cluster']['aws']['machine_options'] = {
                                                                      :use_private_ip_for_ssh => true,
                                                                      :ssh_username => 'ubuntu',
@@ -8,8 +9,8 @@ node.default['qa-chef-server-cluster']['aws']['machine_options'] = {
                                                                        :key_name => 'qa-chef-server-cluster-default',
                                                                        :subnet_id => 'subnet-6fab6818', # QA Private
                                                                        :security_group_ids => ['sg-52a8f837'], # qa-chef-server-cluster
-                                                                       :image_id => 'ami-eb5b19db',
-                                                                       :flavor_id => 'm3.medium'
+                                                                       :image_id => 'ami-3d50120d',
+                                                                       :instance_type => 'm3.medium'
                                                                      }
                                                                    }
 
