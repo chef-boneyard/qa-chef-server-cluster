@@ -27,5 +27,7 @@ backend_vip '<%= server[:fqdn] %>',
 
 <% if @chef_server_config['topology'] == 'ha' -%>
 backend_vip '<%= @ha_config['eni_ip'] %>',
-  :ipaddress => '<%= @ha_config['eni_ip'] %>'
+  :ipaddress => '<%= @ha_config['eni_ip'] %>',
+  :device => 'eth0',
+  :heartbeat_device => 'eth0'
 <% end -%>

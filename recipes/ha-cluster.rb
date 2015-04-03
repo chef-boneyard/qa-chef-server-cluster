@@ -23,17 +23,22 @@ include_recipe 'qa-chef-server-cluster::_cluster-setup'
 # set topology
 node.default['qa-chef-server-cluster']['chef-server-config']['topology'] = 'ha'
 
-# create backend machines and set initial attributes
+# create machines and set attributes
 machine_batch do
   machine 'bootstrap-backend' do
-    attribute %w[ chef-server-cluster role ], 'backend'
     attribute %w[ chef-server-cluster bootstrap enable ], true
+    attribute %w[ chef-server-cluster role ], 'backend'
     attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   end
 
   machine 'secondary-backend' do
-    attribute %w[ chef-server-cluster role ], 'backend'
     attribute %w[ chef-server-cluster bootstrap enable ], false
+    attribute %w[ chef-server-cluster role ], 'backend'
+    attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
+  end
+
+  machine 'frontend' do
+    attribute %w[ chef-server-cluster role ], 'frontend'
     attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   end
 end
@@ -47,7 +52,7 @@ volume = aws_ebs_volume 'ha-ebs' do
   device '/dev/xvdf'
 end
 
-# create and store aws network interface
+# create and store aws network interface, all we want is the generated IP
 eni = aws_network_interface 'ha-eni' do
   subnet node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['subnet_id']
   security_groups node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['security_group_ids']
@@ -68,19 +73,20 @@ ruby_block 'fetch ebs volume and network interface info' do
   end
 end
 
-# attach volume
-aws_ebs_volume 'ha-ebs' do
-  machine 'bootstrap-backend'
+# destroy network interface, its served its purpose
+aws_network_interface 'ha-eni' do
+  action :destroy
 end
 
-# attach network interface
-aws_network_interface 'ha-eni' do
+# attach volume so the device mount is available to the machine for chef-ha
+aws_ebs_volume 'ha-ebs' do
   machine 'bootstrap-backend'
 end
 
 # converge bootstrap server with all the bits!
 machine 'bootstrap-backend' do
   recipe 'qa-chef-server-cluster::_chef-ha'
+  recipe 'qa-chef-server-cluster::lvm_volume_group'
   recipe 'qa-chef-server-cluster::_backend'
   attribute 'ha-config', ha_config
 end
@@ -106,6 +112,7 @@ end
 # converge secondary server with all the bits!
 machine 'secondary-backend' do
   recipe 'qa-chef-server-cluster::_chef-ha'
+  recipe 'lvm'
   recipe 'qa-chef-server-cluster::_backend'
   attribute 'ha-config', ha_config
   files(
@@ -119,7 +126,6 @@ end
 # converge frontend server with all the bits!
 machine 'frontend' do
   recipe 'qa-chef-server-cluster::_frontend'
-  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   attribute 'ha-config', ha_config
   files(
     '/etc/opscode/webui_priv.pem' => '/tmp/stash/webui_priv.pem',

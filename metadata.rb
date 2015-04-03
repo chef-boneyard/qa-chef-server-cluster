@@ -7,3 +7,4 @@ version          '0.1.0'
 
 depends 'chef-server-cluster'
 depends 'oc-artifactory'
+depends 'lvm'

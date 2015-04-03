@@ -26,8 +26,6 @@ omnibus_artifact 'chef-server' do
   version node['qa-chef-server-cluster']['chef-server']['install']['version']
 end
 
-node.default['chef-server-cluster']['role'] = 'backend'
-
 # TODO: (jtimberman) Replace this with partial_search.
 chef_servers = search('node', 'chef-server-cluster_role:backend').map do |server| #~FC003
   {
@@ -69,6 +67,3 @@ file '/etc/opscode/pivotal.pem' do
   only_if { ::File.exists?('/etc/opscode/pivotal.pem') }
   subscribes :create, 'chef_server_ingredient[chef-server-core]', :immediately
 end
-
-
-# TODO LVM

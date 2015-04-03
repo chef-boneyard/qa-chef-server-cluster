@@ -9,7 +9,8 @@ DEPENDENCIES
   chef-server-ingredient
     git: git://github.com/opscode-cookbooks/chef-server-ingredient.git
     revision: 7ef6d79bb5285b5142fc1c2ee2f04ec50d917cef
-  chef-vault (~> 1.1.5)
+  chef-vault
+  lvm
   oc-artifactory
     path: ../releng-chef-repo/cookbooks/oc-artifactory
   qa-chef-server-cluster
@@ -31,7 +32,7 @@ GRAPH
   chef-server-ingredient (0.3.0)
     packagecloud (>= 0.0.0)
   chef-sugar (3.1.0)
-  chef-vault (1.1.5)
+  chef-vault (1.2.5)
   chef_handler (1.1.6)
   datadog (2.0.0)
     apt (>= 0.0.0)
@@ -40,6 +41,7 @@ GRAPH
   dpkg_autostart (0.1.12)
   homebrew (1.12.0)
     build-essential (>= 2.1.2)
+  lvm (1.3.6)
   nginx (2.7.6)
     apt (~> 2.2)
     bluepill (~> 2.3)
@@ -73,6 +75,7 @@ GRAPH
     openssl (~> 4.0.0)
   qa-chef-server-cluster (0.1.0)
     chef-server-cluster (>= 0.0.0)
+    lvm (>= 0.0.0)
     oc-artifactory (>= 0.0.0)
   rsyslog (1.15.0)
   runit (1.5.18)

@@ -29,6 +29,7 @@ aws_ebs_volume 'ha-ebs' do
   action :destroy
 end
 
+# failsafe
 aws_network_interface 'ha-eni' do
   action :destroy
 end

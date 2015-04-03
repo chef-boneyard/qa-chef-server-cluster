@@ -26,8 +26,6 @@ omnibus_artifact 'chef-server' do
   version node['qa-chef-server-cluster']['chef-server']['install']['version']
 end
 
-node.default['chef-server-cluster']['role'] = 'frontend'
-
 # TODO: (jtimberman) Replace this with partial search.
 chef_servers = search('node', 'chef-server-cluster_role:backend').map do |server| #~FC003
   {
