@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::_default'
+include_recipe 'qa-chef-server-cluster::node-setup'
 
 execute 'stop services' do
   command 'chef-server-ctl stop'

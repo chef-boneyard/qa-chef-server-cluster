@@ -19,13 +19,26 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::_cluster-setup'
+include_recipe 'qa-chef-server-cluster::cluster-setup'
+
+# set topology if called directly
+node.default['qa-chef-server-cluster']['topology'] = 'tier'
+
+machine_batch do
+  machine 'bootstrap-backend' do
+    attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
+    attribute %w[ chef-server-cluster bootstrap enable ], true
+    attribute %w[ chef-server-cluster role ], 'backend'
+  end
+
+  machine 'frontend' do
+    attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
+    attribute %w[ chef-server-cluster role ], 'frontend'
+  end
+end
 
 machine 'bootstrap-backend' do
-  recipe 'qa-chef-server-cluster::_backend'
-  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-  attribute %w[ chef-server-cluster bootstrap enable ], true
-  attribute %w[ chef-server-cluster role ], 'backend'
+  recipe 'qa-chef-server-cluster::backend'
 end
 
 %w{ actions-source.json webui_priv.pem }.each do |analytics_file|
@@ -49,9 +62,7 @@ end
 end
 
 machine 'frontend' do
-  recipe 'qa-chef-server-cluster::_frontend'
-  attribute %w[ chef-server-cluster role ], 'frontend'
-  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
+  recipe 'qa-chef-server-cluster::frontend'
   files(
         '/etc/opscode/webui_priv.pem' => '/tmp/stash/webui_priv.pem',
         '/etc/opscode/webui_pub.pem' => '/tmp/stash/webui_pub.pem',

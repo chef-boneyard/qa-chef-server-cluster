@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-require 'chef/provisioning'
+require 'chef/provisioning/aws_driver'
 
 machine_execute 'chef-server-ctl test' do
   machine 'standalone'

@@ -1,8 +1,8 @@
 # Copied from chef-server-cluster cookbook
-topology '<%= @chef_server_config['topology'] %>'
+topology '<%= @topology %>'
 api_fqdn '<%= @chef_server_config['api_fqdn'] %>'
 
-<% if @chef_server_config['topology'] == 'ha' -%>
+<% if @topology== 'ha' -%>
 # HA AWS config
 ha['provider'] = 'aws'
 ha['aws_access_key_id'] = '<%= @ha_config['aws_access_key_id'] %>'
@@ -19,13 +19,13 @@ server '<%= server[:fqdn] %>',
   :bootstrap => true,
   <% end -%>
   :role => '<%= server[:role] %>'
-  <% if server[:role] == 'backend' && @chef_server_config['topology'] == 'tier' -%>
+  <% if server[:role] == 'backend' && @topology == 'tier' -%>
 backend_vip '<%= server[:fqdn] %>',
   :ipaddress => '<%= server[:ipaddress] %>'
   <% end -%>
 <% end -%>
 
-<% if @chef_server_config['topology'] == 'ha' -%>
+<% if @topology == 'ha' -%>
 backend_vip '<%= @ha_config['eni_ip'] %>',
   :ipaddress => '<%= @ha_config['eni_ip'] %>',
   :device => 'eth0',

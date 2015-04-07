@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::_default'
+include_recipe 'qa-chef-server-cluster::node-setup'
 
 execute 'stop services' do
   command 'chef-server-ctl stop'
@@ -41,10 +41,7 @@ unless node['qa-chef-server-cluster']['manage']['upgrade']['version'].empty?
   omnibus_artifact 'opscode-manage' do
     integration_builds node['qa-chef-server-cluster']['manage']['upgrade']['integration_builds']
     version node['qa-chef-server-cluster']['manage']['upgrade']['version']
-  end
-
-  chef_server_ingredient 'opscode-manage' do
-   action :reconfigure
-   notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
+    notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
+    notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
   end
 end

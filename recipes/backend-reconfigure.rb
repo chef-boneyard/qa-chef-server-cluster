@@ -1,7 +1,8 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: standalone-end-to-end
+# Recipes:: _bootstrap
 #
+# Author: Joshua Timberman <joshua@getchef.com>
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
 #
@@ -18,15 +19,8 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::standalone-server'
-include_recipe 'qa-chef-server-cluster::standalone-server-upgrade' if node['qa-chef-server-cluster']['enable-upgrade']
+include_recipe 'qa-chef-server-cluster::node-setup'
 
-#TODO (pwright)
-ruby_block "race condition - boo" do
-  block do
-    sleep 60
-  end
+chef_server_ingredient 'chef-server-core' do
+  action :reconfigure
 end
-
-include_recipe 'qa-chef-server-cluster::standalone-server-test'
-include_recipe 'qa-chef-server-cluster::standalone-server-destroy' if node['qa-chef-server-cluster']['auto-destroy']

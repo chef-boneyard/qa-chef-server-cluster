@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::_default'
+include_recipe 'qa-chef-server-cluster::node-setup'
 
 omnibus_artifact 'chef-server' do
   integration_builds node['qa-chef-server-cluster']['chef-server']['install']['integration_builds']
@@ -49,21 +49,28 @@ if chef_servers.empty?
                  ]
 end
 
-node.default['chef-server-cluster'].merge!(node['qa-chef-server-cluster']['chef-server-config'])
+node.default['chef-server-cluster'].merge!(node['qa-chef-server-cluster']['chef-server'])
 
 template '/etc/opscode/chef-server.rb' do
   source 'chef-server.rb.erb'
   variables :chef_server_config => node['chef-server-cluster'],
+            :topology => node['qa-chef-server-cluster']['topology'],
             :chef_servers => chef_servers,
-            :ha_config => node['ha-config'] || {}
-  notifies :reconfigure, 'chef_server_ingredient[chef-server-core]', :immediately
+            :ha_config => node['ha-config']
+  #notifies :reconfigure, 'chef_server_ingredient[chef-server-core]', :immediately
   sensitive true
 end
+
+# chef_server_ingredient 'chef-server-core' do
+#   action :reconfigure
+# end
 
 file '/etc/opscode/pivotal.pem' do
   mode 00644
   # without this guard, we create an empty file, causing bootstrap to
   # not actually work, as it checks the presence of this file.
   only_if { ::File.exists?('/etc/opscode/pivotal.pem') }
-  subscribes :create, 'chef_server_ingredient[chef-server-core]', :immediately
+  subscribes :create, 'chef_server_ingredient[chef-server-core]'
 end
+
+

@@ -1,7 +1,8 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: tier-end-to-end
+# Recipes:: _bootstrap_upgrade
 #
+# Author: Joshua Timberman <joshua@getchef.com>
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
 #
@@ -18,15 +19,21 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::tier-cluster'
-include_recipe 'qa-chef-server-cluster::tier-cluster-upgrade' if node['qa-chef-server-cluster']['enable-upgrade']
+include_recipe 'qa-chef-server-cluster::node-setup'
 
-#TODO (pwright)
-ruby_block "race condition - boo" do
-  block do
-    sleep 60
-  end
+execute 'stop services' do
+  command 'chef-server-ctl stop'
 end
 
-include_recipe 'qa-chef-server-cluster::tier-cluster-test'
-include_recipe 'qa-chef-server-cluster::tier-cluster-destroy' if node['qa-chef-server-cluster']['auto-destroy']
+omnibus_artifact 'chef-server' do
+  integration_builds node['qa-chef-server-cluster']['chef-server']['upgrade']['integration_builds']
+  version node['qa-chef-server-cluster']['chef-server']['upgrade']['version']
+end
+
+execute 'upgrade server' do
+  command 'chef-server-ctl upgrade'
+end
+
+execute 'start services' do
+  command 'chef-server-ctl start'
+end

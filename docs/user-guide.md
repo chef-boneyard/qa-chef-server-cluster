@@ -17,8 +17,6 @@ Current supported topologies are `standalone-server` and `tier-cluster`.
 
 `<topology>-destroy`: Destroys the cluster
 
-`<topology>-end-to-end`: Runs recipes in sequence (accounting for the configuration)
-
 ### Execution
 `chef-client -z -o qa-chef-server-cluster::<topology>-end-to-end`
 

@@ -18,10 +18,10 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::_cluster-setup'
+include_recipe 'qa-chef-server-cluster::cluster-setup'
 
-# set topology
-node.default['qa-chef-server-cluster']['chef-server-config']['topology'] = 'ha'
+# set topology if called directly
+node.default['qa-chef-server-cluster']['topology'] = 'ha'
 
 # create machines and set attributes
 machine_batch do
@@ -73,21 +73,22 @@ ruby_block 'fetch ebs volume and network interface info' do
   end
 end
 
-# destroy network interface, its served its purpose
-aws_network_interface 'ha-eni' do
-  action :destroy
-end
-
 # attach volume so the device mount is available to the machine for chef-ha
 aws_ebs_volume 'ha-ebs' do
   machine 'bootstrap-backend'
 end
 
+# destroy network interface, its served its purpose
+aws_network_interface 'ha-eni' do
+  action :destroy
+end
+
 # converge bootstrap server with all the bits!
 machine 'bootstrap-backend' do
-  recipe 'qa-chef-server-cluster::_chef-ha'
+  recipe 'qa-chef-server-cluster::backend'
+  recipe 'qa-chef-server-cluster::chef-ha'
   recipe 'qa-chef-server-cluster::lvm_volume_group'
-  recipe 'qa-chef-server-cluster::_backend'
+  recipe 'qa-chef-server-cluster::backend-reconfigure'
   attribute 'ha-config', ha_config
 end
 
@@ -111,9 +112,9 @@ end
 
 # converge secondary server with all the bits!
 machine 'secondary-backend' do
-  recipe 'qa-chef-server-cluster::_chef-ha'
+  recipe 'qa-chef-server-cluster::chef-ha'
   recipe 'lvm'
-  recipe 'qa-chef-server-cluster::_backend'
+  recipe 'qa-chef-server-cluster::backend'
   attribute 'ha-config', ha_config
   files(
     '/etc/opscode/webui_priv.pem' => '/tmp/stash/webui_priv.pem',
@@ -125,7 +126,7 @@ end
 
 # converge frontend server with all the bits!
 machine 'frontend' do
-  recipe 'qa-chef-server-cluster::_frontend'
+  recipe 'qa-chef-server-cluster::frontend'
   attribute 'ha-config', ha_config
   files(
     '/etc/opscode/webui_priv.pem' => '/tmp/stash/webui_priv.pem',
@@ -134,3 +135,5 @@ machine 'frontend' do
     '/etc/opscode/private-chef-secrets.json' => '/tmp/stash/private-chef-secrets.json'
   )
 end
+
+# TODO verify master / backup backend

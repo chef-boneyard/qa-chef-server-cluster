@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::_default'
+include_recipe 'qa-chef-server-cluster::node-setup'
 
 omnibus_artifact 'chef-server' do
   integration_builds node['qa-chef-server-cluster']['chef-server']['install']['integration_builds']
@@ -43,14 +43,21 @@ chef_servers << {
                :role => 'frontend'
               }
 
-node.default['chef-server-cluster'].merge!(node['qa-chef-server-cluster']['chef-server-config'])
+node.default['chef-server-cluster'].merge!(node['qa-chef-server-cluster']['chef-server'])
 
 template '/etc/opscode/chef-server.rb' do
   source 'chef-server.rb.erb'
-  variables :chef_server_config => node['chef-server-cluster'], :chef_servers => chef_servers, :ha_config => node['ha-config'] || {}
+  variables :chef_server_config => node['chef-server-cluster'],
+            :topology => node['qa-chef-server-cluster']['topology'],
+            :chef_servers => chef_servers,
+            :ha_config => node['ha-config']
   notifies :reconfigure, 'chef_server_ingredient[chef-server-core]', :immediately
   notifies :run, 'execute[add hosts entry]'
   sensitive true
+end
+
+chef_server_ingredient 'chef-server-core' do
+  action :reconfigure
 end
 
 unless node['qa-chef-server-cluster']['manage']['install']['version'].empty?
@@ -67,6 +74,6 @@ end
 
 # TODO (pwright) Run again for all I care!!!  Not really.  Temp hack for lack of dns
 execute 'add hosts entry' do
-  command "echo '#{node['ipaddress']} #{node['qa-chef-server-cluster']['chef-server-config']['api_fqdn']}' >> /etc/hosts"
+  command "echo '#{node['ipaddress']} #{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}' >> /etc/hosts"
   action :nothing
 end

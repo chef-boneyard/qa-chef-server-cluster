@@ -45,6 +45,17 @@ class GenerateConfig
     :description => 'disables auto destroy of clusters after tests',
     :boolean => true
 
+  option :skip_pedant,
+    :long => '--skip-pedant',
+    :description => "skip 'chef-server-ctl test' execution",
+    :boolean => true
+
+  option :topology,
+    :short => '-t',
+    :long => '--topology',
+    :description => 'chef server topology',
+    :default => 'standalone'
+
   option :attributes_file,
     :short => '-j',
     :long => '--json-attributes JSON ATTRIBUTES',
@@ -70,7 +81,7 @@ class GenerateConfig
     :short => '-p',
     :long => '--platform PLATFORM-VERSION',
     :description => 'Platform and version',
-    :default => 'ubuntu-12.04'
+    :default => 'ubuntu-14.04'
 
   option :help,
     :short => "-h",
@@ -144,11 +155,12 @@ def version_for(version)
   hash
 end
 
-
 attrs = {
   'qa-chef-server-cluster' => {
     'enable-upgrade' => cli.config[:enable_upgrade] ? true : false,
     'auto-destroy' => cli.config[:disable_auto_destroy] ? false : true,
+    'run-pedant' => cli.config[:skip_pedant] ? false : true,
+    'topology' => cli.config[:topology],
 
     'chef-server' => {
       'install' => version_for(cli.config[:server_install_version]),
@@ -171,9 +183,7 @@ attrs = {
   }
 }
 
-
-raise "#{cli.config[:attributes_file]} exists. Change file path or use -f option" if File.exist?(cli.config[:attributes_file]) and not
-                                                                                       cli.config[:overwrite_attributes_file]
+raise "#{cli.config[:attributes_file]} exists. Change file path or use -f option" if File.exist?(cli.config[:attributes_file]) and not cli.config[:overwrite_attributes_file]
 
 open(cli.config[:attributes_file], 'w') do |f|
   f.puts JSON.pretty_generate(attrs)

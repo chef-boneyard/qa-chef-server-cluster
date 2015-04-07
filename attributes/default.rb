@@ -9,7 +9,7 @@ node.default['qa-chef-server-cluster']['aws']['machine_options'] = {
                                                                        :key_name => 'qa-chef-server-cluster-default',
                                                                        :subnet_id => 'subnet-6fab6818', # QA Private
                                                                        :security_group_ids => ['sg-52a8f837'], # qa-chef-server-cluster
-                                                                       :image_id => 'ami-3d50120d',
+                                                                       :image_id => 'ami-3d50120d', # Ubuntu 14.04
                                                                        :instance_type => 'm3.medium'
                                                                      }
                                                                    }
@@ -30,6 +30,7 @@ node.default['qa-chef-server-cluster']['chef-ha']['install']['integration_builds
 
 node.default['qa-chef-server-cluster']['enable-upgrade'] = false
 node.default['qa-chef-server-cluster']['auto-destroy'] = true
+node.default['qa-chef-server-cluster']['run-pedant'] = true
+node.default['qa-chef-server-cluster']['topology'] = 'standalone'
 
-node.default['qa-chef-server-cluster']['chef-server-config']['topology'] = 'tier'
-node.default['qa-chef-server-cluster']['chef-server-config']['api_fqdn'] = 'api.chef.sh'
+node.default['qa-chef-server-cluster']['chef-server']['api_fqdn'] = 'api.chef.sh'
