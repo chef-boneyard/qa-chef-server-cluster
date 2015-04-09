@@ -86,6 +86,6 @@ GRAPH
     chef_handler (>= 0.0.0)
   wix (1.1.0)
     windows (>= 1.2.2)
-  yum (3.5.3)
+  yum (3.5.4)
   yum-epel (0.6.0)
     yum (~> 3.0)

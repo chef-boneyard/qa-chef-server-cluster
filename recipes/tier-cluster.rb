@@ -19,19 +19,21 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::cluster-setup'
+include_recipe 'qa-chef-server-cluster::provisioner-setup'
 
 # set topology if called directly
 node.default['qa-chef-server-cluster']['topology'] = 'tier'
 
 machine_batch do
   machine 'bootstrap-backend' do
+    action :ready
     attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
     attribute %w[ chef-server-cluster bootstrap enable ], true
     attribute %w[ chef-server-cluster role ], 'backend'
   end
 
   machine 'frontend' do
+    action :ready
     attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
     attribute %w[ chef-server-cluster role ], 'frontend'
   end
@@ -41,32 +43,25 @@ machine 'bootstrap-backend' do
   recipe 'qa-chef-server-cluster::backend'
 end
 
+# download server files
 %w{ actions-source.json webui_priv.pem }.each do |analytics_file|
-
   machine_file "/etc/opscode-analytics/#{analytics_file}" do
-    local_path "/tmp/stash/#{analytics_file}"
+    local_path "#{node['qa-chef-server-cluster']['chef-server']['file-dir']}/#{analytics_file}"
     machine 'bootstrap-backend'
     action :download
   end
-
 end
 
+# download more server files
 %w{ pivotal.pem webui_pub.pem private-chef-secrets.json }.each do |opscode_file|
-
   machine_file "/etc/opscode/#{opscode_file}" do
-    local_path "/tmp/stash/#{opscode_file}"
+    local_path "#{node['qa-chef-server-cluster']['chef-server']['file-dir']}/#{opscode_file}"
     machine 'bootstrap-backend'
     action :download
   end
-
 end
 
 machine 'frontend' do
   recipe 'qa-chef-server-cluster::frontend'
-  files(
-        '/etc/opscode/webui_priv.pem' => '/tmp/stash/webui_priv.pem',
-        '/etc/opscode/webui_pub.pem' => '/tmp/stash/webui_pub.pem',
-        '/etc/opscode/pivotal.pem' => '/tmp/stash/pivotal.pem',
-        '/etc/opscode/private-chef-secrets.json' => '/tmp/stash/private-chef-secrets.json'
-       )
+  files node['qa-chef-server-cluster']['chef-server']['files']
 end

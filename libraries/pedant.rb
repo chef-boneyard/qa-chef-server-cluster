@@ -1,10 +1,6 @@
 #
-# Cookbook Name:: qa-chef-server-cluster
-# Recipes:: _bootstrap
-#
-# Author: Joshua Timberman <joshua@getchef.com>
 # Author: Patrick Wright <patrick@chef.io>
-# Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
+# Copyright (C) 2015, Chef Software, Inc. <legal@chef.io>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,8 +15,24 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::node-setup'
+class Chef
+  class Resource::Pedant < Resource::LWRPBase
+    self.resource_name = :pedant
 
-chef_server_ingredient 'chef-server-core' do
-  action :reconfigure
+    actions :test
+    default_action :test
+
+    attribute :machine, name_attribute: true
+
+    # https://github.com/chef/oc-chef-pedant/blob/master/lib/pedant/command_line.rb
+    attribute :options
+  end
+
+  class Provider::Pedant < Provider::LWRPBase
+    action :test do
+      machine_execute "chef-server-ctl test #{new_resource.options}" do
+        machine new_resource.machine
+      end
+    end
+  end
 end

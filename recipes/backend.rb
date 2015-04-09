@@ -57,13 +57,9 @@ template '/etc/opscode/chef-server.rb' do
             :topology => node['qa-chef-server-cluster']['topology'],
             :chef_servers => chef_servers,
             :ha_config => node['ha-config']
-  #notifies :reconfigure, 'chef_server_ingredient[chef-server-core]', :immediately
+  notifies :reconfigure, 'chef_server_ingredient[chef-server-core]', :immediately
   sensitive true
 end
-
-# chef_server_ingredient 'chef-server-core' do
-#   action :reconfigure
-# end
 
 file '/etc/opscode/pivotal.pem' do
   mode 00644
@@ -72,5 +68,3 @@ file '/etc/opscode/pivotal.pem' do
   only_if { ::File.exists?('/etc/opscode/pivotal.pem') }
   subscribes :create, 'chef_server_ingredient[chef-server-core]'
 end
-
-

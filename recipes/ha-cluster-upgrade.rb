@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::cluster-setup'
+include_recipe 'qa-chef-server-cluster::provisioner-setup'
 
 # set topology
 node.default['qa-chef-server-cluster']['topology'] = 'ha'

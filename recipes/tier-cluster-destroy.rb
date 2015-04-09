@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-require 'chef/provisioning/aws_driver'
+include_recipe 'qa-chef-server-cluster::provisioner-setup'
 
 machine_batch do
   machines 'bootstrap-backend', 'frontend'

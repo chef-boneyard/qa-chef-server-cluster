@@ -32,26 +32,43 @@ with_machine_options(provisioner_machine_opts)
 
 ssh_keys = data_bag_item('secrets', node['qa-chef-server-cluster']['chef-provisioner-key-name'])
 
-directory '/tmp/ssh' do
+keys_dir = File.join(Chef::Config[:chef_repo_path], '.chef', 'keys')
+directory keys_dir do
+  mode 0700
   recursive true
 end
 
-directory '/tmp/stash' do
+chef_server_files_dir = node.default['qa-chef-server-cluster']['chef-server']['file-dir'] = File.join(Chef::Config[:chef_repo_path],
+                                                                                                      '.chef', 'stash')
+
+directory node['qa-chef-server-cluster']['chef-server']['file-dir'] do
+  mode 0700
   recursive true
 end
 
-file '/tmp/ssh/id_rsa' do
+priv_key = File.join(keys_dir, 'id_rsa')
+file priv_key do
+  mode 0600
   content ssh_keys['private_ssh_key']
   sensitive true
 end
 
-file '/tmp/ssh/id_rsa.pub' do
+pub_key = File.join(keys_dir, 'id_rsa.pub')
+file pub_key do
+  mode 0600
   content ssh_keys['public_ssh_key']
   sensitive true
 end
-#
+
 aws_key_pair node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['key_name'] do
-  private_key_path '/tmp/ssh/id_rsa'
-  public_key_path '/tmp/ssh/id_rsa.pub'
+  private_key_path priv_key
+  public_key_path pub_key
 end
 
+# set attribute so clusters know where to find bootstrapped server files
+node.default['qa-chef-server-cluster']['chef-server']['files'] = {
+  '/etc/opscode/webui_priv.pem' => "#{chef_server_files_dir}/webui_priv.pem",
+  '/etc/opscode/webui_pub.pem' => "#{chef_server_files_dir}/webui_pub.pem",
+  '/etc/opscode/pivotal.pem' => "#{chef_server_files_dir}/pivotal.pem",
+  '/etc/opscode/private-chef-secrets.json' => "#{chef_server_files_dir}/private-chef-secrets.json"
+}

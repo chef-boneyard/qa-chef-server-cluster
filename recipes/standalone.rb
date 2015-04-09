@@ -26,7 +26,8 @@ omnibus_artifact 'chef-server' do
 end
 
 chef_server_ingredient 'chef-server-core' do
-  action :reconfigure
+  action :nothing
+  subscribes :reconfigure, 'omnibus_artifact[chef-server]', :immediately
 end
 
 # move this to its own recipe to be included in the machine run list

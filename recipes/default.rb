@@ -45,8 +45,8 @@ case topology
     #       sleep 60
     #     end
     #   end
-    #   include_recipe 'qa-chef-server-cluster::ha-cluster-test'
     # end
+    include_recipe 'qa-chef-server-cluster::ha-cluster-test'  if auto_destroy
     include_recipe 'qa-chef-server-cluster::ha-cluster-destroy' if auto_destroy
   when nil
     raise "Must set attribute ['qa-chef-server-cluster']['topology']"
