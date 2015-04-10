@@ -5,6 +5,6 @@ end
 
 desc 'clean vendor this cookbook'
 task :update do
-  sh("rm -rf berks-cookbooks/qa-chef-server-cluster berks-cookbooks/omnibus-artifactory-artifact && berks vendor")
+  sh("rm -rf berks-cookbooks/qa-chef-server-cluster && berks vendor")
 end
 task :default => [:update]
