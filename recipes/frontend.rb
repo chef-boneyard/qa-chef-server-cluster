@@ -56,6 +56,7 @@ template '/etc/opscode/chef-server.rb' do
   sensitive true
 end
 
+# TODO Is this needed for some reason?
 chef_server_ingredient 'chef-server-core' do
   action :reconfigure
 end
@@ -77,3 +78,11 @@ execute 'add hosts entry' do
   command "echo '#{node['ipaddress']} #{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}' >> /etc/hosts"
   action :nothing
 end
+
+# TODO check this out from chef-server cookbook
+# ruby_block 'ensure node can resolve API FQDN' do
+#   extend ChefServerCoobook::Helpers
+#   block { repair_api_fqdn }
+#   only_if { api_fqdn_node_attr }
+#   not_if { api_fqdn_resolves }
+# end
