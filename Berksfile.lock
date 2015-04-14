@@ -9,7 +9,8 @@ DEPENDENCIES
   chef-vault
   lvm
   omnibus-artifactory-artifact
-    path: ../omnibus-artifactory-artifact
+    git: git@github.com:opscode-cookbooks/omnibus-artifactory-artifact.git
+    revision: 33ba0e6479543feed498c202bdf269d0a65386bd
   qa-chef-server-cluster
     path: .
     metadata: true

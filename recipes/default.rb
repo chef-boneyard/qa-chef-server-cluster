@@ -37,15 +37,15 @@ case topology
 
   when 'ha'
     include_recipe 'qa-chef-server-cluster::ha-cluster'
-    # include_recipe 'qa-chef-server-cluster::ha-cluster-upgrade' if enable_upgrade
-    # if run_pedant
-    #   # TODO (pwright)
-    #   ruby_block "race condition - boo" do
-    #     block do
-    #       sleep 60
-    #     end
-    #   end
-    # end
+    include_recipe 'qa-chef-server-cluster::ha-cluster-upgrade' if enable_upgrade
+    if run_pedant
+      # TODO (pwright)
+      ruby_block "race condition - boo" do
+        block do
+          sleep 60
+        end
+      end
+    end
     include_recipe 'qa-chef-server-cluster::ha-cluster-test'  if auto_destroy
     include_recipe 'qa-chef-server-cluster::ha-cluster-destroy' if auto_destroy
   when nil

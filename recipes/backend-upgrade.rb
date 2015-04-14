@@ -25,10 +25,7 @@ execute 'stop services' do
   command 'chef-server-ctl stop'
 end
 
-omnibus_artifact 'chef-server' do
-  integration_builds node['qa-chef-server-cluster']['chef-server']['upgrade']['integration_builds']
-  version node['qa-chef-server-cluster']['chef-server']['upgrade']['version']
-end
+include_recipe 'qa-chef-server-cluster::chef-server-core-upgrade-package'
 
 execute 'upgrade server' do
   command 'chef-server-ctl upgrade'

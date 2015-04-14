@@ -1,4 +1,14 @@
 GIT
+  remote: git://github.com/chef/chef-provisioning-aws.git
+  revision: 59821d76d0db939673b1ea12abf286ac5ebedca0
+  specs:
+    chef-provisioning-aws (1.0.4)
+      aws-sdk-v1
+      chef (>= 11.16.4)
+      chef-provisioning (~> 1.0)
+      retryable (~> 2.0.1)
+
+GIT
   remote: git://github.com/chef/chef-provisioning.git
   revision: c7f705499189f0d233418800bcde012dd98f573b
   specs:
@@ -10,15 +20,6 @@ GIT
       net-ssh (~> 2.0)
       net-ssh-gateway (~> 1.2.0)
       winrm (~> 1.2.0)
-
-PATH
-  remote: /Users/patrickwright/Chef/github/chef/chef-provisioning-aws-eni
-  specs:
-    chef-provisioning-aws (1.0.4)
-      aws-sdk-v1
-      chef (>= 11.16.4)
-      chef-provisioning (~> 1.0)
-      retryable (~> 2.0.1)
 
 GEM
   remote: https://rubygems.org/
@@ -143,7 +144,7 @@ GEM
     net-ssh (2.9.2)
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
-    net-ssh-multi (1.2.0)
+    net-ssh-multi (1.2.1)
       net-ssh (>= 2.6.5)
       net-ssh-gateway (>= 1.2.0)
     nio4r (1.1.0)
@@ -222,7 +223,7 @@ GEM
       addressable (~> 2.3.5)
       faraday (~> 0.8, < 0.10)
     semverse (1.2.1)
-    serverspec (2.14.0)
+    serverspec (2.14.1)
       multi_json
       rspec (~> 3.0)
       rspec-its
@@ -231,7 +232,7 @@ GEM
     solve (1.2.1)
       dep_selector (~> 1.0)
       semverse (~> 1.1)
-    specinfra (2.28.1)
+    specinfra (2.28.2)
       net-scp
       net-ssh
     systemu (2.6.5)

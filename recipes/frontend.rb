@@ -21,10 +21,7 @@
 
 include_recipe 'qa-chef-server-cluster::node-setup'
 
-omnibus_artifact 'chef-server' do
-  integration_builds node['qa-chef-server-cluster']['chef-server']['install']['integration_builds']
-  version node['qa-chef-server-cluster']['chef-server']['install']['version']
-end
+include_recipe 'qa-chef-server-cluster::chef-server-core-install-package'
 
 # TODO: (jtimberman) Replace this with partial search.
 chef_servers = search('node', 'chef-server-cluster_role:backend').map do |server| #~FC003
