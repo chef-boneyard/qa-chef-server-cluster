@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/chef/chef-provisioning-aws.git
-  revision: 59821d76d0db939673b1ea12abf286ac5ebedca0
+  revision: 28fa253a1408f038c0d4de9a461292da306084b1
   specs:
     chef-provisioning-aws (1.0.4)
       aws-sdk-v1

@@ -1,1 +1,1 @@
-pedant 'frontend'
+run_pedant 'frontend'

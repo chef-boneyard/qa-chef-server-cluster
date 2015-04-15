@@ -85,34 +85,18 @@ end
 
 # converge bootstrap server with all the bits!
 machine 'bootstrap-backend' do
-  recipe 'qa-chef-server-cluster::chef-ha'
+  recipe 'qa-chef-server-cluster::chef-ha-install-package'
   recipe 'qa-chef-server-cluster::lvm_volume_group'
   recipe 'qa-chef-server-cluster::backend'
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   attribute 'ha-config', ha_config
 end
 
-# download server files
-%w{ actions-source.json webui_priv.pem }.each do |analytics_file|
-  machine_file "/etc/opscode-analytics/#{analytics_file}" do
-    local_path "#{node['qa-chef-server-cluster']['chef-server']['file-dir']}/#{analytics_file}"
-    machine 'bootstrap-backend'
-    action :download
-  end
-end
-
-# download more server files
-%w{ pivotal.pem webui_pub.pem private-chef-secrets.json }.each do |opscode_file|
-  machine_file "/etc/opscode/#{opscode_file}" do
-    local_path "#{node['qa-chef-server-cluster']['chef-server']['file-dir']}/#{opscode_file}"
-    machine 'bootstrap-backend'
-    action :download
-  end
-end
+download_bootstrap_files
 
 # converge secondary server with all the bits!
 machine 'secondary-backend' do
-  recipe 'qa-chef-server-cluster::chef-ha'
+  recipe 'qa-chef-server-cluster::chef-ha-install-package'
   recipe 'lvm'
   recipe 'qa-chef-server-cluster::backend'
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']

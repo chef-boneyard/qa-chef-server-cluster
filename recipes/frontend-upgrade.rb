@@ -21,28 +21,6 @@
 
 include_recipe 'qa-chef-server-cluster::node-setup'
 
-execute 'stop services' do
-  command 'chef-server-ctl stop'
-end
+run_chef_server_upgrade_procedure
 
-include_recipe 'qa-chef-server-cluster::chef-server-core-upgrade-package'
-
-execute 'upgrade server' do
-  command 'chef-server-ctl upgrade'
-end
-
-execute 'start services' do
-  command 'chef-server-ctl start'
-end
-
-unless node['qa-chef-server-cluster']['manage']['upgrade']['version'].empty?
-  omnibus_artifact 'opscode-manage' do
-    integration_builds node['qa-chef-server-cluster']['manage']['upgrade']['integration_builds']
-    version node['qa-chef-server-cluster']['manage']['upgrade']['version']
-  end
-
-  chef_server_ingredient 'opscode-manage' do
-   action :reconfigure
-   notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
-  end
-end
+upgrade_opscode_manage_package if should_upgrade_opscode_manage?

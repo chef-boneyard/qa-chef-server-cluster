@@ -19,6 +19,7 @@ case topology
     end
 
     include_recipe 'qa-chef-server-cluster::standalone-server-destroy' if auto_destroy
+
   when 'tier'
     include_recipe 'qa-chef-server-cluster::tier-cluster'
     include_recipe 'qa-chef-server-cluster::tier-cluster-upgrade' if enable_upgrade
@@ -48,9 +49,10 @@ case topology
     end
     include_recipe 'qa-chef-server-cluster::ha-cluster-test'  if auto_destroy
     include_recipe 'qa-chef-server-cluster::ha-cluster-destroy' if auto_destroy
+
   when nil
     raise "Must set attribute ['qa-chef-server-cluster']['topology']"
+
   else
     raise "Can not provision topology type #{topology}"
 end
-

@@ -52,7 +52,7 @@ class GenerateConfig
 
   option :topology,
     :short => '-t',
-    :long => '--topology',
+    :long => '--topology TOPOLOGY',
     :description => 'chef server topology',
     :default => 'standalone'
 

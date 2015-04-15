@@ -21,16 +21,4 @@
 
 include_recipe 'qa-chef-server-cluster::node-setup'
 
-execute 'stop services' do
-  command 'chef-server-ctl stop'
-end
-
-include_recipe 'qa-chef-server-cluster::chef-server-core-upgrade-package'
-
-execute 'upgrade server' do
-  command 'chef-server-ctl upgrade'
-end
-
-execute 'start services' do
-  command 'chef-server-ctl start'
-end
+run_chef_server_upgrade_procedure

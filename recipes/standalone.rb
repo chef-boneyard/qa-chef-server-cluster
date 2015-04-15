@@ -20,22 +20,10 @@
 
 include_recipe 'qa-chef-server-cluster::node-setup'
 
-omnibus_artifact 'chef-server' do
-  integration_builds node['qa-chef-server-cluster']['chef-server']['install']['integration_builds']
-  version node['qa-chef-server-cluster']['chef-server']['install']['version']
-end
+install_chef_server_core_package
 
 chef_server_ingredient 'chef-server-core' do
   action :reconfigure
-  #subscribes :reconfigure, 'omnibus_artifact[chef-server]', :immediately
 end
 
-# move this to its own recipe to be included in the machine run list
-unless node['qa-chef-server-cluster']['manage']['install']['version'].empty?
-  omnibus_artifact 'opscode-manage' do
-    integration_builds node['qa-chef-server-cluster']['manage']['install']['integration_builds']
-    version node['qa-chef-server-cluster']['manage']['install']['version']
-    notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
-    notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
-  end
-end
+install_opscode_manage_package if should_install_opscode_manage?

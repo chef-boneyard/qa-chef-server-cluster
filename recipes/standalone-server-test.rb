@@ -1,1 +1,1 @@
-pedant 'standalone'
+run_pedant 'standalone'

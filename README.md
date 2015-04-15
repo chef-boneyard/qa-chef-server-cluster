@@ -2,7 +2,10 @@
 [![Stories in Ready](https://badge.waffle.io/chef/qa-chef-server-cluster.svg?label=in%20progress&title=In%20Progress)](http://waffle.io/chef/qa-chef-server-cluster)
 Quality Advocacy Chef Server Cluster
 ========
-Recipes for installing, upgrading and testing Chef Server 12 topologies.
+Recipes for installing, upgrading and testing Chef Server 12 topologies.  This cookbook is not designed as an idempotent
+tool for managing chef servers. It is designed to accept package versions and run the install instructions
+as documented for each configuration scenario from [Install Chef Server 12](https://docs.chef.io/install_server.html) and
+[Upgrade Chef Server 12](https://docs.chef.io/upgrade_server.html).
 
 # Requirements
 * aws config
