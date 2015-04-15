@@ -23,19 +23,19 @@ end
 
 def upgrade_opscode_manage_package
   omnibus_artifact 'opscode-manage' do
-    integration_builds node['qa-chef-server-cluster']['manage']['upgrade_opscode_manage']['integration_builds']
-    version node['qa-chef-server-cluster']['manage']['upgrade_opscode_manage']['version']
+    integration_builds node['qa-chef-server-cluster']['manage']['upgrade']['integration_builds']
+    version node['qa-chef-server-cluster']['manage']['upgrade']['version']
     notifies :reconfigure, 'chef_server_ingredient[opscode-manage]'
     notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
   end
 end
 
 def should_install_opscode_manage?
-  node['qa-chef-server-cluster']['manage']['install']['version'].empty? ? false : true
+  node['qa-chef-server-cluster']['manage']['install']['version'].nil? ? false : true
 end
 
 def should_upgrade_opscode_manage?
-  node['qa-chef-server-cluster']['manage']['upgrade']['version'].empty? ? false : true
+  node['qa-chef-server-cluster']['manage']['upgrade']['version'].nil? ? false : true
 end
 
 def run_chef_server_upgrade_procedure

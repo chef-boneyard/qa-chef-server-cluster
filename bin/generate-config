@@ -26,13 +26,11 @@ class GenerateConfig
 
   option :manage_install_version,
     :long => '--manage-install-version MANAGE INSTALL VERSION',
-    :description => 'latest-stable, latest-current, 12.0.1, 12.0.1+, 12.0.1+20150123091710.git.58.af97194',
-    :default => ''
+    :description => 'latest-stable, latest-current, 12.0.1, 12.0.1+, 12.0.1+20150123091710.git.58.af97194'
 
   option :manage_upgrade_version,
     :long => '--manage-upgrade-version MANAGE UPGRADE VERSION',
-    :description => 'latest-stable, latest-current, 12.0.1, 12.0.1+, 12.0.1+20150123091710.git.58.af97194',
-    :default => ''
+    :description => 'latest-stable, latest-current, 12.0.1, 12.0.1+, 12.0.1+20150123091710.git.58.af97194'
 
   option :enable_upgrade,
     :short => '-u',
@@ -167,10 +165,7 @@ attrs = {
       'upgrade' => version_for(cli.config[:server_upgrade_version])
     },
 
-    'manage' => {
-      'install' => version_for(cli.config[:manage_install_version]),
-      'upgrade' => version_for(cli.config[:manage_upgrade_version])
-    },
+    'manage' => {},
 
     'aws' => {
       'machine_options' => {
@@ -182,6 +177,14 @@ attrs = {
     }
   }
 }
+
+if cli.config[:manage_install_version]
+  attrs['qa-chef-server-cluster']['manage']['install'] = version_for(cli.config[:manage_install_version])
+end
+
+if cli.config[:manage_upgrade_version]
+  attrs['qa-chef-server-cluster']['manage']['upgrade'] = version_for(cli.config[:manage_upgrade_version])
+end
 
 raise "#{cli.config[:attributes_file]} exists. Change file path or use -f option" if File.exist?(cli.config[:attributes_file]) and not cli.config[:overwrite_attributes_file]
 

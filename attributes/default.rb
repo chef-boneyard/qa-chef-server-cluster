@@ -14,19 +14,20 @@ node.default['qa-chef-server-cluster']['aws']['machine_options'] = {
                                                                      }
                                                                    }
 
-node.default['qa-chef-server-cluster']['chef-server']['install']['version'] = 'latest'
+node.default['qa-chef-server-cluster']['chef-server']['install']['version'] = :latest
 node.default['qa-chef-server-cluster']['chef-server']['install']['integration_builds'] = false
-node.default['qa-chef-server-cluster']['chef-server']['upgrade']['version'] = 'latest'
+node.default['qa-chef-server-cluster']['chef-server']['upgrade']['version'] = :latest
 node.default['qa-chef-server-cluster']['chef-server']['upgrade']['integration_builds'] = true
 
-node.default['qa-chef-server-cluster']['manage']['install']['version'] = ''
+node.default['qa-chef-server-cluster']['manage']['install']['version']
 node.default['qa-chef-server-cluster']['manage']['install']['integration_builds']
-node.default['qa-chef-server-cluster']['manage']['upgrade']['version'] = ''
+node.default['qa-chef-server-cluster']['manage']['upgrade']['version']
 node.default['qa-chef-server-cluster']['manage']['upgrade']['integration_builds']
 
-# todo (generate-config options)
-node.default['qa-chef-server-cluster']['chef-ha']['install']['version'] = '1.0.0'
+node.default['qa-chef-server-cluster']['chef-ha']['install']['version'] = :latest
 node.default['qa-chef-server-cluster']['chef-ha']['install']['integration_builds'] = false
+node.default['qa-chef-server-cluster']['chef-ha']['upgrade']['version']
+node.default['qa-chef-server-cluster']['chef-ha']['upgrade']['integration_builds']
 
 node.default['qa-chef-server-cluster']['enable-upgrade'] = false
 node.default['qa-chef-server-cluster']['auto-destroy'] = true
