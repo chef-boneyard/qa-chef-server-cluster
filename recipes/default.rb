@@ -46,8 +46,10 @@ case topology
           sleep 60
         end
       end
+      include_recipe 'qa-chef-server-cluster::ha-cluster-test'
+      include_recipe 'qa-chef-server-cluster::ha-failover'
     end
-    include_recipe 'qa-chef-server-cluster::ha-cluster-test'  if auto_destroy
+
     include_recipe 'qa-chef-server-cluster::ha-cluster-destroy' if auto_destroy
 
   when nil

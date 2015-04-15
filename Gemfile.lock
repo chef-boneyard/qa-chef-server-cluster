@@ -10,7 +10,7 @@ GIT
 
 GIT
   remote: git://github.com/chef/chef-provisioning.git
-  revision: c7f705499189f0d233418800bcde012dd98f573b
+  revision: b6840c1ee25c17262eddac2c195517edb937cb82
   specs:
     chef-provisioning (1.0.1)
       chef (>= 11.16.4)

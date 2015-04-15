@@ -34,16 +34,16 @@ end
 machine_batch do
   machine 'bootstrap-backend' do
     # recipe 'qa-chef-server-cluster::chef-ha-upgrade-package'
-    recipe 'qa-chef-server-cluster::chef-server-core-upgrade-package'
+    run_list [ 'qa-chef-server-cluster::chef-server-core-upgrade-package' ]
   end
 
   machine 'secondary-backend' do
     # recipe 'qa-chef-server-cluster::chef-ha-upgrade-package'
-    recipe 'qa-chef-server-cluster::chef-server-core-upgrade-package'
+    run_list [ 'qa-chef-server-cluster::chef-server-core-upgrade-package' ]
   end
 
   machine 'frontend' do
-    recipe 'qa-chef-server-cluster::chef-server-core-upgrade-package'
+    run_list [ 'qa-chef-server-cluster::chef-server-core-upgrade-package' ]
   end
 end
 
@@ -82,4 +82,13 @@ end
 
 machine_execute 'chef-server-ctl start' do
   machine 'bootstrap-backend'
+end
+
+machine_batch do
+  machine 'bootstrap-backend' do
+    run_list [ 'qa-chef-server-cluster::verify-backend-master' ]
+  end
+  machine 'secondary-backend' do
+    run_list [ 'qa-chef-server-cluster::verify-backend-backup' ]
+  end
 end

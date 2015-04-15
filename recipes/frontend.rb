@@ -48,7 +48,6 @@ template '/etc/opscode/chef-server.rb' do
             :topology => node['qa-chef-server-cluster']['topology'],
             :chef_servers => chef_servers,
             :ha_config => node['ha-config']
-  notifies :reconfigure, 'chef_server_ingredient[chef-server-core]', :immediately
   notifies :run, 'execute[add hosts entry]'
   sensitive true
 end

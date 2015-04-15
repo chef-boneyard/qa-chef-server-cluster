@@ -54,8 +54,11 @@ template '/etc/opscode/chef-server.rb' do
             :topology => node['qa-chef-server-cluster']['topology'],
             :chef_servers => chef_servers,
             :ha_config => node['ha-config']
-  notifies :reconfigure, 'chef_server_ingredient[chef-server-core]', :immediately
   sensitive true
+end
+
+chef_server_ingredient 'chef-server-core' do
+  action :reconfigure
 end
 
 file '/etc/opscode/pivotal.pem' do
@@ -64,4 +67,11 @@ file '/etc/opscode/pivotal.pem' do
   # not actually work, as it checks the presence of this file.
   only_if { ::File.exists?('/etc/opscode/pivotal.pem') }
   subscribes :create, 'chef_server_ingredient[chef-server-core]'
+end
+
+
+# TODO Report bug.  Initially reconfigure does not properly start keepalived on secondary backend
+execute 'start keepalived' do
+  command 'chef-server-ctl start keepalived'
+  only_if { node['qa-chef-server-cluster']['topology'] == 'ha' }
 end

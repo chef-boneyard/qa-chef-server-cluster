@@ -24,11 +24,11 @@ include_recipe 'qa-chef-server-cluster::provisioner-setup'
 node.default['qa-chef-server-cluster']['chef-server']['topology'] = 'tier'
 
 machine 'bootstrap-backend' do
-  recipe 'qa-chef-server-cluster::backend-upgrade'
+  run_list [ 'qa-chef-server-cluster::backend-upgrade' ]
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
 end
 
 machine 'frontend' do
-  recipe 'qa-chef-server-cluster::frontend-upgrade'
+  run_list [ 'qa-chef-server-cluster::frontend-upgrade' ]
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
 end

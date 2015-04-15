@@ -85,9 +85,9 @@ end
 
 # converge bootstrap server with all the bits!
 machine 'bootstrap-backend' do
-  recipe 'qa-chef-server-cluster::chef-ha-install-package'
-  recipe 'qa-chef-server-cluster::lvm_volume_group'
-  recipe 'qa-chef-server-cluster::backend'
+  run_list %w( qa-chef-server-cluster::chef-ha-install-package
+               qa-chef-server-cluster::lvm_volume_group
+               qa-chef-server-cluster::backend )
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   attribute 'ha-config', ha_config
 end
@@ -96,9 +96,9 @@ download_bootstrap_files
 
 # converge secondary server with all the bits!
 machine 'secondary-backend' do
-  recipe 'qa-chef-server-cluster::chef-ha-install-package'
-  recipe 'lvm'
-  recipe 'qa-chef-server-cluster::backend'
+  run_list %w(qa-chef-server-cluster::chef-ha-install-package
+              lvm
+              qa-chef-server-cluster::backend)
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   attribute 'ha-config', ha_config
   files node['qa-chef-server-cluster']['chef-server']['files']
@@ -106,8 +106,17 @@ end
 
 # converge frontend server with all the bits!
 machine 'frontend' do
-  recipe 'qa-chef-server-cluster::frontend'
+  run_list [ 'qa-chef-server-cluster::frontend' ]
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   attribute 'ha-config', ha_config
   files node['qa-chef-server-cluster']['chef-server']['files']
+end
+
+machine_batch do
+  machine 'bootstrap-backend' do
+    run_list [ 'qa-chef-server-cluster::verify-backend-master' ]
+  end
+  machine 'secondary-backend' do
+    run_list [ 'qa-chef-server-cluster::verify-backend-backup' ]
+  end
 end

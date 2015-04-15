@@ -40,12 +40,12 @@ machine_batch do
 end
 
 machine 'bootstrap-backend' do
-  recipe 'qa-chef-server-cluster::backend'
+  run_list [ 'qa-chef-server-cluster::backend' ]
 end
 
 download_bootstrap_files
 
 machine 'frontend' do
-  recipe 'qa-chef-server-cluster::frontend'
+  run_list [ 'qa-chef-server-cluster::frontend' ]
   files node['qa-chef-server-cluster']['chef-server']['files']
 end

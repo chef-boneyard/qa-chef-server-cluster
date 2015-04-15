@@ -17,7 +17,7 @@ DEPENDENCIES
 
 GRAPH
   apt (2.7.0)
-  build-essential (2.2.2)
+  build-essential (2.2.3)
   chef-server-cluster (0.0.9)
     chef-server-ingredient (>= 0.0.0)
     chef-vault (>= 0.0.0)

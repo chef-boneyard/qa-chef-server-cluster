@@ -8,3 +8,8 @@ task :update do
   sh("rm -rf berks-cookbooks/qa-chef-server-cluster && berks vendor")
 end
 task :default => [:update]
+
+desc 'list all node ip addresses'
+task :ip_search do
+  sh("knife search -z '*:*' -i -a ipaddress")
+end
