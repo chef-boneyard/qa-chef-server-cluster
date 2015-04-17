@@ -50,8 +50,7 @@ class GenerateConfig
   option :topology,
     :short => '-t',
     :long => '--topology TOPOLOGY',
-    :description => 'chef server topology',
-    :default => 'standalone'
+    :description => 'chef server topology'
 
   option :attributes_file,
     :short => '-j',
@@ -157,7 +156,6 @@ attrs = {
     'enable-upgrade' => cli.config[:enable_upgrade] ? true : false,
     'auto-destroy' => cli.config[:disable_auto_destroy] ? false : true,
     'run-pedant' => cli.config[:skip_pedant] ? false : true,
-    'topology' => cli.config[:topology],
 
     'chef-server' => {
       'install' => version_for(cli.config[:server_install_version]),
@@ -183,6 +181,10 @@ end
 
 if cli.config[:manage_upgrade_version]
   attrs['qa-chef-server-cluster']['manage']['upgrade'] = version_for(cli.config[:manage_upgrade_version])
+end
+
+if cli.config[:topology]
+  attrs['qa-chef-server-cluster']['topology'] = cli.config[:topology]
 end
 
 raise "#{cli.config[:attributes_file]} exists. Change file path or use -f option" if File.exist?(cli.config[:attributes_file]) and not cli.config[:overwrite_attributes_file]
