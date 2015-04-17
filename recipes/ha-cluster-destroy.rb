@@ -20,11 +20,6 @@
 
 include_recipe 'qa-chef-server-cluster::provisioner-setup'
 
-machine_batch do
-  machines 'bootstrap-backend', 'secondary-backend', 'frontend'
-  action :destroy
-end
-
 aws_ebs_volume 'ha-ebs' do
   action :destroy
 end
@@ -33,3 +28,9 @@ end
 aws_network_interface 'ha-eni' do
   action :destroy
 end
+
+machine_batch do
+  machines 'bootstrap-backend', 'secondary-backend', 'frontend'
+  action :destroy
+end
+
