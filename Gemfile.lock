@@ -1,18 +1,18 @@
 GIT
   remote: git://github.com/chef/chef-provisioning-aws.git
-  revision: 28fa253a1408f038c0d4de9a461292da306084b1
+  revision: 97ef7b5ce8b924de527f75b6c5c2f2240fbf6170
   specs:
-    chef-provisioning-aws (1.0.4)
-      aws-sdk-v1
+    chef-provisioning-aws (1.1.0)
+      aws-sdk-v1 (>= 1.59.0)
       chef (>= 11.16.4)
       chef-provisioning (~> 1.0)
       retryable (~> 2.0.1)
 
 GIT
   remote: git://github.com/chef/chef-provisioning.git
-  revision: b6840c1ee25c17262eddac2c195517edb937cb82
+  revision: 0638c62ff0d2ad31855ab1054960b0e6b9cf8747
   specs:
-    chef-provisioning (1.0.1)
+    chef-provisioning (1.1.0)
       chef (>= 11.16.4)
       cheffish (~> 1.1)
       inifile (~> 2.0)
@@ -232,7 +232,7 @@ GEM
     solve (1.2.1)
       dep_selector (~> 1.0)
       semverse (~> 1.1)
-    specinfra (2.28.2)
+    specinfra (2.28.3)
       net-scp
       net-ssh
     systemu (2.6.5)
