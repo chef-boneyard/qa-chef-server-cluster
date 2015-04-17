@@ -2,7 +2,7 @@ DEPENDENCIES
   apt
   chef-server-cluster
     git: git://github.com/opscode-cookbooks/chef-server-cluster.git
-    revision: d1f56aec89502a5e0fcfde4fec875859e4660187
+    revision: 31993972e5c16045e918c8bfd3d0ccbfeca8a1bb
   chef-server-ingredient
     git: git://github.com/opscode-cookbooks/chef-server-ingredient.git
     revision: 1ce6c44406dc6c1cd844ea4086cfcf52ee831e14
