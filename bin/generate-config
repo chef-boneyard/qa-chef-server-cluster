@@ -4,7 +4,6 @@ require 'rubygems'
 require 'mixlib/cli'
 require 'mixlib/shellout'
 require 'json'
-require 'artifactory'
 
 class GenerateConfig
   include Mixlib::CLI
