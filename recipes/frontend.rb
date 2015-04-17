@@ -19,14 +19,9 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::_default'
+include_recipe 'qa-chef-server-cluster::node-setup'
 
-omnibus_artifact 'chef-server' do
-  integration_builds node['qa-chef-server-cluster']['chef-server']['install']['integration_builds']
-  version node['qa-chef-server-cluster']['chef-server']['install']['version']
-end
-
-node.default['chef-server-cluster']['role'] = 'frontend'
+install_chef_server_core_package
 
 # TODO: (jtimberman) Replace this with partial search.
 chef_servers = search('node', 'chef-server-cluster_role:backend').map do |server| #~FC003
@@ -45,29 +40,34 @@ chef_servers << {
                :role => 'frontend'
               }
 
-node.default['chef-server-cluster'].merge!(node['qa-chef-server-cluster']['chef-server-config'])
+node.default['chef-server-cluster'].merge!(node['qa-chef-server-cluster']['chef-server'])
 
 template '/etc/opscode/chef-server.rb' do
   source 'chef-server.rb.erb'
-  variables :chef_server_config => node['chef-server-cluster'], :chef_servers => chef_servers
-  notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
+  variables :chef_server_config => node['chef-server-cluster'],
+            :topology => node['qa-chef-server-cluster']['topology'],
+            :chef_servers => chef_servers,
+            :ha_config => node['ha-config']
   notifies :run, 'execute[add hosts entry]'
+  sensitive true
 end
 
-unless node['qa-chef-server-cluster']['manage']['install']['version'].empty?
-  omnibus_artifact 'opscode-manage' do
-    integration_builds node['qa-chef-server-cluster']['manage']['install']['integration_builds']
-    version node['qa-chef-server-cluster']['manage']['install']['version']
-  end
-
-  chef_server_ingredient 'opscode-manage' do
-   action :reconfigure
-   notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
-  end
+chef_server_ingredient 'chef-server-core' do
+  action :reconfigure
 end
+
+install_opscode_manage_package if should_install_opscode_manage?
 
 # TODO (pwright) Run again for all I care!!!  Not really.  Temp hack for lack of dns
 execute 'add hosts entry' do
-  command "echo '#{node['ipaddress']} #{node['qa-chef-server-cluster']['chef-server-config']['api_fqdn']}' >> /etc/hosts"
+  command "echo '#{node['ipaddress']} #{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}' >> /etc/hosts"
   action :nothing
 end
+
+# TODO check this out from chef-server cookbook
+# ruby_block 'ensure node can resolve API FQDN' do
+#   extend ChefServerCoobook::Helpers
+#   block { repair_api_fqdn }
+#   only_if { api_fqdn_node_attr }
+#   not_if { api_fqdn_resolves }
+# end

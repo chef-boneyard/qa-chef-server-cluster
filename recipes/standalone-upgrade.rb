@@ -1,9 +1,9 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: standalone-end-to-end
+# Recipes:: _standalone-upgrade
 #
 # Author: Patrick Wright <patrick@chef.io>
-# Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
+# Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,15 +18,8 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::standalone-server'
-include_recipe 'qa-chef-server-cluster::standalone-server-upgrade' if node['qa-chef-server-cluster']['enable-upgrade']
+include_recipe 'qa-chef-server-cluster::node-setup'
 
-#TODO (pwright)
-ruby_block "race condition - boo" do
-  block do
-    sleep 60
-  end
-end
+run_chef_server_upgrade_procedure
 
-include_recipe 'qa-chef-server-cluster::standalone-server-test'
-include_recipe 'qa-chef-server-cluster::standalone-server-destroy' if node['qa-chef-server-cluster']['auto-destroy']
+upgrade_opscode_manage_package if should_upgrade_opscode_manage?

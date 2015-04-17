@@ -2,8 +2,8 @@
 This document defines sets of common configuration that will executed for testing.
 
 ### Install using latest stable packages
-NOTHING!  That's right. Just run the `end-to-end` recipe without a config or 
-just run the `cluster` recipe to only install a cluster.
+NOTHING!  That's right. Just run the `::default` recipe without a config or
+just run the `::<tier|ha>-cluster or ::standalone-server` recipe to only install a cluster.
 
 ### Install latest stable server then upgrade to latest integration
 ```

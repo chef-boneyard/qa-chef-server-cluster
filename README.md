@@ -2,14 +2,17 @@
 [![Stories in Ready](https://badge.waffle.io/chef/qa-chef-server-cluster.svg?label=in%20progress&title=In%20Progress)](http://waffle.io/chef/qa-chef-server-cluster)
 Quality Advocacy Chef Server Cluster
 ========
-Recipes for installing, upgrading and testing Chef Server 12 topologies.
+Recipes for installing, upgrading and testing Chef Server 12 topologies.  This cookbook is not designed as an idempotent
+tool for managing chef servers. It is designed to accept package versions and run the install instructions
+as documented for each configuration scenario from [Install Chef Server 12](https://docs.chef.io/install_server.html) and
+[Upgrade Chef Server 12](https://docs.chef.io/upgrade_server.html).
 
 # Requirements
 * aws config
 
 # Usage
 1. Run `rake` to install dependencies
-1. Run `chef-client -z -o qa-chef-server-cluster::standalone-server-end-to-end` for out of the box functionality
+1. Run `chef-client -z -o qa-chef-server-cluster` for out of the box functionality
 1. Review [User Guide](docs/user-guide.md)
  * [JSON Attributes](docs/user-guide.md#setting-json-attributes-via-chef-client)
  * [JSON Generator](docs/user-guide.md#generate-json-attributes)

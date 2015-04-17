@@ -1,7 +1,8 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: standalone-destroy
+# Recipes:: _frontend_upgrade
 #
+# Author: Joshua Timberman <joshua@getchef.com>
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
 #
@@ -18,8 +19,8 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::provisioner-setup'
+include_recipe 'qa-chef-server-cluster::node-setup'
 
-machine 'standalone' do
-  action :destroy
-end
+run_chef_server_upgrade_procedure
+
+upgrade_opscode_manage_package if should_upgrade_opscode_manage?

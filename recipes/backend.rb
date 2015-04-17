@@ -19,15 +19,9 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::_default'
+include_recipe 'qa-chef-server-cluster::node-setup'
 
-omnibus_artifact 'chef-server' do
-  integration_builds node['qa-chef-server-cluster']['chef-server']['install']['integration_builds']
-  version node['qa-chef-server-cluster']['chef-server']['install']['version']
-end
-
-node.default['chef-server-cluster']['role'] = 'backend'
-node.default['chef-server-cluster']['bootstrap']['enable'] = true
+install_chef_server_core_package
 
 # TODO: (jtimberman) Replace this with partial_search.
 chef_servers = search('node', 'chef-server-cluster_role:backend').map do |server| #~FC003
@@ -52,12 +46,19 @@ if chef_servers.empty?
                  ]
 end
 
-node.default['chef-server-cluster'].merge!(node['qa-chef-server-cluster']['chef-server-config'])
+node.default['chef-server-cluster'].merge!(node['qa-chef-server-cluster']['chef-server'])
 
 template '/etc/opscode/chef-server.rb' do
   source 'chef-server.rb.erb'
-  variables :chef_server_config => node['chef-server-cluster'], :chef_servers => chef_servers
-  notifies :reconfigure, 'chef_server_ingredient[chef-server-core]'
+  variables :chef_server_config => node['chef-server-cluster'],
+            :topology => node['qa-chef-server-cluster']['topology'],
+            :chef_servers => chef_servers,
+            :ha_config => node['ha-config']
+  sensitive true
+end
+
+chef_server_ingredient 'chef-server-core' do
+  action :reconfigure
 end
 
 file '/etc/opscode/pivotal.pem' do
@@ -65,5 +66,12 @@ file '/etc/opscode/pivotal.pem' do
   # without this guard, we create an empty file, causing bootstrap to
   # not actually work, as it checks the presence of this file.
   only_if { ::File.exists?('/etc/opscode/pivotal.pem') }
-  subscribes :create, 'chef_server_ingredient[chef-server-core]', :immediately
+  subscribes :create, 'chef_server_ingredient[chef-server-core]'
+end
+
+
+# TODO Report bug.  Initially reconfigure does not properly start keepalived on secondary backend
+execute 'start keepalived' do
+  command 'chef-server-ctl start keepalived'
+  only_if { node['qa-chef-server-cluster']['topology'] == 'ha' }
 end

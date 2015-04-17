@@ -1,8 +1,7 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: _bootstrap_upgrade
+# Recipes:: ha-cluster-destroy
 #
-# Author: Joshua Timberman <joshua@getchef.com>
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
 #
@@ -19,21 +18,19 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::_default'
+include_recipe 'qa-chef-server-cluster::provisioner-setup'
 
-execute 'stop services' do
-  command 'chef-server-ctl stop'
+aws_ebs_volume 'ha-ebs' do
+  action :destroy
 end
 
-omnibus_artifact 'chef-server' do
-  integration_builds node['qa-chef-server-cluster']['chef-server']['upgrade']['integration_builds']
-  version node['qa-chef-server-cluster']['chef-server']['upgrade']['version']
+# failsafe
+aws_network_interface 'ha-eni' do
+  action :destroy
 end
 
-execute 'upgrade server' do
-  command 'chef-server-ctl upgrade'
+machine_batch do
+  machines 'bootstrap-backend', 'secondary-backend', 'frontend'
+  action :destroy
 end
 
-execute 'start services' do
-  command 'chef-server-ctl start'
-end

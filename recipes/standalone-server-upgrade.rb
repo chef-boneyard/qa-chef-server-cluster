@@ -18,10 +18,9 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::_cluster-setup'
+include_recipe 'qa-chef-server-cluster::provisioner-setup'
 
 machine 'standalone' do
-  recipe 'qa-chef-server-cluster::_standalone-upgrade'
+  run_list ['qa-chef-server-cluster::standalone-upgrade']
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-  action :converge
 end

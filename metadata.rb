@@ -6,4 +6,7 @@ description      'Installs/Configures QA clusters'
 version          '0.1.0'
 
 depends 'chef-server-cluster'
-depends 'oc-artifactory'
+depends 'omnibus-artifactory-artifact'
+depends 'lvm'
+depends 'apt'
+depends 'build-essential'
