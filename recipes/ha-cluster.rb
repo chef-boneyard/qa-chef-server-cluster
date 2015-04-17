@@ -45,7 +45,7 @@ end
 
 # create and store aws ebs volume
 volume = aws_ebs_volume 'ha-ebs' do
-  availability_zone "#{node['qa-chef-server-cluster']['aws']['region']}#{node['qa-chef-server-cluster']['aws']['availability_zone']}"
+  availability_zone "#{node['qa-chef-server-cluster']['aws']['availability_zone']}"
   size 1
   # volume_type :io1
   # iops 300 # size * 30, 3000/4000? max default

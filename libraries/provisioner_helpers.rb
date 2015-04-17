@@ -1,3 +1,5 @@
+require 'chef/provisioning'
+
 def run_pedant(machine)
   machine_execute 'chef-server-ctl test' do
     machine machine
