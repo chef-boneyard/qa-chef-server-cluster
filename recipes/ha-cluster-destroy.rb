@@ -20,9 +20,6 @@
 
 include_recipe 'qa-chef-server-cluster::provisioner-setup'
 
-aws_ebs_volume 'ha-ebs' do
-  action :destroy
-end
 
 # failsafe
 aws_network_interface 'ha-eni' do
@@ -34,3 +31,6 @@ machine_batch do
   action :destroy
 end
 
+aws_ebs_volume 'ha-ebs' do
+  action :destroy
+end

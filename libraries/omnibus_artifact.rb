@@ -30,46 +30,16 @@ class Chef
 
   class Provider::OmnibusArtifact < Provider::LWRPBase
     action(:default) do
-      new_version = new_resource.version
-      new_version = :latest if new_resource.version == 'latest'
-
-      artifact = omnibus_artifactory_artifact path do
-        project new_resource.project
+      omnibus_artifactory_artifact new_resource.project do
         integration_builds new_resource.integration_builds
-        version new_version
-        platform value_for_platform_family(:debian => 'ubuntu', :rhel => 'el')
-        platform_version value_for_platform_family(:debian => node['platform_version'], :rhel => node['platform_version'][0])
+        version new_resource.version == 'latest' ? :latest : new_resource.version
       end
 
-      if new_resource.install
-        converge_by("Install #{path}") do
-          properties = artifact.properties
-
-          # rhel 5 does not support ssl protocol SNI
-          # for simplification, all rhel version import the key locally
-          gpg_key = ::File.join(Chef::Config[:file_cache_path], 'packages-chef-io-public.key')
-          remote_file gpg_key do
-            source "https://downloads.chef.io/packages-chef-io-public.key"
-            only_if { platform_family?('rhel') }
-          end
-
-          execute 'import keys for rhel' do
-            command "rpm --import #{gpg_key}"
-            only_if { platform_family?('rhel') }
-          end
-
-          package ::File.basename(path) do
-            source path
-            provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
-            version "#{properties['omnibus.version']}-#{properties['omnibus.iteration']}"
-          end
-        end
+      package new_resource.project do
+        source omnibus_artifactory_artifact_local_path(new_resource.project)
+        provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
+        only_if { new_resource.install }
       end
-    end
-
-    def path
-      @path ||= ::File.join(Chef::Config[:file_cache_path],
-        "#{new_resource.project}-#{new_resource.version}.#{value_for_platform_family(:debian => 'deb', :rhel => 'rpm')}")
     end
   end
 end

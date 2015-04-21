@@ -1,6 +1,5 @@
 include_recipe 'lvm'
 
-# TODO report issue.  chef/data needs to be transposed in the docs
 lvm_volume_group 'chef' do
   physical_volumes [ node['ha-config']['ebs_device'] ]
 

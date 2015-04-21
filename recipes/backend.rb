@@ -68,10 +68,3 @@ file '/etc/opscode/pivotal.pem' do
   only_if { ::File.exists?('/etc/opscode/pivotal.pem') }
   subscribes :create, 'chef_server_ingredient[chef-server-core]'
 end
-
-
-# TODO Report bug.  Initially reconfigure does not properly start keepalived on secondary backend
-execute 'start keepalived' do
-  command 'chef-server-ctl start keepalived'
-  only_if { node['qa-chef-server-cluster']['topology'] == 'ha' }
-end
