@@ -55,6 +55,7 @@ This cookbook wraps the `omnibus_artifactory_artifact` resource from the `omnibu
 Versions are mainly categorized by two parameters: which version and integration build support.  These params are derived based on the version input.
 
 Using the bin script options, the versions can be derived using the following options, and the attributes file will be generated with the correct paramters for the resource.
+
 |Description|Value|
 |-----------|-----|
 |dynamically resolve the latest stable release.|`latest-stable`|
