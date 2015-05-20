@@ -4,6 +4,7 @@ require 'rubygems'
 require 'mixlib/cli'
 require 'mixlib/shellout'
 require 'json'
+require 'uri'
 
 class GenerateConfig
   include Mixlib::CLI
@@ -15,12 +16,12 @@ class GenerateConfig
 
   option :server_install_version,
     :long => '--server-install-version SERVER INSTALL VERSION',
-    :description => 'latest-stable, latest-current, 12.0.1, 12.0.1+, 12.0.1+20150123091710.git.58.af97194',
+    :description => 'latest-stable, latest-current, 12.0.1, 12.0.1+, 12.0.1+20150123091710.git.58.af97194, or a URL',
     :default => 'latest-stable'
 
   option :server_upgrade_version,
     :long => '--server-upgrade-version SERVER UPGRADE VERSION',
-    :description => 'latest-stable, latest-current, 12.0.1, 12.0.1+, 12.0.1+20150123091710.git.58.af97194',
+    :description => 'latest-stable, latest-current, 12.0.1, 12.0.1+, 12.0.1+20150123091710.git.58.af97194, or a URL',
     :default => 'latest-current'
 
   option :manage_install_version,
@@ -131,16 +132,20 @@ end
 # 12.0.1+                                => 12.0.1, integration_builds => true
 # 12.0.1+20150123091710.git.58.af97194   => 12.0.1+20150123091710.git.58.af97194, integration_builds => true
 # 12.0.1                                 => 12.0.1, integration_builds => false
+# URL                                    => URL, integration_builds => true
 def version_for(version)
   hash = {
     'version' => '',
     'integration_builds' => ''
   }
-
-  if version.start_with?('latest')
+  case
+  when version.start_with?('latest')
     hash['version'] = 'latest'
     version.end_with?('stable') ? hash['integration_builds'] = false : hash['integration_builds'] = true
-  elsif version.include?('+')
+  when (version =~ /\A#{URI::regexp(['http', 'https'])}\z/) == 0
+    hash['version'] = version
+    hash['integration_builds'] = true
+  when version.include?('+') # TODO need to be careful here
     hash['integration_builds'] = true
     version.end_with?('+') ? hash['version'] = version.delete('+') : hash['version'] = version
   else

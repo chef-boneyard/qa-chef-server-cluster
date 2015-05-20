@@ -15,6 +15,8 @@
 # limitations under the License.
 #
 
+require 'uri'
+
 class Chef
   class Resource::OmnibusArtifact < Resource::LWRPBase
     self.resource_name = :omnibus_artifact
@@ -30,16 +32,34 @@ class Chef
 
   class Provider::OmnibusArtifact < Provider::LWRPBase
     action(:default) do
-      omnibus_artifactory_artifact new_resource.project do
-        integration_builds new_resource.integration_builds
-        version new_resource.version == 'latest' ? :latest : new_resource.version
-      end
+      if install_from_url
+        f = "#{::File.join(Chef::Config.file_cache_path, ::File.basename(new_resource.version))}"
+        remote_file f do
+          source new_resource.version
+        end
 
-      package new_resource.project do
-        source omnibus_artifactory_artifact_local_path(new_resource.project)
-        provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
-        only_if { new_resource.install }
+        package new_resource.project do
+          source f
+          provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
+          only_if { new_resource.install }
+        end
+      else
+        omnibus_artifactory_artifact new_resource.project do
+          integration_builds new_resource.integration_builds
+          version new_resource.version == 'latest' ? :latest : new_resource.version
+        end
+
+        package new_resource.project do
+          source omnibus_artifactory_artifact_local_path(new_resource.project)
+          provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
+          only_if { new_resource.install }
+        end
       end
     end
+
+    def install_from_url
+      (new_resource.version =~ /\A#{URI::regexp(['http', 'https'])}\z/) == 0 ? true : false
+    end
+
   end
 end

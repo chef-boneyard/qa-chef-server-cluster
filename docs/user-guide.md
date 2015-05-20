@@ -63,5 +63,6 @@ Using the bin script options, the versions can be derived using the following op
 |download the current build for a specfic version by appending `+` |`1.2.3+`|
 |download specfic stable release|`1.2.3`|
 |download specfic development build by setting full version |`1.2.3+20150120085009`|
+|download from any URL | any valid URL |
 
 Review some common [config patterns](config-patterns.md)
