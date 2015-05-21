@@ -1,9 +1,3 @@
-def run_pedant(machine)
-  machine_execute 'chef-server-ctl test' do
-    machine machine
-  end
-end
-
 def download_bootstrap_files(machine = 'bootstrap-backend')
   # download server files
   %w{ actions-source.json webui_priv.pem }.each do |analytics_file|
