@@ -36,7 +36,6 @@ end
 chef_servers << {
                :fqdn => node['fqdn'],
                :ipaddress => node['ipaddress'],
-               :bootstrap => false,
                :role => 'frontend'
               }
 

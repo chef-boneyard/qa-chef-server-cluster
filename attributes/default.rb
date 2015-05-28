@@ -3,6 +3,7 @@ node.default['qa-chef-server-cluster']['chef-provisioner-key-name'] = 'insecure-
 node.default['qa-chef-server-cluster']['aws']['region'] = 'us-west-2'
 node.default['qa-chef-server-cluster']['aws']['availability_zone'] = 'b'
 node.default['qa-chef-server-cluster']['aws']['machine_options'] = {
+                                                                     :aws_tags => { 'X-Project' => 'qa-chef-server-cluster' },
                                                                      :use_private_ip_for_ssh => true,
                                                                      :ssh_username => 'ubuntu',
                                                                      :bootstrap_options => {
