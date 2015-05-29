@@ -50,12 +50,14 @@ volume = aws_ebs_volume 'ha-ebs' do
   # volume_type :io1
   # iops 300 # size * 30, 3000/4000? max default
   device '/dev/xvdf'
+  aws_tags node['qa-chef-server-cluster']['aws']['machine_options']['aws_tags']
 end
 
 # create and store aws network interface, all we want is the generated IP
 eni = aws_network_interface 'ha-eni' do
   subnet node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['subnet_id']
   security_groups node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['security_group_ids']
+  aws_tags node['qa-chef-server-cluster']['aws']['machine_options']['aws_tags']
 end
 
 # collect all ha data for chef-server.rb
@@ -74,8 +76,13 @@ ruby_block 'fetch ebs volume and network interface info' do
 end
 
 # attach volume so the device mount is available to the machine for chef-ha
+# TODO https://github.com/chef/chef-provisioning-aws/issues/215
 aws_ebs_volume 'ha-ebs' do
   machine 'bootstrap-backend'
+  availability_zone "#{node['qa-chef-server-cluster']['aws']['availability_zone']}"
+  size 1
+  device '/dev/xvdf'
+  aws_tags node['qa-chef-server-cluster']['aws']['machine_options']['aws_tags']
 end
 
 # destroy network interface, its served its purpose
@@ -92,6 +99,8 @@ machine 'bootstrap-backend' do
   attribute 'ha-config', ha_config
 end
 
+download_logs 'bootstrap-backend'
+
 download_bootstrap_files
 
 # converge secondary server with all the bits!
@@ -104,6 +113,8 @@ machine 'secondary-backend' do
   files node['qa-chef-server-cluster']['chef-server']['files']
 end
 
+download_logs 'secondary-backend'
+
 # converge frontend server with all the bits!
 machine 'frontend' do
   run_list [ 'qa-chef-server-cluster::frontend' ]
@@ -111,6 +122,8 @@ machine 'frontend' do
   attribute 'ha-config', ha_config
   files node['qa-chef-server-cluster']['chef-server']['files']
 end
+
+download_logs 'frontend'
 
 machine_batch do
   machine 'bootstrap-backend' do

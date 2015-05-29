@@ -43,9 +43,13 @@ machine 'bootstrap-backend' do
   run_list [ 'qa-chef-server-cluster::backend' ]
 end
 
+download_logs 'bootstrap-backend'
+
 download_bootstrap_files
 
 machine 'frontend' do
   run_list [ 'qa-chef-server-cluster::frontend' ]
   files node['qa-chef-server-cluster']['chef-server']['files']
 end
+
+download_logs 'frontend'

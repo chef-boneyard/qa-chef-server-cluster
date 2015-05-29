@@ -22,4 +22,6 @@ include_recipe 'qa-chef-server-cluster::node-setup'
 
 run_chef_server_upgrade_procedure
 
+download_logs 'standalone'
+
 upgrade_opscode_manage_package if should_upgrade_opscode_manage?
