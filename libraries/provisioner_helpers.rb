@@ -44,9 +44,10 @@ def download_logs(machine_name)
     action :download
   end
 
-  # extract tarball for easy access
-  execute "tar -xzvf #{machine_name}-logs.tbz2" do
-    cwd machine_log_dir.name
-    only_if { ::File.exists?("#{machine_log_dir.name}/#{machine_name}-logs.tbz2") }
-  end
+  # # extract tarball for easy access
+  # TODO Make this work in Jenkins
+  # execute "`which tar` -xzvf #{machine_name}-logs.tbz2" do
+  #   cwd machine_log_dir.name
+  #   only_if { ::File.exists?("#{machine_log_dir.name}/#{machine_name}-logs.tbz2") }
+  # end
 end
