@@ -3,8 +3,12 @@ directory '/etc/opscode' do
   recursive true
 end
 
-include_recipe 'apt::default'
-include_recipe 'build-essential::default'
+include_recipe 'apt'
+
+# TODO add force-apt-update attr and cli option
+execute 'apt-get update' # c'mon apt cookbook, do your job!
+
+include_recipe 'build-essential'
 
 chef_server_ingredient 'chef-server-core' do
   action :nothing
@@ -30,4 +34,12 @@ end
 execute 'import keys for rhel' do
   command "rpm --import #{gpg_key}"
   only_if { platform_family?('rhel') }
+end
+
+packagecloud_repo 'chef/stable' do
+  type value_for_platform_family(debian: 'deb', rhel: 'rpm')
+end
+
+packagecloud_repo 'chef/current' do
+  type value_for_platform_family(debian: 'deb', rhel: 'rpm')
 end

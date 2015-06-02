@@ -24,3 +24,5 @@ machine 'standalone' do
   run_list ['qa-chef-server-cluster::standalone-upgrade']
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
 end
+
+download_logs 'standalone'

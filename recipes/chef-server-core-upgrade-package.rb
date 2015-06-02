@@ -1,1 +1,1 @@
-upgrade_chef_server_core_package
+upgrade_chef_server_core
