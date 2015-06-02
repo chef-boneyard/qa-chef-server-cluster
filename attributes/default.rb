@@ -25,8 +25,8 @@ node.default['qa-chef-server-cluster']['manage']['install']['integration_builds'
 node.default['qa-chef-server-cluster']['manage']['upgrade']['version'] = nil
 node.default['qa-chef-server-cluster']['manage']['upgrade']['integration_builds']
 
-node.default['qa-chef-server-cluster']['chef-ha']['install']['version'] = :latest
-node.default['qa-chef-server-cluster']['chef-ha']['install']['integration_builds'] = false
+node.default['qa-chef-server-cluster']['chef-ha']['install']['version'] = '1.0.0'
+node.default['qa-chef-server-cluster']['chef-ha']['install']['integration_builds'] = true
 node.default['qa-chef-server-cluster']['chef-ha']['upgrade']['version'] = nil
 node.default['qa-chef-server-cluster']['chef-ha']['upgrade']['integration_builds']
 

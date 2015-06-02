@@ -32,6 +32,12 @@ class GenerateConfig
     :long => '--manage-upgrade-version MANAGE UPGRADE VERSION',
     :description => 'latest-stable, latest-current, 12.0.1, 12.0.1+, 12.0.1+20150123091710.git.58.af97194'
 
+  option :chef_ha_install_version,
+    :long => '--chef-ha-install-version CHEF HA INSTALL VERSION'
+
+  option :chef_ha_upgrade_version,
+    :long => '--chef-ha-upgrade-version CHEF HA UPGRADE VERSION'
+
   option :enable_upgrade,
     :short => '-u',
     :long => '--enable-upgrade',
@@ -168,6 +174,7 @@ attrs = {
     },
 
     'manage' => {},
+    'chef-ha' => {},
 
     'aws' => {
       'machine_options' => {
@@ -186,6 +193,14 @@ end
 
 if cli.config[:manage_upgrade_version]
   attrs['qa-chef-server-cluster']['manage']['upgrade'] = version_for(cli.config[:manage_upgrade_version])
+end
+
+if cli.config[:chef_ha_install_version]
+  attrs['qa-chef-server-cluster']['chef-ha']['install'] = version_for(cli.config[:chef_ha_install_version])
+end
+
+if cli.config[:chef_ha_upgrade_version]
+  attrs['qa-chef-server-cluster']['chef-ha']['upgrade'] = version_for(cli.config[:chef_ha_upgrade_version])
 end
 
 if cli.config[:topology]
