@@ -32,7 +32,7 @@ The controllable recipes are enabled or disabled by setting the appropriate attr
 ### Setting JSON attributes via chef-client
 
 ```
-Note: All packages are downloaded from artifactory using the `omnibus_artifactory_artifact` resource.
+Note: All packages are downloaded from PackageCloud by default. Packages can also be download via URL and installed.
 ```
 ## Generate JSON Attributes
 `bin/generate-config --help`
@@ -51,18 +51,12 @@ and change the key name settings in .chef/knife.rb, chef-provisioner-key-name an
 configurable in a later version.
 
 ### Version Resolution
-This cookbook wraps the `omnibus_artifactory_artifact` resource from the `omnibus_artifactory_artifact` cookbook to resolve and download packages from Artifactory repos.
-Versions are mainly categorized by two parameters: which version and integration build support.  These params are derived based on the version input.
-
-Using the bin script options, the versions can be derived using the following options, and the attributes file will be generated with the correct paramters for the resource.
+This cookbook wraps the `chef_server_ingredient` resource from the same named cookbook.  See the table below for details on how to choose the version for your needs.
 
 |Description|Value|
 |-----------|-----|
-|dynamically resolve the latest stable release.|`latest-stable`|
-|dynamically resolve the latest current build (or development version). |`latest-current`|
-|download the current build for a specfic version by appending `+` |`1.2.3+`|
-|download specfic stable release|`1.2.3`|
-|download specfic development build by setting full version |`1.2.3+20150120085009`|
-|download from any URL | any valid URL |
+|dynamically resolve the latest chef/current package|`nil`|
+|download specfic packages|`1.2.3` or `1.2.3+20150120085009` (the exact version from the chef repos|
+|download from any URL bypassing PC resolution|any valid URL|
 
 Review some common [config patterns](config-patterns.md)

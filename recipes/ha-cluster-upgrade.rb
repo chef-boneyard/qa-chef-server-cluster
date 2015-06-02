@@ -33,13 +33,11 @@ end
 
 machine_batch do
   machine 'bootstrap-backend' do
-    # recipe 'qa-chef-server-cluster::chef-ha-upgrade-package'
-    run_list [ 'qa-chef-server-cluster::chef-server-core-upgrade-package' ]
+    run_list [ 'qa-chef-server-cluster::chef-ha-upgrade-package', 'qa-chef-server-cluster::chef-server-core-upgrade-package' ]
   end
 
   machine 'secondary-backend' do
-    # recipe 'qa-chef-server-cluster::chef-ha-upgrade-package'
-    run_list [ 'qa-chef-server-cluster::chef-server-core-upgrade-package' ]
+    run_list [ 'qa-chef-server-cluster::chef-ha-upgrade-package', 'qa-chef-server-cluster::chef-server-core-upgrade-package' ]
   end
 
   machine 'frontend' do
@@ -72,6 +70,8 @@ machine_execute 'chef-server-ctl upgrade' do
   machine 'secondary-backend'
 end
 
+download_logs 'secondary-backend'
+
 machine_execute 'chef-server-ctl upgrade' do
   machine 'frontend'
 end
@@ -80,9 +80,13 @@ machine_execute 'chef-server-ctl start' do
   machine 'frontend'
 end
 
+download_logs 'frontend'
+
 machine_execute 'chef-server-ctl start' do
   machine 'bootstrap-backend'
 end
+
+download_logs 'bootstrap-backend'
 
 machine_batch do
   machine 'bootstrap-backend' do

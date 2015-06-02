@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: _standalone
+# Recipes:: standalone
 #
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
@@ -20,10 +20,6 @@
 
 include_recipe 'qa-chef-server-cluster::node-setup'
 
-install_chef_server_core_package
+install_chef_server_core
 
-chef_server_ingredient 'chef-server-core' do
-  action :reconfigure
-end
-
-install_opscode_manage_package if should_install_opscode_manage?
+install_opscode_manage

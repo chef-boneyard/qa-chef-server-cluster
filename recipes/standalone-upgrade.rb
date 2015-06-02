@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: _standalone-upgrade
+# Recipes:: standalone-upgrade
 #
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
@@ -20,8 +20,18 @@
 
 include_recipe 'qa-chef-server-cluster::node-setup'
 
-run_chef_server_upgrade_procedure
+execute 'stop services' do
+  command 'chef-server-ctl stop'
+end
 
-download_logs 'standalone'
+upgrade_chef_server_core(reconfigure: false)
 
-upgrade_opscode_manage_package if should_upgrade_opscode_manage?
+execute 'upgrade server' do
+  command 'chef-server-ctl upgrade'
+end
+
+execute 'start services' do
+  command 'chef-server-ctl start'
+end
+
+upgrade_opscode_manage

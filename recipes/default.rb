@@ -8,14 +8,12 @@ case topology
     include_recipe 'qa-chef-server-cluster::standalone-server'
     include_recipe 'qa-chef-server-cluster::standalone-server-upgrade' if enable_upgrade
     include_recipe 'qa-chef-server-cluster::standalone-server-test' if run_pedant
-    include_recipe 'qa-chef-server-cluster::standalone-server-logs'
     include_recipe 'qa-chef-server-cluster::standalone-server-destroy' if auto_destroy
 
   when 'tier'
     include_recipe 'qa-chef-server-cluster::tier-cluster'
     include_recipe 'qa-chef-server-cluster::tier-cluster-upgrade' if enable_upgrade
     include_recipe 'qa-chef-server-cluster::tier-cluster-test' if run_pedant
-    include_recipe 'qa-chef-server-cluster::tier-cluster-logs'
     include_recipe 'qa-chef-server-cluster::tier-cluster-destroy' if auto_destroy
 
   when 'ha'
@@ -25,7 +23,6 @@ case topology
       include_recipe 'qa-chef-server-cluster::ha-cluster-test'
       include_recipe 'qa-chef-server-cluster::ha-failover'
     end
-    include_recipe 'qa-chef-server-cluster::ha-cluster-logs'
     include_recipe 'qa-chef-server-cluster::ha-cluster-destroy' if auto_destroy
 
   when nil

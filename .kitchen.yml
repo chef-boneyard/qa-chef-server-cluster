@@ -9,10 +9,14 @@ platforms:
   - name: ubuntu-14.04
 
 suites:
+  - name: ingredient
+    run_list:
+      - recipe[qa-chef-server-cluster::chef_server_ingredient]
   - name: standalone
     run_list:
-      - recipe[qa-chef-server-cluster::_standalone]
-      - recipe[qa-chef-server-cluster::_standalone-upgrade]
+      - recipe[qa-chef-server-cluster::standalone]
+      - recipe[qa-chef-server-cluster::standalone-upgrade]
+      - recipe[qa-chef-server-cluster::run-pedant]
     attributes:
   - name: bootstrap-backend
     run_list:

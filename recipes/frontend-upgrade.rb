@@ -21,6 +21,18 @@
 
 include_recipe 'qa-chef-server-cluster::node-setup'
 
-run_chef_server_upgrade_procedure
+execute 'stop services' do
+  command 'chef-server-ctl stop'
+end
 
-upgrade_opscode_manage_package if should_upgrade_opscode_manage?
+upgrade_chef_server_core(reconfigure: false)
+
+execute 'upgrade server' do
+  command 'chef-server-ctl upgrade'
+end
+
+execute 'start services' do
+  command 'chef-server-ctl start'
+end
+
+upgrade_opscode_manage

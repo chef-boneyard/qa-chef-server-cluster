@@ -85,11 +85,6 @@ aws_ebs_volume 'ha-ebs' do
   aws_tags node['qa-chef-server-cluster']['aws']['machine_options']['aws_tags']
 end
 
-# destroy network interface, its served its purpose
-aws_network_interface 'ha-eni' do
-  action :destroy
-end
-
 # converge bootstrap server with all the bits!
 machine 'bootstrap-backend' do
   run_list %w( qa-chef-server-cluster::chef-ha-install-package
@@ -97,6 +92,11 @@ machine 'bootstrap-backend' do
                qa-chef-server-cluster::backend )
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   attribute 'ha-config', ha_config
+end
+
+# destroy network interface, its served its purpose
+aws_network_interface 'ha-eni' do
+  action :destroy
 end
 
 download_logs 'bootstrap-backend'
