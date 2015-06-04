@@ -23,6 +23,8 @@ Note: the install and upgrade provision recipes download logs during execution. 
 
 `<topology>-end-to-end`: Helper recipe for running the main cluster recipes in sequence.
 
+`ha-cluster-trigger-failover`: Triggers an HA failover and verifies backend statuses. (Currently only fails over from initial bootstrap)
+
 #### Execution
 `chef-client -z -o qa-chef-server-cluster::<topology>-<recipe>`
 
