@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: standalone-upgrade
+# Recipes:: ha-trigger-failover
 #
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
@@ -18,8 +18,22 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::node-setup'
+include_recipe 'qa-chef-server-cluster::provisioner-setup'
 
-run_chef_server_upgrade_procedure
+# make sure the primary server is fully running before we stop keepalived
+machine 'bootstrap-backend' do
+  run_list [ 'qa-chef-server-cluster::chef-server-readiness' ]
+end
 
-upgrade_opscode_manage
+machine_execute 'chef-server-ctl stop keepalived' do
+  machine 'bootstrap-backend'
+end
+
+machine_batch do
+  machine 'bootstrap-backend' do
+    run_list [ 'qa-chef-server-cluster::ha-verify-backend-backup' ]
+  end
+  machine 'secondary-backend' do
+    run_list [ 'qa-chef-server-cluster::ha-verify-backend-master' ]
+  end
+end

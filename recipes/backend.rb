@@ -1,10 +1,10 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: _bootstrap
+# Recipes:: backend
 #
 # Author: Joshua Timberman <joshua@getchef.com>
 # Author: Patrick Wright <patrick@chef.io>
-# Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
+# Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 
 include_recipe 'qa-chef-server-cluster::node-setup'
 
-install_chef_server_core_package
+install_chef_server_core
 
 # TODO: (jtimberman) Replace this with partial_search.
 chef_servers = search('node', 'chef-server-cluster_role:backend').map do |server| #~FC003

@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: standalone-upgrade
+# Recipes:: ha-cluster-end-to-end
 #
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
@@ -18,8 +18,8 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::node-setup'
-
-run_chef_server_upgrade_procedure
-
-upgrade_opscode_manage
+include_recipe 'qa-chef-server-cluster::ha-cluster'
+include_recipe 'qa-chef-server-cluster::ha-cluster-upgrade' #if node['qa-chef-server-cluster']['enable-upgrade']
+include_recipe 'qa-chef-server-cluster::ha-cluster-test'    #if node['qa-chef-server-cluster']['run-pedant']
+include_recipe 'qa-chef-server-cluster::ha-cluster-trigger-failover'
+include_recipe 'qa-chef-server-cluster::ha-cluster-destroy' #if node['qa-chef-server-cluster']['auto-destroy']

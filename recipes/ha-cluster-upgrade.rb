@@ -3,7 +3,7 @@
 # Recipes:: ha-cluster-upgrade
 #
 # Author: Patrick Wright <patrick@chef.io>
-# Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
+# Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,13 +33,11 @@ end
 
 machine_batch do
   machine 'bootstrap-backend' do
-    # recipe 'qa-chef-server-cluster::chef-ha-upgrade-package'
-    run_list [ 'qa-chef-server-cluster::chef-server-core-upgrade-package' ]
+    run_list [ 'qa-chef-server-cluster::chef-server-core-upgrade-package', 'qa-chef-server-cluster::chef-ha-upgrade-package' ]
   end
 
   machine 'secondary-backend' do
-    # recipe 'qa-chef-server-cluster::chef-ha-upgrade-package'
-    run_list [ 'qa-chef-server-cluster::chef-server-core-upgrade-package' ]
+    run_list [ 'qa-chef-server-cluster::chef-server-core-upgrade-package', 'qa-chef-server-cluster::chef-ha-upgrade-package' ]
   end
 
   machine 'frontend' do
@@ -86,9 +84,9 @@ end
 
 machine_batch do
   machine 'bootstrap-backend' do
-    run_list [ 'qa-chef-server-cluster::verify-backend-master' ]
+    run_list [ 'qa-chef-server-cluster::ha-verify-backend-master' ]
   end
   machine 'secondary-backend' do
-    run_list [ 'qa-chef-server-cluster::verify-backend-backup' ]
+    run_list [ 'qa-chef-server-cluster::ha-verify-backend-backup' ]
   end
 end

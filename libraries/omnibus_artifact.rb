@@ -1,4 +1,7 @@
 #
+# Cookbook Name:: qa-chef-server-cluster
+# LWRPs:: omnibus_artifact
+#
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2015, Chef Software, Inc. <legal@chef.io>
 #
@@ -15,8 +18,6 @@
 # limitations under the License.
 #
 
-require 'uri'
-
 class Chef
   class Resource::OmnibusArtifact < Resource::LWRPBase
     self.resource_name = :omnibus_artifact
@@ -25,41 +26,31 @@ class Chef
     default_action :default
 
     attribute :project,             name_attribute: true
-    attribute :version,             kind_of: [String, Symbol]
-    attribute :integration_builds,  kind_of: [TrueClass, FalseClass]
-    attribute :install,             kind_of: [TrueClass, FalseClass], default: true
+    attribute :version
+    attribute :integration_builds
+    attribute :repo
   end
 
   class Provider::OmnibusArtifact < Provider::LWRPBase
     action(:default) do
-      if install_from_url
-        f = "#{::File.join(Chef::Config.file_cache_path, ::File.basename(new_resource.version))}"
-        remote_file f do
-          source new_resource.version
-        end
+      omnibus_artifactory_artifact new_resource.project do
+        version format_version(new_resource.version)
+        integration_builds new_resource.integration_builds
+        repo new_resource.repo
+      end
 
-        package new_resource.project do
-          source f
-          provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
-          only_if { new_resource.install }
-        end
-      else
-        omnibus_artifactory_artifact new_resource.project do
-          integration_builds new_resource.integration_builds
-          version new_resource.version == 'latest' ? :latest : new_resource.version
-        end
-
-        package new_resource.project do
-          source omnibus_artifactory_artifact_local_path(new_resource.project)
-          provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
-          only_if { new_resource.install }
-        end
+      package new_resource.project do
+        source omnibus_artifactory_artifact_local_path(new_resource.project)
+        provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
       end
     end
 
-    def install_from_url
-      (new_resource.version =~ /\A#{URI::regexp(['http', 'https'])}\z/) == 0 ? true : false
+    def format_version(version)
+      if version.start_with?('latest')
+        version.gsub!('-', '_')
+        return version.to_sym
+      end
+      version
     end
-
   end
 end

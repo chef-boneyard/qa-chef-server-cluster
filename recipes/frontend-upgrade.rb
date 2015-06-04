@@ -1,10 +1,9 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: _frontend_upgrade
+# Recipes:: frontend-upgrade
 #
-# Author: Joshua Timberman <joshua@getchef.com>
 # Author: Patrick Wright <patrick@chef.io>
-# Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
+# Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,4 +22,4 @@ include_recipe 'qa-chef-server-cluster::node-setup'
 
 run_chef_server_upgrade_procedure
 
-upgrade_opscode_manage_package if should_upgrade_opscode_manage?
+upgrade_opscode_manage

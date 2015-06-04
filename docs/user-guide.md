@@ -17,16 +17,14 @@ Current supported topologies are `standalone-server`, `tier-cluster` and `ha-clu
 
 `<topology>-destroy`: Destroys the cluster
 
+### Other Cluster Recipes
+`<topology>-logs`: Runs `chef-server-ctl gather-logs`, and downloads the archives and any error logs (chef-stacktrace.out)
+Note: the install and upgrade provision recipes download logs during execution.  This is intended to be used on-demand.
+
+`<topology>-end-to-end`: Helper recipe for running the main cluster recipes in sequence.
+
 #### Execution
 `chef-client -z -o qa-chef-server-cluster::<topology>-<recipe>`
-
-### Default Recipe
-The `default` recipe is used to provision any topology and run the end-to-end recipe sequence:
- * install
- * upgrade (when enabled)
- * test (when enabled)
- * destroy (when enabled)
-The controllable recipes are enabled or disabled by setting the appropriate attributes. See
 
 ## Configuration
 ### Setting JSON attributes via chef-client
@@ -56,13 +54,17 @@ Versions are mainly categorized by two parameters: which version and integration
 
 Using the bin script options, the versions can be derived using the following options, and the attributes file will be generated with the correct paramters for the resource.
 
+`bin/generate-config --help` to see updated descriptions.
+
 |Description|Value|
 |-----------|-----|
-|dynamically resolve the latest stable release.|`latest-stable`|
-|dynamically resolve the latest current build (or development version). |`latest-current`|
-|download the current build for a specfic version by appending `+` |`1.2.3+`|
-|download specfic stable release|`1.2.3`|
-|download specfic development build by setting full version |`1.2.3+20150120085009`|
+|install latest build from omnibus-stable-local|`latest-stable`|
+|install latest build from omnibus-current-local|`latest-current`|
+|install latest integration build for a specfic version by appending `+` (default: omnibus-current-local)|`1.2.3+`|
+|install specfic build (default: omnibus-stable-local)|`1.2.3`|
+|install specific build by setting full version (default: omnibus-current-local)|`1.2.3+20150120085009`|
 |download from any URL | any valid URL |
+
+Each default repo can be overridden by setting the `-repo` options for the related package.
 
 Review some common [config patterns](config-patterns.md)

@@ -10,8 +10,8 @@ DEPENDENCIES
   lvm
   omnibus-artifactory-artifact
     git: git@github.com:opscode-cookbooks/omnibus-artifactory-artifact.git
-    revision: a33c065495c3f18d93a2e1a4b9e0d993352c957a
-    branch: 0.2.2
+    revision: 43d42e1576fd4f5122cdb2f4168e76e975b3dad4
+    branch: 0.3.0
   qa-chef-server-cluster
     path: .
     metadata: true
@@ -26,7 +26,7 @@ GRAPH
     packagecloud (>= 0.0.0)
   chef-vault (1.3.0)
   lvm (1.3.6)
-  omnibus-artifactory-artifact (0.2.2)
+  omnibus-artifactory-artifact (0.3.0)
   packagecloud (0.0.18)
   qa-chef-server-cluster (0.1.0)
     apt (>= 0.0.0)

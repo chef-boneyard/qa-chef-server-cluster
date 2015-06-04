@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: standalone-upgrade
+# Recipes:: ha-lvm-volume-group
 #
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
@@ -18,8 +18,14 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::node-setup'
+include_recipe 'lvm'
 
-run_chef_server_upgrade_procedure
+lvm_volume_group 'chef' do
+  physical_volumes [ node['ha-config']['ebs_device'] ]
 
-upgrade_opscode_manage
+  logical_volume 'data' do
+    size '85%VG'
+    filesystem 'ext4'
+    mount_point '/var/opt/opscode/drbd/data'
+  end
+end

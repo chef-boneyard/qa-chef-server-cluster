@@ -11,7 +11,7 @@ as documented for each configuration scenario from [Install Chef Server 12](http
 * aws config
 
 # Usage
-1. Run `rake` to install dependencies
+1. Run `rake prep` to install dependencies
 1. Run `chef-client -z -o qa-chef-server-cluster` for out of the box functionality
 1. Review [User Guide](docs/user-guide.md)
  * [JSON Attributes](docs/user-guide.md#setting-json-attributes-via-chef-client)

@@ -3,7 +3,7 @@
 # Recipes:: ha-cluster
 #
 # Author: Patrick Wright <patrick@chef.io>
-# Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
+# Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -93,7 +93,7 @@ end
 # converge bootstrap server with all the bits!
 machine 'bootstrap-backend' do
   run_list %w( qa-chef-server-cluster::chef-ha-install-package
-               qa-chef-server-cluster::lvm_volume_group
+               qa-chef-server-cluster::ha-lvm-volume-group
                qa-chef-server-cluster::backend )
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   attribute 'ha-config', ha_config
@@ -127,9 +127,9 @@ download_logs 'frontend'
 
 machine_batch do
   machine 'bootstrap-backend' do
-    run_list [ 'qa-chef-server-cluster::verify-backend-master' ]
+    run_list [ 'qa-chef-server-cluster::ha-verify-backend-master' ]
   end
   machine 'secondary-backend' do
-    run_list [ 'qa-chef-server-cluster::verify-backend-backup' ]
+    run_list [ 'qa-chef-server-cluster::ha-verify-backend-backup' ]
   end
 end

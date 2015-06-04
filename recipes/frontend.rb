@@ -1,10 +1,9 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: _frontend
+# Recipes:: frontend
 #
-# Author: Joshua Timberman <joshua@getchef.com>
 # Author: Patrick Wright <patrick@chef.io>
-# Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
+# Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +20,7 @@
 
 include_recipe 'qa-chef-server-cluster::node-setup'
 
-install_chef_server_core_package
+install_chef_server_core
 
 # TODO: (jtimberman) Replace this with partial search.
 chef_servers = search('node', 'chef-server-cluster_role:backend').map do |server| #~FC003
@@ -55,7 +54,7 @@ chef_server_ingredient 'chef-server-core' do
   action :reconfigure
 end
 
-install_opscode_manage_package if should_install_opscode_manage?
+install_opscode_manage
 
 # TODO (pwright) Run again for all I care!!!  Not really.  Temp hack for lack of dns
 execute 'add hosts entry' do
