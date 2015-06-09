@@ -1,5 +1,22 @@
 #!/usr/bin/env ruby
 
+#
+# Author: Patrick Wright <patrick@chef.io>
+# Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 require 'rubygems'
 require 'mixlib/cli'
 require 'mixlib/shellout'
@@ -9,55 +26,94 @@ require 'uri'
 class GenerateConfig
   include Mixlib::CLI
 
-  banner "
-    If you are having to edit the json attributes file then I'm doing it wrong.
-    Please submit an issue: https://github.com/opscode/qa-chef-server-cluster/issues
-    "
+  banner """
+If you are having to edit the json attributes file then I'm doing it wrong.
+Please submit an issue: https://github.com/opscode/qa-chef-server-cluster/issues
 
-  option :server_install_version,
-    :long => '--server-install-version SERVER INSTALL VERSION',
-    :description => 'latest-stable, latest-current, 12.0.1, 12.0.1+, 12.0.1+20150123091710.git.58.af97194, or a URL',
-    :default => 'latest-stable'
+  ::Resolving artifacts from Artifactory::
 
-  option :server_upgrade_version,
-    :long => '--server-upgrade-version SERVER UPGRADE VERSION',
-    :description => 'latest-stable, latest-current, 12.0.1, 12.0.1+, 12.0.1+20150123091710.git.58.af97194, or a URL',
-    :default => 'latest-current'
+  :Version values:
+'latest-stable'
+  install lastest version from omnibus-stable-local
+'latest-current'
+  install lastest version from omnibus-current-local
+'12.0.1'
+  disable integration builds, and install version from omnibus-stable-local
+  To install a non-integration version from omnibus-current-local 
+  set `--chef-server-core-install-repo current`
+'12.0.1+'
+  append '+' to enable integration builds, and install lastest version from omnibus-current-local
+'12.0.1+20150123091710.git.58.af97194'
+  install specific version from omnibus-current-local
+'URL' 
+  http/https (jenkins download URLs work great!)
 
-  option :manage_install_version,
-    :long => '--manage-install-version MANAGE INSTALL VERSION',
-    :description => 'latest-stable, latest-current, 12.0.1, 12.0.1+, 12.0.1+20150123091710.git.58.af97194'
+  :Repo values:
+'current'
+  omnibus-current-local
+'stable'
+  omnibus-stable-local
 
-  option :manage_upgrade_version,
-    :long => '--manage-upgrade-version MANAGE UPGRADE VERSION',
-    :description => 'latest-stable, latest-current, 12.0.1, 12.0.1+, 12.0.1+20150123091710.git.58.af97194'
+Not setting these options will result in using the cookbook's defaults attribute values.
+"""
+
+  option :chef_server_core_install_version,
+    :long => '--chef-server-core-install-version CHEF SERVER CORE INSTALL VERSION'
+
+  option :chef_server_core_install_repo,
+    :long => '--chef-server-core-install-repo CHEF SERVER CORE INSTALL REPO'
+
+  option :chef_server_core_upgrade_version,
+    :long => '--chef-server-core-upgrade-version CHEF SERVER CORE UPGRADE VERSION'
+
+  option :chef_server_core_upgrade_repo,
+    :long => '--chef-server-core-upgrade-repo CHEF SERVER CORE UPGRADE REPO'
+
+  option :opscode_manage_install_version,
+    :long => '--opscode-manage-install-version OPSCODE MANAGE INSTALL VERSION'
+
+  option :opscode_manage_install_repo,
+    :long => '--opscode-manage-install-repo OPSCODE MANAGE INSTALL REPO'
+
+  option :opscode_manage_upgrade_version,
+    :long => '--opscode-manage-upgrade-version OPSCODE MANAGE INSTALL VERSION'
+
+  option :opscode_manage_upgrade_repo,
+    :long => '--opscode-manage-upgrade-repo OPSCODE MANAGE INSTALL REPO'
 
   option :chef_ha_install_version,
     :long => '--chef-ha-install-version CHEF HA INSTALL VERSION'
 
+  option :chef_ha_install_repo,
+    :long => '--chef-ha-install-repo CHEF HA INSTALL REPO'
+
   option :chef_ha_upgrade_version,
     :long => '--chef-ha-upgrade-version CHEF HA UPGRADE VERSION'
 
-  option :enable_upgrade,
-    :short => '-u',
-    :long => '--enable-upgrade',
-    :description => 'enables the upgrade process',
-    :boolean => true
+  option :chef_ha_upgrade_repo,
+    :long => '--chef-ha-upgrade-repo CHEF HA UPGRADE REPO'
 
-  option :disable_auto_destroy,
-    :long => '--disable-auto-destroy',
-    :description => 'disables auto destroy of clusters after tests',
-    :boolean => true
+  # TODO what do I really want to do with these end-to-end settings?
+  # option :enable_upgrade,
+  #   :short => '-u',
+  #   :long => '--enable-upgrade',
+  #   :description => 'enables the upgrade process',
+  #   :boolean => true
 
-  option :skip_pedant,
-    :long => '--skip-pedant',
-    :description => "skip 'chef-server-ctl test' execution",
-    :boolean => true
+  # option :disable_auto_destroy,
+  #   :long => '--disable-auto-destroy',
+  #   :description => 'disables auto destroy of clusters after tests',
+  #   :boolean => true
 
-  option :topology,
-    :short => '-t',
-    :long => '--topology TOPOLOGY',
-    :description => 'chef server topology'
+  # option :skip_pedant,
+  #   :long => '--skip-pedant',
+  #   :description => "skip 'chef-server-ctl test' execution",
+  #   :boolean => true
+
+  # option :topology,
+  #   :short => '-t',
+  #   :long => '--topology TOPOLOGY',
+  #   :description => 'chef server topology'
 
   option :attributes_file,
     :short => '-j',
@@ -75,11 +131,6 @@ class GenerateConfig
     :long => '--run-recipe RUN RECIPE',
     :description => 'run chef-client with run recipe'
 
-  # Placeholder
-  # option :chef_repo_path,
-  #   :long => '--chef-repo-path',
-  #   :description => "set the chef_repo_path. create path if it doesn't exist."
-
   option :platform,
     :short => '-p',
     :long => '--platform PLATFORM-VERSION',
@@ -95,10 +146,16 @@ class GenerateConfig
     :show_options => true,
     :exit => 0
 
-    # TODO add node.default['qa-chef-server-cluster']['chef-provisioner-key-name'] override
-    # or perhaps a default insecure key
+  # Placeholder
+  # TODO This will likely be removed once I split the repo and cookbook projects
+  # option :chef_repo_path,
+  #   :long => '--chef-repo-path',
+  #   :description => "set the chef_repo_path. create path if it doesn't exist."
 
-    # TODO :bootstrap_options => { :key_name override
+  # TODO add node.default['qa-chef-server-cluster']['chef-provisioner-key-name'] override
+  # or perhaps a default insecure key
+
+  # TODO :bootstrap_options => { :key_name override
 end
 
 
@@ -132,48 +189,67 @@ def ssh_user_for(image)
   end
 end
 
-# MAPPINGS
-# latest-stable version                  => latest, integration_builds => false
-# latest-current                         => latest, integration_builds => true
-# 12.0.1+                                => 12.0.1, integration_builds => true
-# 12.0.1+20150123091710.git.58.af97194   => 12.0.1+20150123091710.git.58.af97194, integration_builds => true
-# 12.0.1                                 => 12.0.1, integration_builds => false
-# URL                                    => URL, integration_builds => true
-def version_for(version)
-  hash = {
-    'version' => '',
-    'integration_builds' => ''
-  }
-  case
-  when version.start_with?('latest')
-    hash['version'] = 'latest'
-    version.end_with?('stable') ? hash['integration_builds'] = false : hash['integration_builds'] = true
-  when (version =~ /\A#{URI::regexp(['http', 'https'])}\z/) == 0
-    hash['version'] = version
-    hash['integration_builds'] = true
-  when version.include?('+') # TODO need to be careful here
-    hash['integration_builds'] = true
-    version.end_with?('+') ? hash['version'] = version.delete('+') : hash['version'] = version
+#
+# simplify setting repos via the cli
+#
+def repo_name(repo)
+  name = nil
+  case repo
+  when 'stable'
+    name = 'omnibus-stable-local'
+  when 'current'
+    name = 'omnibus-current-local'
+  when nil # pass through
   else
-    hash['version'] = version
-    hash['integration_builds'] = false
+    raise "#{repo} not supported. must be current or stable"
   end
+  name
+end
 
-  hash
+#
+# Create the appropriate config options that will be 
+#   passed to omnibus_artifactory_artifact to download
+#   the expected packages.
+#
+def version_for(version, repo)
+  config = {}
+  case
+  when version == 'latest-stable'
+    config[:version] = :latest_stable
+  when version == 'latest-current'
+    config[:version] = :latest_current
+  when is_url?(version)
+    config[:version] = version
+  else
+    # '+' means that we want to search for integration builds, 
+    #   which is the default behavior. Still need to strip the '+'
+    if version.include?('+')
+      version.delete('+') if version.end_with?('+')
+    # otherwise instruct omnibus_artifactory_artifact we don't
+    # want integration builds
+    else
+      config[:integration_builds] = false
+    end
+    config[:version] = version if version
+    config[:repo] = repo_name(repo) if repo
+  end
+  config
+end
+
+def is_url?(string)
+  (string =~ /\A#{URI::regexp(['http', 'https'])}\z/) == 0
 end
 
 attrs = {
+  '_comment' => "If you are having to edit the json attributes file then I'm doing it wrong. Please submit an issue: https://github.com/opscode/qa-chef-server-cluster/issues",
   'qa-chef-server-cluster' => {
-    'enable-upgrade' => cli.config[:enable_upgrade] ? true : false,
-    'auto-destroy' => cli.config[:disable_auto_destroy] ? false : true,
-    'run-pedant' => cli.config[:skip_pedant] ? false : true,
+    # TODO what do I really want to do with these end-to-end settings?
+    # 'enable-upgrade' => cli.config[:enable_upgrade] ? true : false
+    # 'auto-destroy' => cli.config[:disable_auto_destroy] ? false : true,
+    # 'run-pedant' => cli.config[:skip_pedant] ? false : true,
 
-    'chef-server' => {
-      'install' => version_for(cli.config[:server_install_version]),
-      'upgrade' => version_for(cli.config[:server_upgrade_version])
-    },
-
-    'manage' => {},
+    'chef-server-core' => {},
+    'opscode-manage' => {},
     'chef-ha' => {},
 
     'aws' => {
@@ -187,25 +263,40 @@ attrs = {
   }
 }
 
-if cli.config[:manage_install_version]
-  attrs['qa-chef-server-cluster']['manage']['install'] = version_for(cli.config[:manage_install_version])
+if cli.config[:chef_server_core_install_version]
+  attrs['qa-chef-server-cluster']['chef-server-core']['install'] = version_for(cli.config[:chef_server_core_install_version], 
+    cli.config[:chef_server_core_install_repo])
 end
 
-if cli.config[:manage_upgrade_version]
-  attrs['qa-chef-server-cluster']['manage']['upgrade'] = version_for(cli.config[:manage_upgrade_version])
+if cli.config[:chef_server_core_upgrade_version]
+  attrs['qa-chef-server-cluster']['chef-server-core']['upgrade'] = version_for(cli.config[:chef_server_core_upgrade_version], 
+    cli.config[:chef_server_core_upgrade_repo])
+end
+
+if cli.config[:opscode_manage_install_version]
+  attrs['qa-chef-server-cluster']['opscode-manage']['install'] = version_for(cli.config[:opscode_manage_install_version], 
+    cli.config[:opscode_manage_install_repo])
+end
+
+if cli.config[:opscode_manage_upgrade_version]
+  attrs['qa-chef-server-cluster']['opscode-manage']['upgrade'] = version_for(cli.config[:opscode_manage_upgrade_version],
+    cli.config[:opscode_manage_upgrade_repo])
 end
 
 if cli.config[:chef_ha_install_version]
-  attrs['qa-chef-server-cluster']['chef-ha']['install'] = version_for(cli.config[:chef_ha_install_version])
+  attrs['qa-chef-server-cluster']['chef-ha']['install'] = version_for(cli.config[:chef_ha_install_version],
+    cli.config[:chef_ha_install_repo])
 end
 
 if cli.config[:chef_ha_upgrade_version]
-  attrs['qa-chef-server-cluster']['chef-ha']['upgrade'] = version_for(cli.config[:chef_ha_upgrade_version])
+  attrs['qa-chef-server-cluster']['chef-ha']['upgrade'] = version_for(cli.config[:chef_ha_upgrade_version],
+    repo_name(cli.config[:chef_ha_upgrade_repo]))
 end
 
-if cli.config[:topology]
-  attrs['qa-chef-server-cluster']['topology'] = cli.config[:topology]
-end
+# TODO what do I really want to do with these end-to-end settings?
+# if cli.config[:topology]
+#   attrs['qa-chef-server-cluster']['topology'] = cli.config[:topology]
+# end
 
 raise "#{cli.config[:attributes_file]} exists. Change file path or use -f option" if File.exist?(cli.config[:attributes_file]) and not cli.config[:overwrite_attributes_file]
 

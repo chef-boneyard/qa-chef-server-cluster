@@ -1,3 +1,23 @@
+#
+# Cookbook Name:: qa-chef-server-cluster
+# Libraries:: provisioner_helpers
+#
+# Author: Patrick Wright <patrick@chef.io>
+# Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 def download_bootstrap_files(machine_name = 'bootstrap-backend')
   # download server files
   %w{ actions-source.json webui_priv.pem }.each do |analytics_file|
@@ -44,10 +64,10 @@ def download_logs(machine_name)
     action :download
   end
 
-  # # extract tarball for easy access
-  # TODO Make this work in Jenkins
-  # execute "`which tar` -xzvf #{machine_name}-logs.tbz2" do
-  #   cwd machine_log_dir.name
-  #   only_if { ::File.exists?("#{machine_log_dir.name}/#{machine_name}-logs.tbz2") }
-  # end
+  # extract tarball for easy access
+  execute "`which tar` -xzvf #{machine_name}-logs.tbz2" do
+    cwd machine_log_dir.name
+    only_if { ::File.exists?("#{machine_log_dir.name}/#{machine_name}-logs.tbz2") }
+    ignore_failure true # whatev
+  end
 end

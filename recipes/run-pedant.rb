@@ -1,15 +1,23 @@
-ruby_block 'server ready?' do
-  block do
-    status_request = Chef::Resource::HttpRequest.new('server ready?', run_context)
-    status_request.message('')
-    status_request.url('https://localhost/_status')
-    begin
-      status_request.run_action(:get)
-    rescue Net::HTTPFatalError => error
-      Chef::Log.error "Chef server not started. Abort `chef-server-ctl test`:\n#{error.response.body}"
-      raise error
-    end
-  end
-end
+#
+# Cookbook Name:: qa-chef-server-cluster
+# Recipes:: run-pedant
+#
+# Author: Patrick Wright <patrick@chef.io>
+# Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+include_recipe 'qa-chef-server-cluster::chef-server-readiness'
 
 execute 'chef-server-ctl test'

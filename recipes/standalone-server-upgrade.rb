@@ -1,9 +1,9 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: standalone-cluster-upgrade
+# Recipes:: standalone-server-upgrade
 #
 # Author: Patrick Wright <patrick@chef.io>
-# Copyright (C) 2014, Chef Software, Inc. <legal@getchef.com>
+# Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,3 +24,5 @@ machine 'standalone' do
   run_list ['qa-chef-server-cluster::standalone-upgrade']
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
 end
+
+download_logs 'standalone'

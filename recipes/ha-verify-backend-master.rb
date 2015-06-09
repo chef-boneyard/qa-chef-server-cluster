@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: standalone-upgrade
+# Recipes:: ha-verify-backend-master
 #
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
@@ -18,8 +18,5 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::node-setup'
-
-run_chef_server_upgrade_procedure
-
-upgrade_opscode_manage
+# called during triggered ha failover
+check_backend_ha_status('master')
