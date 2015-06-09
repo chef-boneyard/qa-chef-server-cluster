@@ -18,9 +18,9 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::provisioner-setup'
+include_recipe 'qa-chef-server-cluster::tier-cluster-setup'
 
 machine_batch do
-  machines 'bootstrap-backend', 'frontend'
+  machines node['bootstrap-backend'], node['frontend']
   action :destroy
 end

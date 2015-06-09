@@ -18,48 +18,38 @@
 # limitations under the License.
 #
 
-def install_chef_server_core(package_version: node['qa-chef-server-cluster']['chef-server-core']['install']['version'],
-      integration_builds: node['qa-chef-server-cluster']['chef-server-core']['install']['integration_builds'],
-      repo: node['qa-chef-server-cluster']['chef-server-core']['install']['repo'])
-  install_package('chef-server', package_version, integration_builds, repo)
-end
-
-def upgrade_chef_server_core(package_version: node['qa-chef-server-cluster']['chef-server-core']['upgrade']['version'],
-      integration_builds: node['qa-chef-server-cluster']['chef-server-core']['upgrade']['integration_builds'],
-      repo: node['qa-chef-server-cluster']['chef-server-core']['upgrade']['repo'])
-  install_package('chef-server', package_version, integration_builds, repo)
-end
-
-def install_opscode_manage(package_version: node['qa-chef-server-cluster']['opscode-manage']['install']['version'],
-      integration_builds: node['qa-chef-server-cluster']['opscode-manage']['install']['integration_builds'],
-      repo: node['qa-chef-server-cluster']['opscode-manage']['install']['repo'])
-  install_package('opscode-manage', package_version, integration_builds, repo)
-
-  chef_server_ingredient 'opscode-manage' do
-    action :reconfigure
+def install_chef_server_core(package_version: node['qa-chef-server-cluster']['chef-server-core']['version'],
+      integration_builds: node['qa-chef-server-cluster']['chef-server-core']['integration_builds'],
+      repo: node['qa-chef-server-cluster']['chef-server-core']['repo'])
+  if should_install?('chef-server-core')
+    install_package('chef-server', package_version, integration_builds, repo)
+  else
+    Chef::Log.info('Skipping chef-server-core install')
   end
 end
 
-def upgrade_opscode_manage(package_version: node['qa-chef-server-cluster']['opscode-manage']['upgrade']['version'],
-      integration_builds: node['qa-chef-server-cluster']['opscode-manage']['upgrade']['integration_builds'],
-      repo: node['qa-chef-server-cluster']['opscode-manage']['upgrade']['repo'])
-  install_package('opscode-manage', package_version, integration_builds, repo)
+def install_opscode_manage(package_version: node['qa-chef-server-cluster']['opscode-manage']['version'],
+      integration_builds: node['qa-chef-server-cluster']['opscode-manage']['integration_builds'],
+      repo: node['qa-chef-server-cluster']['opscode-manage']['repo'])
+  if should_install?('opscode-manage')
+    install_package('opscode-manage', package_version, integration_builds, repo)
 
-  chef_server_ingredient 'opscode-manage' do
-    action :reconfigure
+    chef_server_ingredient 'opscode-manage' do
+      action :reconfigure
+    end
+  else
+    Chef::Log.info('Skipping opscode-manage install')
   end
 end
 
-def install_chef_ha(package_version: node['qa-chef-server-cluster']['chef-ha']['install']['version'],
-      integration_builds: node['qa-chef-server-cluster']['chef-ha']['install']['integration_builds'],
-      repo: node['qa-chef-server-cluster']['chef-ha']['install']['repo'])
-  install_package('chef-ha', package_version, integration_builds, repo)
-end
-
-def upgrade_chef_ha(package_version: node['qa-chef-server-cluster']['chef-ha']['upgrade']['version'],
-      integration_builds: node['qa-chef-server-cluster']['chef-ha']['upgrade']['integration_builds'],
-      repo: node['qa-chef-server-cluster']['chef-ha']['upgrade']['repo'])
-  install_package('chef-ha', package_version, integration_builds, repo)
+def install_chef_ha(package_version: node['qa-chef-server-cluster']['chef-ha']['version'],
+      integration_builds: node['qa-chef-server-cluster']['chef-ha']['integration_builds'],
+      repo: node['qa-chef-server-cluster']['chef-ha']['repo'])
+  if should_install?('chef-ha')
+    install_package('chef-ha', package_version, integration_builds, repo)
+  else
+    Chef::Log.info('Skipping chef-ha install')
+  end
 end
 
 def install_package(package_name, package_version, integration_builds = nil, repo = nil)
@@ -87,18 +77,22 @@ def install_from_source?(version)
 end
 
 def run_chef_server_upgrade_procedure
-  execute 'stop services' do
-    command 'chef-server-ctl stop'
-  end
+  if should_install?('chef-server-core')
+    execute 'stop services' do
+      command 'chef-server-ctl stop'
+    end
 
-  upgrade_chef_server_core
+    install_chef_server_core
 
-  execute 'upgrade server' do
-    command 'chef-server-ctl upgrade'
-  end
+    execute 'upgrade server' do
+      command 'chef-server-ctl upgrade'
+    end
 
-  execute 'start services' do
-    command 'chef-server-ctl start'
+    execute 'start services' do
+      command 'chef-server-ctl start'
+    end
+  else
+    Chef::Log.info('Skipping chef-server-core upgrade')
   end
 end
 
@@ -118,4 +112,8 @@ def check_backend_ha_status(expected_status)
     retries 4 * 10
     retry_delay 15
   end
+end
+
+def should_install?(package)
+  node['qa-chef-server-cluster'][package]['skip'] == false ? true : false
 end

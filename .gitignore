@@ -1,13 +1,2 @@
-/data_bags/secrets/
-/berks-cookbooks/
-/cookbooks
-/vendor/cookbooks
-/nodes/
-/clients/
-/.chef/
-/vendor
-/.bundle
-
 .kitchen/
 .kitchen.local.yml
-.idea/

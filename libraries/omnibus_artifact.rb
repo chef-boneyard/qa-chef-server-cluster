@@ -46,10 +46,8 @@ class Chef
     end
 
     def format_version(version)
-      if version.start_with?('latest')
-        version.gsub!('-', '_')
-        return version.to_sym
-      end
+      return version if version.is_a?(Symbol)
+      return version.gsub('-', '_').to_sym if version.is_a?(String) && version.start_with?('latest')
       version
     end
   end

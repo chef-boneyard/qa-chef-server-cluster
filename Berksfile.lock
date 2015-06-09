@@ -15,6 +15,8 @@ DEPENDENCIES
   qa-chef-server-cluster
     path: .
     metadata: true
+  standalone_server
+    path: test/fixtures/cookbooks/standalone_server
 
 GRAPH
   apt (2.7.0)
@@ -34,3 +36,5 @@ GRAPH
     chef-server-cluster (>= 0.0.0)
     lvm (>= 0.0.0)
     omnibus-artifactory-artifact (>= 0.0.0)
+  standalone_server (0.0.0)
+    qa-chef-server-cluster (>= 0.0.0)

@@ -18,6 +18,6 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::provisioner-setup'
+include_recipe 'qa-chef-server-cluster::standalone-server-setup'
 
-download_logs 'standalone'
+download_logs node['standalone']

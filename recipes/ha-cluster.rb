@@ -18,33 +18,30 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::provisioner-setup'
-
-# set topology if called directly
-node.default['qa-chef-server-cluster']['topology'] = 'ha'
+include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 
 # create machines and set attributes
 machine_batch do
-  machine 'bootstrap-backend' do
+  machine node['bootstrap-backend'] do
     action :ready
     attribute %w[ chef-server-cluster bootstrap enable ], true
     attribute %w[ chef-server-cluster role ], 'backend'
   end
 
-  machine 'secondary-backend' do
+  machine node['secondary-backend'] do
     action :ready
     attribute %w[ chef-server-cluster bootstrap enable ], false
     attribute %w[ chef-server-cluster role ], 'backend'
   end
 
-  machine 'frontend' do
+  machine node['frontend'] do
     action :ready
     attribute %w[ chef-server-cluster role ], 'frontend'
   end
 end
 
 # create and store aws ebs volume
-volume = aws_ebs_volume 'ha-ebs' do
+volume = aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
   availability_zone "#{node['qa-chef-server-cluster']['aws']['availability_zone']}"
   size 1
   # volume_type :io1
@@ -54,7 +51,7 @@ volume = aws_ebs_volume 'ha-ebs' do
 end
 
 # create and store aws network interface, all we want is the generated IP
-eni = aws_network_interface 'ha-eni' do
+eni = aws_network_interface "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
   subnet node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['subnet_id']
   security_groups node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['security_group_ids']
   aws_tags node['qa-chef-server-cluster']['aws']['machine_options']['aws_tags']
@@ -77,8 +74,8 @@ end
 
 # attach volume so the device mount is available to the machine for chef-ha
 # TODO https://github.com/chef/chef-provisioning-aws/issues/215
-aws_ebs_volume 'ha-ebs' do
-  machine 'bootstrap-backend'
+aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
+  machine node['bootstrap-backend']
   availability_zone "#{node['qa-chef-server-cluster']['aws']['availability_zone']}"
   size 1
   device '/dev/xvdf'
@@ -86,26 +83,26 @@ aws_ebs_volume 'ha-ebs' do
 end
 
 # destroy network interface, its served its purpose
-aws_network_interface 'ha-eni' do
+aws_network_interface "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
   action :destroy
 end
 
 # converge bootstrap server with all the bits!
-machine 'bootstrap-backend' do
-  run_list %w( qa-chef-server-cluster::chef-ha-install-package
+machine node['bootstrap-backend'] do
+  run_list %w( qa-chef-server-cluster::ha-install-chef-ha-package
                qa-chef-server-cluster::ha-lvm-volume-group
                qa-chef-server-cluster::backend )
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   attribute 'ha-config', ha_config
 end
 
-download_logs 'bootstrap-backend'
+download_logs node['bootstrap-backend']
 
 download_bootstrap_files
 
 # converge secondary server with all the bits!
-machine 'secondary-backend' do
-  run_list %w(qa-chef-server-cluster::chef-ha-install-package
+machine node['secondary-backend'] do
+  run_list %w(qa-chef-server-cluster::ha-install-chef-ha-package
               lvm
               qa-chef-server-cluster::backend)
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
@@ -113,23 +110,23 @@ machine 'secondary-backend' do
   files node['qa-chef-server-cluster']['chef-server']['files']
 end
 
-download_logs 'secondary-backend'
+download_logs node['secondary-backend']
 
 # converge frontend server with all the bits!
-machine 'frontend' do
+machine node['frontend'] do
   run_list [ 'qa-chef-server-cluster::frontend' ]
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   attribute 'ha-config', ha_config
   files node['qa-chef-server-cluster']['chef-server']['files']
 end
 
-download_logs 'frontend'
+download_logs node['frontend']
 
 machine_batch do
-  machine 'bootstrap-backend' do
+  machine node['bootstrap-backend'] do
     run_list [ 'qa-chef-server-cluster::ha-verify-backend-master' ]
   end
-  machine 'secondary-backend' do
+  machine node['secondary-backend'] do
     run_list [ 'qa-chef-server-cluster::ha-verify-backend-backup' ]
   end
 end

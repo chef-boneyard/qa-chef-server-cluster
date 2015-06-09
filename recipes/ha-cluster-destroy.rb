@@ -18,17 +18,17 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::provisioner-setup'
+include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 
-aws_network_interface 'ha-eni' do
+aws_network_interface "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
   action :destroy
 end
 
 machine_batch do
-  machines 'bootstrap-backend', 'secondary-backend', 'frontend'
+  machines node['bootstrap-backend'], node['secondary-backend'], node['frontend']
   action :destroy
 end
 
-aws_ebs_volume 'ha-ebs' do
+aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
   action :destroy
 end

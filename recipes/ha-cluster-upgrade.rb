@@ -18,75 +18,79 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::provisioner-setup'
+include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 
-# set topology if called directly
-node.default['qa-chef-server-cluster']['topology'] = 'ha'
 
-machine_execute 'chef-server-ctl stop' do
-  machine 'frontend'
-end
+#TODO break all these machine_execute resources into recipes that get added to the run_list
+# the I can get rid of all these awful should_install?('chef-server-core') conditions
+if should_install?('chef-server-core')
+  machine_execute 'chef-server-ctl stop' do
+    machine node['frontend']
+  end
 
-machine_execute 'chef-server-ctl stop keepalived' do
-  machine 'secondary-backend'
+  machine_execute 'chef-server-ctl stop keepalived' do
+    machine node['secondary-backend']
+  end
 end
 
 machine_batch do
-  machine 'bootstrap-backend' do
-    run_list [ 'qa-chef-server-cluster::chef-server-core-upgrade-package', 'qa-chef-server-cluster::chef-ha-upgrade-package' ]
+  machine node['bootstrap-backend'] do
+    run_list [ 'qa-chef-server-cluster::ha-install-chef-server-core-package', 'qa-chef-server-cluster::ha-install-chef-ha-package' ]
   end
 
-  machine 'secondary-backend' do
-    run_list [ 'qa-chef-server-cluster::chef-server-core-upgrade-package', 'qa-chef-server-cluster::chef-ha-upgrade-package' ]
+  machine node['secondary-backend']  do
+    run_list [ 'qa-chef-server-cluster::ha-install-chef-server-core-package', 'qa-chef-server-cluster::ha-install-chef-ha-package' ]
   end
 
-  machine 'frontend' do
-    run_list [ 'qa-chef-server-cluster::chef-server-core-upgrade-package' ]
-  end
-end
-
-machine_execute 'chef-server-ctl stop' do
-  machine 'bootstrap-backend'
-  retries 1 # http://docs.chef.io/upgrade_server.html#high-availability #7
-end
-
-machine_execute 'chef-server-ctl upgrade' do
-  machine 'bootstrap-backend'
-end
-
-download_bootstrap_files
-
-machine_batch do
-  machine 'frontend' do
-    files node['qa-chef-server-cluster']['chef-server']['files']
-  end
-
-  machine 'secondary-backend' do
-    files node['qa-chef-server-cluster']['chef-server']['files']
+  machine node['frontend']  do
+    run_list [ 'qa-chef-server-cluster::ha-install-chef-server-core-package' ]
   end
 end
 
-machine_execute 'chef-server-ctl upgrade' do
-  machine 'secondary-backend'
-end
-
-machine_execute 'chef-server-ctl upgrade' do
-  machine 'frontend'
-end
-
-machine_execute 'chef-server-ctl start' do
-  machine 'frontend'
-end
-
-machine_execute 'chef-server-ctl start' do
-  machine 'bootstrap-backend'
-end
-
-machine_batch do
-  machine 'bootstrap-backend' do
-    run_list [ 'qa-chef-server-cluster::ha-verify-backend-master' ]
+if should_install?('chef-server-core')
+  machine_execute 'chef-server-ctl stop' do
+    machine node['bootstrap-backend']
+    retries 1 # http://docs.chef.io/upgrade_server.html#high-availability #7
   end
-  machine 'secondary-backend' do
-    run_list [ 'qa-chef-server-cluster::ha-verify-backend-backup' ]
+
+  machine_execute 'chef-server-ctl upgrade' do
+    machine node['bootstrap-backend']
+  end
+
+  download_bootstrap_files
+
+  machine_batch do
+    machine node['frontend'] do
+      files node['qa-chef-server-cluster']['chef-server']['files']
+    end
+
+    machine node['secondary-backend'] do
+      files node['qa-chef-server-cluster']['chef-server']['files']
+    end
+  end
+
+  machine_execute 'chef-server-ctl upgrade' do
+    machine node['secondary-backend']
+  end
+
+  machine_execute 'chef-server-ctl upgrade' do
+    machine node['frontend']
+  end
+
+  machine_execute 'chef-server-ctl start' do
+    machine node['frontend']
+  end
+
+  machine_execute 'chef-server-ctl start' do
+    machine node['bootstrap-backend']
+  end
+
+  machine_batch do
+    machine node['bootstrap-backend'] do
+      run_list [ 'qa-chef-server-cluster::ha-verify-backend-master' ]
+    end
+    machine node['secondary-backend'] do
+      run_list [ 'qa-chef-server-cluster::ha-verify-backend-backup' ]
+    end
   end
 end

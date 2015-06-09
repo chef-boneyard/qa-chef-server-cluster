@@ -18,8 +18,8 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::provisioner-setup'
+include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 
-machine 'frontend' do
+machine node['frontend'] do
   run_list ['qa-chef-server-cluster::run-pedant']
 end
