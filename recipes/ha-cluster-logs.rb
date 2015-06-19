@@ -18,8 +18,8 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::provisioner-setup'
+include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 
-download_logs 'bootstrap-backend'
-download_logs 'secondary-backend'
-download_logs 'frontend'
+download_logs node['bootstrap-backend']
+download_logs node['secondary-backend']
+download_logs node['frontend']

@@ -18,22 +18,22 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::provisioner-setup'
+include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 
 # make sure the primary server is fully running before we stop keepalived
-machine 'bootstrap-backend' do
+machine node['bootstrap-backend'] do
   run_list [ 'qa-chef-server-cluster::chef-server-readiness' ]
 end
 
 machine_execute 'chef-server-ctl stop keepalived' do
-  machine 'bootstrap-backend'
+  machine node['bootstrap-backend']
 end
 
 machine_batch do
-  machine 'bootstrap-backend' do
+  machine node['bootstrap-backend'] do
     run_list [ 'qa-chef-server-cluster::ha-verify-backend-backup' ]
   end
-  machine 'secondary-backend' do
+  machine node['secondary-backend'] do
     run_list [ 'qa-chef-server-cluster::ha-verify-backend-master' ]
   end
 end

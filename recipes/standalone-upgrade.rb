@@ -22,4 +22,4 @@ include_recipe 'qa-chef-server-cluster::node-setup'
 
 run_chef_server_upgrade_procedure
 
-upgrade_opscode_manage
+install_opscode_manage

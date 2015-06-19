@@ -20,4 +20,4 @@
 
 include_recipe 'qa-chef-server-cluster::chef-server-readiness'
 
-execute 'chef-server-ctl test'
+execute 'chef-server-ctl test ' + node['qa-chef-server-cluster']['chef-server-ctl-test-options']

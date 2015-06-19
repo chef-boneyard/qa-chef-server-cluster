@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: ha-cluster-end-to-end
+# Recipes:: ha-cluster-setup
 #
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
@@ -18,8 +18,10 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::ha-cluster'
-include_recipe 'qa-chef-server-cluster::ha-cluster-upgrade' #if node['qa-chef-server-cluster']['enable-upgrade']
-include_recipe 'qa-chef-server-cluster::ha-cluster-test'    #if node['qa-chef-server-cluster']['run-pedant']
-include_recipe 'qa-chef-server-cluster::ha-cluster-trigger-failover'
-include_recipe 'qa-chef-server-cluster::ha-cluster-destroy' #if node['qa-chef-server-cluster']['auto-destroy']
+include_recipe 'qa-chef-server-cluster::provisioner-setup'
+
+node.default['qa-chef-server-cluster']['topology'] = 'ha'
+
+node.default['bootstrap-backend'] = "#{node['qa-chef-server-cluster']['provisioning-id']}-ha-bootstrap-backend"
+node.default['secondary-backend'] = "#{node['qa-chef-server-cluster']['provisioning-id']}-ha-secondary-backend"
+node.default['frontend'] = "#{node['qa-chef-server-cluster']['provisioning-id']}-ha-frontend"

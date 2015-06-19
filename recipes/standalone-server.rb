@@ -18,11 +18,11 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::provisioner-setup'
+include_recipe 'qa-chef-server-cluster::standalone-server-setup'
 
-machine 'standalone' do
+machine node['standalone'] do
   run_list ['qa-chef-server-cluster::standalone']
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
 end
 
-download_logs 'standalone'
+download_logs node['standalone']

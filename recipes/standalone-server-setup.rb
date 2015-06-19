@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: tier-cluster-end-to-end
+# Recipes:: standalone-cluster-setup
 #
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
@@ -18,7 +18,8 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::tier-cluster'
-include_recipe 'qa-chef-server-cluster::tier-cluster-upgrade' #if node['qa-chef-server-cluster']['enable-upgrade']
-include_recipe 'qa-chef-server-cluster::tier-cluster-test'    #if node['qa-chef-server-cluster']['run-pedant']
-include_recipe 'qa-chef-server-cluster::tier-cluster-destroy' #if node['qa-chef-server-cluster']['auto-destroy']
+include_recipe 'qa-chef-server-cluster::provisioner-setup'
+
+node.default['qa-chef-server-cluster']['topology'] = 'standalone'
+
+node.default['standalone'] = node['qa-chef-server-cluster']['provisioning-id'] + '-standalone'

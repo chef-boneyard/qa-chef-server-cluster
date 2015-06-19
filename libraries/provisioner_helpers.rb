@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-def download_bootstrap_files(machine_name = 'bootstrap-backend')
+def download_bootstrap_files(machine_name = node['bootstrap-backend'])
   # download server files
   %w{ actions-source.json webui_priv.pem }.each do |analytics_file|
     machine_file "/etc/opscode-analytics/#{analytics_file}" do
@@ -40,7 +40,7 @@ end
 
 def download_logs(machine_name)
   # create dedicated machine log directory
-  machine_log_dir = directory ::File.join(Chef::Config[:chef_repo_path], '.chef', 'logs', machine_name) do
+  machine_log_dir = directory ::File.join(Chef::Config[:chef_repo_path], 'logs', machine_name) do
     mode 0700
     recursive true
   end

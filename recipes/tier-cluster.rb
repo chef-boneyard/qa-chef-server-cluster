@@ -19,37 +19,34 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::provisioner-setup'
-
-# set topology if called directly
-node.default['qa-chef-server-cluster']['topology'] = 'tier'
+include_recipe 'qa-chef-server-cluster::tier-cluster-setup'
 
 machine_batch do
-  machine 'bootstrap-backend' do
+  machine node['bootstrap-backend'] do
     action :ready
     attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
     attribute %w[ chef-server-cluster bootstrap enable ], true
     attribute %w[ chef-server-cluster role ], 'backend'
   end
 
-  machine 'frontend' do
+  machine node['frontend'] do
     action :ready
     attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
     attribute %w[ chef-server-cluster role ], 'frontend'
   end
 end
 
-machine 'bootstrap-backend' do
+machine node['bootstrap-backend'] do
   run_list [ 'qa-chef-server-cluster::backend' ]
 end
 
-download_logs 'bootstrap-backend'
+download_logs node['bootstrap-backend']
 
 download_bootstrap_files
 
-machine 'frontend' do
+machine node['frontend'] do
   run_list [ 'qa-chef-server-cluster::frontend' ]
   files node['qa-chef-server-cluster']['chef-server']['files']
 end
 
-download_logs 'frontend'
+download_logs node['frontend']

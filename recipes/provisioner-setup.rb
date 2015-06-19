@@ -30,7 +30,12 @@ ChefHelpers.symbolize_keys_deep!(provisioner_machine_opts)
 
 with_machine_options(provisioner_machine_opts)
 
-ssh_keys = data_bag_item('secrets', node['qa-chef-server-cluster']['chef-provisioner-key-name'])
+chef_server_files_dir = node.default['qa-chef-server-cluster']['chef-server']['file-dir'] = File.join(Chef::Config[:chef_repo_path], '.chef', 'stash')
+
+directory chef_server_files_dir do
+  mode 0700
+  recursive true
+end
 
 keys_dir = File.join(Chef::Config[:chef_repo_path], '.chef', 'keys')
 directory keys_dir do
@@ -38,31 +43,34 @@ directory keys_dir do
   recursive true
 end
 
-chef_server_files_dir = node.default['qa-chef-server-cluster']['chef-server']['file-dir'] = File.join(Chef::Config[:chef_repo_path],
-                                                                                                      '.chef', 'stash')
-
-directory node['qa-chef-server-cluster']['chef-server']['file-dir'] do
-  mode 0700
-  recursive true
-end
-
-priv_key = File.join(keys_dir, 'id_rsa')
+priv_key = File.join(keys_dir, node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['key_name'])
 file priv_key do
   mode 0600
-  content ssh_keys['private_ssh_key']
+  content node['qa-chef-server-cluster']['private-key']
   sensitive true
 end
 
-pub_key = File.join(keys_dir, 'id_rsa.pub')
+pub_key = File.join(keys_dir, "#{node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['key_name']}.pub")
 file pub_key do
   mode 0600
-  content ssh_keys['public_ssh_key']
+  content node['qa-chef-server-cluster']['public-key']
   sensitive true
 end
 
 aws_key_pair node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['key_name'] do
   private_key_path priv_key
   public_key_path pub_key
+  allow_overwrite true
+end
+
+# clear key data so they are not added to nodes
+node.default['qa-chef-server-cluster']['private-key'] = nil
+node.default['qa-chef-server-cluster']['public-key'] = nil
+
+ruby_block 'add keys dir to private keys path' do
+  block do
+    Chef::Config.private_key_paths << keys_dir
+  end
 end
 
 # set attribute so clusters know where to find bootstrapped server files

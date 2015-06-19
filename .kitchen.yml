@@ -9,18 +9,9 @@ platforms:
   - name: ubuntu-14.04
 
 suites:
-  - name: standalone
-    run_list:
-      - recipe[qa-chef-server-cluster::_standalone]
-      - recipe[qa-chef-server-cluster::_standalone-upgrade]
-    attributes:
-  - name: bootstrap-backend
-    run_list:
-      - recipe[qa-chef-server-cluster::_bootstrap]
-      - recipe[qa-chef-server-cluster::_bootstrap-upgrade]
-    attributes:
-  - name: frontend
-    run_list:
-      - recipe[qa-chef-server-cluster::_frontend]
-      - recipe[qa-chef-server-cluster::_frontend-upgrade]
-    attributes:
+  - name: standalone_server_install
+    run_list: standalone_server::install
+  - name: standalone_server_upgrade
+    run_list: standalone_server::upgrade
+  - name: standalone_server_test
+    run_list: standalone_server::test
