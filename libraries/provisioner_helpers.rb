@@ -64,10 +64,12 @@ def download_logs(machine_name)
     action :download
   end
 
+  # TODO Commenting this for now.  This will be useful once we can archive
+  # and view output files in Delivery.  Then we can work out the details.
+  # For now, extracting this way is causing failures.
   # extract tarball for easy access
-  execute "`which tar` -xzvf #{machine_name}-logs.tbz2" do
-    cwd machine_log_dir.name
-    only_if { ::File.exists?("#{machine_log_dir.name}/#{machine_name}-logs.tbz2") }
-    ignore_failure true # whatev
-  end
+  # execute "`which tar` -xzvf #{machine_name}-logs.tbz2" do
+  #   cwd machine_log_dir.name
+  #   only_if { ::File.exists?("#{machine_log_dir.name}/#{machine_name}-logs.tbz2") }
+  # end
 end
