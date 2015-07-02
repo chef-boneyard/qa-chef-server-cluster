@@ -37,4 +37,4 @@ node.default['qa-chef-server-cluster']['chef-ha']['skip'] = false
 
 node.default['qa-chef-server-cluster']['chef-server']['api_fqdn'] = 'api.chef.sh'
 
-node.default['qa-chef-server-cluster']['chef-server-ctl-test-options'] = nil
+node.default['qa-chef-server-cluster']['chef-server-ctl-test-options'] = ''
