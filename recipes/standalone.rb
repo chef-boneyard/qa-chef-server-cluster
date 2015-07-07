@@ -24,6 +24,6 @@ install_chef_server
 
 reconfigure_chef_server
 
-return if node['qa-chef-server-cluster']['chef-server']['flavor'] == :open_source_chef
+return if current_flavor == :open_source_chef
 
 install_opscode_manage

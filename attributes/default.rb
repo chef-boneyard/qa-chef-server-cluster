@@ -25,6 +25,7 @@ node.default['qa-chef-server-cluster']['chef-server']['integration_builds'] = ni
 node.default['qa-chef-server-cluster']['chef-server']['repo'] = nil
 node.default['qa-chef-server-cluster']['chef-server']['skip'] = false
 node.default['qa-chef-server-cluster']['chef-server']['flavor'] = :chef_server # :enterprise_chef :open_source_chef
+node.default['qa-chef-server-cluster']['chef-server']['upgrade_from_flavor'] = :chef_server # :enterprise_chef :open_source_chef
 
 node.default['qa-chef-server-cluster']['opscode-manage']['version'] = :latest_stable
 node.default['qa-chef-server-cluster']['opscode-manage']['integration_builds'] = nil

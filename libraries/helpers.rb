@@ -18,11 +18,13 @@
 # limitations under the License.
 #
 
+SUPPORTED_FLAVORS = [:chef_server, :open_source_chef, :enterprise_chef]
+
 def install_chef_server(package_version: node['qa-chef-server-cluster']['chef-server']['version'],
       integration_builds: node['qa-chef-server-cluster']['chef-server']['integration_builds'],
       repo: node['qa-chef-server-cluster']['chef-server']['repo'])
   if should_install?('chef-server')
-    case node['qa-chef-server-cluster']['chef-server']['flavor']
+    case current_flavor
     when :chef_server, :open_source_chef, nil
       install_package('chef-server', package_version, integration_builds, repo)
     when :enterprise_chef
@@ -32,7 +34,7 @@ def install_chef_server(package_version: node['qa-chef-server-cluster']['chef-se
 end
 
 def reconfigure_chef_server
-  case node['qa-chef-server-cluster']['chef-server']['flavor']
+  case current_flavor
   when :chef_server, :open_source_chef
     chef_ingredient 'chef-server' do
       action :reconfigure
@@ -89,20 +91,18 @@ def install_from_source?(version)
 end
 
 def run_chef_server_upgrade_procedure
-  if should_install?('chef-server-core')
+  if should_install?('chef-server')
     execute 'stop services' do
       command 'chef-server-ctl stop'
     end
 
-    install_chef_server_core
+    install_chef_server
 
-    execute 'upgrade server' do
-      command 'chef-server-ctl upgrade'
-    end
+    upgrade_chef_server
 
     execute 'start services' do
       command 'chef-server-ctl start'
-      not_if { node['qa-chef-server-cluster']['chef-server']['flavor'] == :open_source_chef }
+      not_if { upgrade_from_flavor == :open_source_chef }
     end
   end
 end
@@ -127,4 +127,37 @@ end
 
 def should_install?(package)
   node['qa-chef-server-cluster'][package]['skip'] == false ? true : false
+end
+
+def current_flavor
+  flavor = node['qa-chef-server-cluster']['chef-server']['flavor']
+  flavor = flavor.to_sym if flavor.is_a?(String)
+  unless SUPPORTED_FLAVORS.include?(flavor)
+    raise "Chef Server flavor #{flavor} not supported.  Must be one of: #{supported_flavors}"
+  end
+  flavor
+end
+
+# TODO Make this determine the currently installed chef server flavor via the system automatically
+def upgrade_from_flavor
+  flavor = node['qa-chef-server-cluster']['chef-server']['upgrade_from_flavor']
+  flavor = flavor.to_sym if flavor.is_a?(String)
+  unless SUPPORTED_FLAVORS.include?(flavor)
+    raise "Chef Server upgrade flavor #{flavor} not supported.  Must be one of: #{supported_flavors}"
+  end
+  flavor
+end
+
+def upgrade_chef_server
+  case upgrade_from_flavor
+  when :chef_server, nil
+    execute 'upgrade chef server' do
+      command 'chef-server-ctl upgrade'
+    end
+  when :open_source_chef
+    execute 'upgrade open source chef to chef server' do
+      command 'chef-server-ctl upgrade --yes --org-name chef --full-org-name "Chef Org"'
+    end
+  when :enterprise_chef
+  end
 end

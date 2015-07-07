@@ -20,4 +20,16 @@
 
 include_recipe 'qa-chef-server-cluster::chef-server-readiness'
 
-execute 'chef-server-ctl test ' + node['qa-chef-server-cluster']['chef-server-ctl-test-options']
+pedant_cmd = ''
+case current_flavor
+when :chef_server, :open_source_chef
+  pedant_cmd << 'chef-server-ctl test'
+when :enterprise_chef
+  pedant_cmd << 'private-chef-ctl test'
+end
+
+pedant_options = node['qa-chef-server-cluster']['chef-server-ctl-test-options']
+
+pedant_cmd << " #{pedant_options}" unless pedant_options.empty?
+
+execute pedant_cmd
