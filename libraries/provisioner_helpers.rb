@@ -39,6 +39,7 @@ def download_bootstrap_files(machine_name = node['bootstrap-backend'])
 end
 
 def download_logs(machine_name)
+  return unless node['qa-chef-server-cluster']['download-logs']
   # create dedicated machine log directory
   machine_log_dir = directory ::File.join(Chef::Config[:chef_repo_path], 'logs', machine_name) do
     mode 0700

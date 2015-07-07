@@ -21,7 +21,7 @@
 
 include_recipe 'qa-chef-server-cluster::node-setup'
 
-install_chef_server_core
+install_chef_server
 
 # TODO: (jtimberman) Replace this with partial_search.
 chef_servers = search('node', 'chef-server-cluster_role:backend').map do |server| #~FC003
@@ -57,7 +57,7 @@ template '/etc/opscode/chef-server.rb' do
   sensitive true
 end
 
-chef_server_ingredient 'chef-server-core' do
+chef_ingredient 'chef-server' do
   action :reconfigure
 end
 

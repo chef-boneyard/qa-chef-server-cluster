@@ -73,9 +73,8 @@ def install_package(package_name, package_version, integration_builds = nil, rep
       source package_version
     end
 
-    package package_name do
-      source local_source
-      provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
+    chef_ingredient package_name do
+      package_source local_source
     end
   else
     omnibus_artifact package_name do
@@ -92,9 +91,7 @@ end
 
 def run_chef_server_upgrade_procedure
   if should_install?('chef-server')
-    execute 'stop services' do
-      command 'chef-server-ctl stop'
-    end
+    stop_chef_server
 
     install_chef_server
 
@@ -148,9 +145,22 @@ def upgrade_from_flavor
   flavor
 end
 
+def stop_chef_server
+  case upgrade_from_flavor
+  when :chef_server, :open_source_chef
+    execute 'stop services' do
+      command 'chef-server-ctl stop'
+    end
+  when :enterprise_chef
+    execute 'stop services' do
+      command 'private-chef-ctl stop'
+    end
+  end
+end
+
 def upgrade_chef_server
   case upgrade_from_flavor
-  when :chef_server, nil
+  when :chef_server, :enterprise_chef
     execute 'upgrade chef server' do
       command 'chef-server-ctl upgrade'
     end
@@ -158,6 +168,5 @@ def upgrade_chef_server
     execute 'upgrade open source chef to chef server' do
       command 'chef-server-ctl upgrade --yes --org-name chef --full-org-name "Chef Org"'
     end
-  when :enterprise_chef
   end
 end

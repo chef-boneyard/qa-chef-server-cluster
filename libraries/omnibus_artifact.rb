@@ -39,9 +39,8 @@ class Chef
         repo new_resource.repo
       end
 
-      package new_resource.project do
-        source omnibus_artifactory_artifact_local_path(new_resource.project)
-        provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
+      chef_ingredient new_resource.project do
+        package_source omnibus_artifactory_artifact_local_path(new_resource.project)
       end
     end
 

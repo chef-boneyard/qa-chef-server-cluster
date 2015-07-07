@@ -19,4 +19,4 @@
 #
 
 # called during ha upgrade orchestration
-install_chef_server_core
+install_chef_server
