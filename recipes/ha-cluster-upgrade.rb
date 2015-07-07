@@ -57,7 +57,7 @@ if should_install?('chef-server')
     retries 1 # http://docs.chef.io/upgrade_server.html#high-availability #7
   end
 
-  machine_execute "#{ctl_command} upgrade" do
+  machine_execute "chef-server-ctl upgrade" do
     machine node['bootstrap-backend']
   end
 
@@ -73,19 +73,19 @@ if should_install?('chef-server')
     end
   end
 
-  machine_execute "#{ctl_command} upgrade" do
+  machine_execute "chef-server-ctl upgrade" do
     machine node['secondary-backend']
   end
 
-  machine_execute "#{ctl_command} upgrade" do
+  machine_execute "chef-server-ctl upgrade"do
     machine node['frontend']
   end
 
-  machine_execute "#{ctl_command} start" do
+  machine_execute "chef-server-ctl start" do
     machine node['frontend']
   end
 
-  machine_execute "#{ctl_command} start" do
+  machine_execute "chef-server-ctl start" do
     machine node['bootstrap-backend']
   end
 

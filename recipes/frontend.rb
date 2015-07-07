@@ -50,9 +50,7 @@ template '/etc/opscode/chef-server.rb' do
   sensitive true
 end
 
-chef_ingredient 'chef-server' do
-  action :reconfigure
-end
+reconfigure_chef_server
 
 install_opscode_manage
 
