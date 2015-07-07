@@ -20,4 +20,11 @@
 
 include_recipe 'qa-chef-server-cluster::chef-server-readiness'
 
-execute 'chef-server-ctl test ' + node['qa-chef-server-cluster']['chef-server-ctl-test-options']
+pedant_cmd = 'chef-server-ctl test'
+pedant_cmd = 'private-chef-ctl test' if current_flavor == :enterprise_chef
+
+pedant_options = node['qa-chef-server-cluster']['chef-server-ctl-test-options']
+
+pedant_cmd << " #{pedant_options}" unless pedant_options.empty?
+
+execute pedant_cmd

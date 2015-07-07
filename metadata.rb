@@ -5,7 +5,7 @@ license          'all_rights'
 description      'Installs/Configures QA clusters'
 version          '2.0.0'
 
-depends 'chef-server-cluster'
+depends 'chef-ingredient'
 depends 'omnibus-artifactory-artifact'
 depends 'lvm'
 depends 'apt'

@@ -17,13 +17,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+gather_logs_cmd = 'chef-server-ctl gather-logs'
+gather_logs_cmd = 'private-chef-ctl gather-logs' if current_flavor == :enterprise_chef 
 
-execute 'chef-server-ctl gather-logs' do
+execute gather_logs_cmd do
   cwd Chef::Config[:file_cache_path]
   only_if 'test -f /opt/opscode/bin/gather-logs'
 end
 
-ruby_block 'find latest `chef-server-ctl gather-logs` archive' do
+ruby_block 'find latest gather-logs archive' do
   block do
     latest_archive = Mixlib::ShellOut.new('ls -1t *.tbz2 | head -1',
       :cwd => Chef::Config[:file_cache_path])

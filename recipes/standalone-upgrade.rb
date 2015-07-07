@@ -22,4 +22,6 @@ include_recipe 'qa-chef-server-cluster::node-setup'
 
 run_chef_server_upgrade_procedure
 
+return if current_flavor == :open_source_chef
+
 install_opscode_manage

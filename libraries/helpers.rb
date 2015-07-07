@@ -18,13 +18,31 @@
 # limitations under the License.
 #
 
-def install_chef_server_core(package_version: node['qa-chef-server-cluster']['chef-server-core']['version'],
-      integration_builds: node['qa-chef-server-cluster']['chef-server-core']['integration_builds'],
-      repo: node['qa-chef-server-cluster']['chef-server-core']['repo'])
-  if should_install?('chef-server-core')
-    install_package('chef-server', package_version, integration_builds, repo)
-  else
-    Chef::Log.info('Skipping chef-server-core install')
+SUPPORTED_FLAVORS = [:chef_server, :open_source_chef, :enterprise_chef]
+
+def install_chef_server(package_version: node['qa-chef-server-cluster']['chef-server']['version'],
+      integration_builds: node['qa-chef-server-cluster']['chef-server']['integration_builds'],
+      repo: node['qa-chef-server-cluster']['chef-server']['repo'])
+  if should_install?('chef-server')
+    case current_flavor
+    when :chef_server, :open_source_chef, nil
+      install_package('chef-server', package_version, integration_builds, repo)
+    when :enterprise_chef
+      install_package('private-chef', package_version, integration_builds, repo)
+    end
+  end
+end
+
+def reconfigure_chef_server
+  case current_flavor
+  when :chef_server, :open_source_chef
+    chef_ingredient 'chef-server' do
+      action :reconfigure
+    end
+  when :enterprise_chef
+    chef_ingredient 'private-chef' do
+      action :reconfigure
+    end
   end
 end
 
@@ -37,8 +55,6 @@ def install_opscode_manage(package_version: node['qa-chef-server-cluster']['opsc
     chef_server_ingredient 'opscode-manage' do
       action :reconfigure
     end
-  else
-    Chef::Log.info('Skipping opscode-manage install')
   end
 end
 
@@ -47,8 +63,6 @@ def install_chef_ha(package_version: node['qa-chef-server-cluster']['chef-ha']['
       repo: node['qa-chef-server-cluster']['chef-ha']['repo'])
   if should_install?('chef-ha')
     install_package('chef-ha', package_version, integration_builds, repo)
-  else
-    Chef::Log.info('Skipping chef-ha install')
   end
 end
 
@@ -59,9 +73,8 @@ def install_package(package_name, package_version, integration_builds = nil, rep
       source package_version
     end
 
-    package package_name do
-      source local_source
-      provider value_for_platform_family(:debian => Chef::Provider::Package::Dpkg)
+    chef_ingredient package_name do
+      package_source local_source
     end
   else
     omnibus_artifact package_name do
@@ -77,22 +90,17 @@ def install_from_source?(version)
 end
 
 def run_chef_server_upgrade_procedure
-  if should_install?('chef-server-core')
-    execute 'stop services' do
-      command 'chef-server-ctl stop'
-    end
+  if should_install?('chef-server')
+    stop_chef_server
 
-    install_chef_server_core
+    install_chef_server
 
-    execute 'upgrade server' do
-      command 'chef-server-ctl upgrade'
-    end
+    upgrade_chef_server
 
     execute 'start services' do
       command 'chef-server-ctl start'
+      not_if { upgrade_from_flavor == :open_source_chef }
     end
-  else
-    Chef::Log.info('Skipping chef-server-core upgrade')
   end
 end
 
@@ -116,4 +124,49 @@ end
 
 def should_install?(package)
   node['qa-chef-server-cluster'][package]['skip'] == false ? true : false
+end
+
+def current_flavor
+  flavor = node['qa-chef-server-cluster']['chef-server']['flavor']
+  flavor = flavor.to_sym if flavor.is_a?(String)
+  unless SUPPORTED_FLAVORS.include?(flavor)
+    raise "Chef Server flavor #{flavor} not supported.  Must be one of: #{supported_flavors}"
+  end
+  flavor
+end
+
+# TODO Make this determine the currently installed chef server flavor via the system automatically
+def upgrade_from_flavor
+  flavor = node['qa-chef-server-cluster']['chef-server']['upgrade_from_flavor']
+  flavor = flavor.to_sym if flavor.is_a?(String)
+  unless SUPPORTED_FLAVORS.include?(flavor)
+    raise "Chef Server upgrade flavor #{flavor} not supported.  Must be one of: #{supported_flavors}"
+  end
+  flavor
+end
+
+def stop_chef_server
+  case upgrade_from_flavor
+  when :chef_server, :open_source_chef
+    execute 'stop services' do
+      command 'chef-server-ctl stop'
+    end
+  when :enterprise_chef
+    execute 'stop services' do
+      command 'private-chef-ctl stop'
+    end
+  end
+end
+
+def upgrade_chef_server
+  case upgrade_from_flavor
+  when :chef_server, :enterprise_chef
+    execute 'upgrade chef server' do
+      command 'chef-server-ctl upgrade'
+    end
+  when :open_source_chef
+    execute 'upgrade open source chef to chef server' do
+      command 'chef-server-ctl upgrade --yes --org-name chef --full-org-name "Chef Org"'
+    end
+  end
 end

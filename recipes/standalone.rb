@@ -20,10 +20,10 @@
 
 include_recipe 'qa-chef-server-cluster::node-setup'
 
-install_chef_server_core
+install_chef_server
 
-chef_server_ingredient 'chef-server-core' do
-  action :reconfigure
-end
+reconfigure_chef_server
+
+return if current_flavor == :open_source_chef
 
 install_opscode_manage

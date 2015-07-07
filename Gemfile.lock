@@ -92,7 +92,7 @@ GEM
     erubis (2.7.0)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
-    ffi (1.9.9)
+    ffi (1.9.10)
     ffi-yajl (2.2.0)
       libyajl2 (~> 1.2)
     gssapi (1.2.0)
@@ -121,7 +121,8 @@ GEM
     mixlib-config (2.2.1)
     mixlib-log (1.6.0)
     mixlib-shellout (2.1.0)
-    multi_json (1.11.1)
+    mixlib-versioning (1.1.0)
+    multi_json (1.11.2)
     multipart-post (2.0.0)
     net-http-persistent (2.9.4)
     net-scp (1.2.1)
@@ -209,7 +210,7 @@ GEM
     solve (1.2.1)
       dep_selector (~> 1.0)
       semverse (~> 1.1)
-    specinfra (2.36.9)
+    specinfra (2.36.16)
       net-scp
       net-ssh
       net-telnet
@@ -240,6 +241,4 @@ DEPENDENCIES
   chef (= 12.3.0)
   chef-provisioning (= 1.2.0)
   chef-provisioning-aws (= 1.2.1)
-
-BUNDLED WITH
-   1.10.5
+  mixlib-versioning

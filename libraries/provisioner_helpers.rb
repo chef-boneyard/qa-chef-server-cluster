@@ -39,6 +39,7 @@ def download_bootstrap_files(machine_name = node['bootstrap-backend'])
 end
 
 def download_logs(machine_name)
+  return unless node['qa-chef-server-cluster']['download-logs']
   # create dedicated machine log directory
   machine_log_dir = directory ::File.join(Chef::Config[:chef_repo_path], 'logs', machine_name) do
     mode 0700
@@ -72,4 +73,13 @@ def download_logs(machine_name)
   #   cwd machine_log_dir.name
   #   only_if { ::File.exists?("#{machine_log_dir.name}/#{machine_name}-logs.tbz2") }
   # end
+end
+
+def symbolize_keys_deep!(h)
+  Chef::Log.debug("#{h.inspect} is a hash with string keys, make them symbols")
+  h.keys.each do |k|
+    ks    = k.to_sym
+    h[ks] = h.delete k
+    symbolize_keys_deep! h[ks] if h[ks].kind_of? Hash
+  end
 end

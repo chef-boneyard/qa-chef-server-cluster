@@ -23,12 +23,16 @@ include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 
 #TODO break all these machine_execute resources into recipes that get added to the run_list
 # the I can get rid of all these awful should_install?('chef-server-core') conditions
-if should_install?('chef-server-core')
-  machine_execute 'chef-server-ctl stop' do
+
+ctl_command = 'chef-server-ctl'
+ctl_command = 'private-chef-ctl' if upgrade_from_flavor == :enterprise_chef
+
+if should_install?('chef-server')
+  machine_execute "#{ctl_command} stop" do
     machine node['frontend']
   end
 
-  machine_execute 'chef-server-ctl stop keepalived' do
+  machine_execute "#{ctl_command} stop keepalived" do
     machine node['secondary-backend']
   end
 end
@@ -47,13 +51,13 @@ machine_batch do
   end
 end
 
-if should_install?('chef-server-core')
-  machine_execute 'chef-server-ctl stop' do
+if should_install?('chef-server')
+  machine_execute "#{ctl_command} stop" do
     machine node['bootstrap-backend']
     retries 1 # http://docs.chef.io/upgrade_server.html#high-availability #7
   end
 
-  machine_execute 'chef-server-ctl upgrade' do
+  machine_execute "chef-server-ctl upgrade" do
     machine node['bootstrap-backend']
   end
 
@@ -69,19 +73,19 @@ if should_install?('chef-server-core')
     end
   end
 
-  machine_execute 'chef-server-ctl upgrade' do
+  machine_execute "chef-server-ctl upgrade" do
     machine node['secondary-backend']
   end
 
-  machine_execute 'chef-server-ctl upgrade' do
+  machine_execute "chef-server-ctl upgrade"do
     machine node['frontend']
   end
 
-  machine_execute 'chef-server-ctl start' do
+  machine_execute "chef-server-ctl start" do
     machine node['frontend']
   end
 
-  machine_execute 'chef-server-ctl start' do
+  machine_execute "chef-server-ctl start" do
     machine node['bootstrap-backend']
   end
 
