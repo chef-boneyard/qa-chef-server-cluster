@@ -1,9 +1,6 @@
 Quality Advocacy Chef Server Cluster
 ========
-Recipes for installing, upgrading and testing Chef Server 12 topologies.  This cookbook is not designed as an idempotent
-tool for managing chef servers. It is designed to accept package versions and run the install instructions
-as documented for each configuration scenario from [Install Chef Server 12](https://docs.chef.io/install_server.html) and
-[Upgrade Chef Server 12](https://docs.chef.io/upgrade_server.html).
+Cookbook for provisioning Chef Servers for testing the server or other tests against a specific server version.  The cookbook also installs Open Source Chef and Enterprise Chef, and then upgrades to Chef Server.  All supported topologies and platforms can be provisioned.
 
 # Requirements
 * aws config
@@ -44,17 +41,10 @@ This cookbook wraps the `omnibus_artifactory_artifact` resource from the `omnibu
 Other than the initial installation of chef-server-core, all other steps are configurable to be skipped during the provision.  This does include upgrading chef-server-core in the case where you would only want to upgrade opscode-manage.  This is achieved by setting the `['skip']` attributes to `true`.
 
 ## Execution
-The concept of execution is to run one of the core recipes per chef-client run. This allows the author to inject their own tests or data generation tools whenever it's necessary. The install recipe will need an environment associated to the nodes.
+The concept of execution is to run one of the core recipes per chef-client run. This allows the author to inject their own tests or data generation tools whenever it's necessary
 
 For example:  
-`chef-client -z -E my_test -o qa-chef-server-cluster::standalone-server`  
-
-If the `my_test` environment is to be updated, the envionment attributes must be updated with the new configuration before running.  
-
-*Update environment here (perhaps using qa-csc-config)*  
-
-Then upgrade the server  
-`chef-client -z -E my_test -o qa-chef-server-cluster::standalone-server-upgrade`
+`chef-client -z -j my_test.json -o qa-chef-server-cluster::standalone-server`  
 
 ## Provisioning Ids
 The machine resources and other cluster-associated provisioning resources (ebs volumes, etc) will need to have unique names in order for a chef-repo to support multiple instances of topology clusters. Override the `['qa-chef-server-cluster']['provisioning-id']` attibute.  The default is `default`.

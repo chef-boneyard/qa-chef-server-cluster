@@ -52,7 +52,7 @@ def install_opscode_manage(package_version: node['qa-chef-server-cluster']['opsc
   if should_install?('opscode-manage')
     install_package('opscode-manage', package_version, integration_builds, repo)
 
-    chef_server_ingredient 'opscode-manage' do
+    chef_ingredient 'opscode-manage' do
       action :reconfigure
     end
   end
