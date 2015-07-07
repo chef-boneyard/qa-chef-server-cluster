@@ -73,3 +73,12 @@ def download_logs(machine_name)
   #   only_if { ::File.exists?("#{machine_log_dir.name}/#{machine_name}-logs.tbz2") }
   # end
 end
+
+def symbolize_keys_deep!(h)
+  Chef::Log.debug("#{h.inspect} is a hash with string keys, make them symbols")
+  h.keys.each do |k|
+    ks    = k.to_sym
+    h[ks] = h.delete k
+    symbolize_keys_deep! h[ks] if h[ks].kind_of? Hash
+  end
+end

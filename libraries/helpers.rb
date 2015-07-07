@@ -18,13 +18,29 @@
 # limitations under the License.
 #
 
-def install_chef_server_core(package_version: node['qa-chef-server-cluster']['chef-server-core']['version'],
-      integration_builds: node['qa-chef-server-cluster']['chef-server-core']['integration_builds'],
-      repo: node['qa-chef-server-cluster']['chef-server-core']['repo'])
-  if should_install?('chef-server-core')
-    install_package('chef-server', package_version, integration_builds, repo)
-  else
-    Chef::Log.info('Skipping chef-server-core install')
+def install_chef_server(package_version: node['qa-chef-server-cluster']['chef-server']['version'],
+      integration_builds: node['qa-chef-server-cluster']['chef-server']['integration_builds'],
+      repo: node['qa-chef-server-cluster']['chef-server']['repo'])
+  if should_install?('chef-server')
+    case node['qa-chef-server-cluster']['chef-server']['flavor']
+    when :chef_server, :open_source_chef, nil
+      install_package('chef-server', package_version, integration_builds, repo)
+    when :enterprise_chef
+      install_package('private-chef', package_version, integration_builds, repo)
+    end
+  end
+end
+
+def reconfigure_chef_server
+  case node['qa-chef-server-cluster']['chef-server']['flavor']
+  when :chef_server, :open_source_chef
+    chef_ingredient 'chef-server' do
+      action :reconfigure
+    end
+  when :enterprise_chef
+    chef_ingredient 'private-chef' do
+      action :reconfigure
+    end
   end
 end
 
@@ -37,8 +53,6 @@ def install_opscode_manage(package_version: node['qa-chef-server-cluster']['opsc
     chef_server_ingredient 'opscode-manage' do
       action :reconfigure
     end
-  else
-    Chef::Log.info('Skipping opscode-manage install')
   end
 end
 
@@ -47,8 +61,6 @@ def install_chef_ha(package_version: node['qa-chef-server-cluster']['chef-ha']['
       repo: node['qa-chef-server-cluster']['chef-ha']['repo'])
   if should_install?('chef-ha')
     install_package('chef-ha', package_version, integration_builds, repo)
-  else
-    Chef::Log.info('Skipping chef-ha install')
   end
 end
 
@@ -90,9 +102,8 @@ def run_chef_server_upgrade_procedure
 
     execute 'start services' do
       command 'chef-server-ctl start'
+      not_if { node['qa-chef-server-cluster']['chef-server']['flavor'] == :open_source_chef }
     end
-  else
-    Chef::Log.info('Skipping chef-server-core upgrade')
   end
 end
 

@@ -20,10 +20,11 @@ node.default['qa-chef-server-cluster']['aws']['machine_options'] = {
 
 node.default['qa-chef-server-cluster']['provisioning-id'] = 'default'
 
-node.default['qa-chef-server-cluster']['chef-server-core']['version'] = :latest_stable
-node.default['qa-chef-server-cluster']['chef-server-core']['integration_builds'] = nil
-node.default['qa-chef-server-cluster']['chef-server-core']['repo'] = nil
-node.default['qa-chef-server-cluster']['chef-server-core']['skip'] = false
+node.default['qa-chef-server-cluster']['chef-server']['version'] = :latest_stable
+node.default['qa-chef-server-cluster']['chef-server']['integration_builds'] = nil
+node.default['qa-chef-server-cluster']['chef-server']['repo'] = nil
+node.default['qa-chef-server-cluster']['chef-server']['skip'] = false
+node.default['qa-chef-server-cluster']['chef-server']['flavor'] = :chef_server # :enterprise_chef :open_source_chef
 
 node.default['qa-chef-server-cluster']['opscode-manage']['version'] = :latest_stable
 node.default['qa-chef-server-cluster']['opscode-manage']['integration_builds'] = nil
