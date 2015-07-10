@@ -19,20 +19,62 @@
 # limitations under the License.
 #
 
-execute 'git clone git@github.com:chef/chef-server-data-generator.git' do
+include_recipe 'qa-chef-server-cluster::node-setup'
+
+package 'git'
+
+execute 'git clone https://github.com/chef/chef-server-data-generator.git' do
   cwd '/tmp'
 end
 
 generator_dir = "/tmp/chef-server-data-generator"
 
+execute 'git checkout tc/wtf-git-osc-support' do
+  cwd generator_dir
+end
+
 directory "#{generator_dir}/cookbooks" do
   action :create
 end
 
-cookbook_file "#{generator_dir}/.chef/knife-in-guest.rb" do
-  source 'knife-in-guest.rb'
+flavor = node['qa-chef-server-cluster']['chef-server']['flavor']
+
+if flavor == "enterprise_chef"
+  ctl_string = "private-chef-ctl"
+  server_file = "private-chef.rb"
+  server_config_path = "/etc/opscode/"
+  knife_config = "knife-in-guest-ec.rb"
+  setup_cmd = "setup-ec.sh"
+elsif flavor == "chef_server"
+  ctl_string = "chef-server-ctl"
+  server_file = "chef-server.rb"
+  server_config_path = "/etc/opscode/"
+  knife_config = "knife-in-guest-ec.rb"
+  setup_cmd = "setup-ec.sh"
+else
+  ctl_string = "chef-server-ctl"
+  server_file = "chef-server.rb"
+  server_config_path = "/etc/chef-server/"
+  knife_config = "knife-in-guest-osc.rb"
+  setup_cmd = "setup-osc.sh"
 end
 
-execute "sudo ./setup.sh" do
+cookbook_file "#{generator_dir}/.chef/knife-in-guest.rb" do
+  source knife_config
+end
+
+file "#{server_config_path}#{server_file}" do
+  action :create_if_missing
+end
+
+if node['qa-chef-server-cluster']['chef-server']['flavor'] == "enterprise_chef"
+  execute "sudo cat private-chef.rb >> #{server_config_path}#{server_file}" do
+    cwd generator_dir
+  end
+end
+
+execute "sudo #{ctl_string} reconfigure"
+
+execute "sudo ./#{setup_cmd}" do
   cwd generator_dir
 end

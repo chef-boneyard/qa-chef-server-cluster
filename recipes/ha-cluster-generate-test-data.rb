@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: standalone-server-test
+# Recipes:: ha-cluster-generate-test-data
 #
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
@@ -18,8 +18,9 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::standalone-server-setup'
+include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 
-machine node['standalone'] do
-  run_list ['qa-chef-server-cluster::run-pedant']
+machine node['frontend'] do
+  run_list ['qa-chef-server-cluster::generate-test-data']
+  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
 end
