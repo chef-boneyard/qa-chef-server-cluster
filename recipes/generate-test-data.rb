@@ -1,6 +1,7 @@
+
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: standalone-upgrade
+# Recipes:: generate-test-data
 #
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
@@ -18,8 +19,20 @@
 # limitations under the License.
 #
 
-include_recipe 'qa-chef-server-cluster::standalone-server-setup'
+execute 'git clone git@github.com:chef/chef-server-data-generator.git' do
+  cwd '/tmp'
+end
 
-machine_execute node['remote-command'] do
-  machine node['standalone']
+generator_dir = "/tmp/chef-server-data-generator"
+
+directory "#{generator_dir}/cookbooks" do
+  action :create
+end
+
+cookbook_file "#{generator_dir}/.chef/knife-in-guest.rb" do
+  source 'knife-in-guest.rb'
+end
+
+execute "sudo ./setup.sh" do
+  cwd generator_dir
 end

@@ -41,6 +41,4 @@ node.default['qa-chef-server-cluster']['chef-server']['api_fqdn'] = 'api.chef.sh
 
 node.default['qa-chef-server-cluster']['chef-server-ctl-test-options'] = ''
 
-node.default['qa-chef-server-cluster']['remote-command'] = ''
-
 node.default['qa-chef-server-cluster']['download-logs'] = false

@@ -21,5 +21,5 @@
 include_recipe 'qa-chef-server-cluster::standalone-server-setup'
 
 machine node['standalone'] do
-  run_list ['qa-chef-server-cluster::run-pedant']
+  run_list ['qa-chef-server-cluster::generate-test-data']
 end
