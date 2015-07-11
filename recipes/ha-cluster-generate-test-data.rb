@@ -1,8 +1,8 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: chef-ha-install-package
+# Recipes:: ha-cluster-generate-test-data
 #
-# Author: Patrick Wright <patrick@chef.io>
+# Author: Tyler Cloke <tyler@chef.io>
 # Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +18,9 @@
 # limitations under the License.
 #
 
-# called during ha install orchestration
-chef_package 'chef-ha' do
-  package_url node['qa-chef-server-cluster']['chef-ha']['url']
-  install_method node['qa-chef-server-cluster']['chef-ha']['install_method']
-  version node['qa-chef-server-cluster']['chef-ha']['version']
-  integration_builds node['qa-chef-server-cluster']['chef-ha']['integration_builds']
-  repository node['qa-chef-server-cluster']['chef-ha']['repo']
+include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
+
+machine node['frontend'] do
+  run_list ['qa-chef-server-cluster::generate-test-data']
+  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
 end

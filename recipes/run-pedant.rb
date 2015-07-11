@@ -20,8 +20,7 @@
 
 include_recipe 'qa-chef-server-cluster::chef-server-readiness'
 
-pedant_cmd = 'chef-server-ctl test'
-pedant_cmd = 'private-chef-ctl test' if current_flavor == :enterprise_chef
+pedant_cmd = "#{current_server.ctl_exec} test"
 
 pedant_options = node['qa-chef-server-cluster']['chef-server-ctl-test-options']
 

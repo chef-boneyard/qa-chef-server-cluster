@@ -18,21 +18,15 @@
 # limitations under the License.
 #
 
-directory '/etc/opscode' do
-  mode 0755
-  recursive true
+create_chef_server_directory
+
+include_recipe 'apt'
+
+execute 'apt-get update' do
+  only_if { platform_family?('debian') }
 end
 
-include_recipe 'apt::default'
-include_recipe 'build-essential::default'
-
-chef_server_ingredient 'chef-server-core' do
-  action :nothing
-end
-
-chef_server_ingredient 'opscode-manage' do
-  action :nothing
-end
+include_recipe 'build-essential'
 
 service 'iptables' do
   action [ :disable, :stop ]
