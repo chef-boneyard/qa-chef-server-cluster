@@ -17,8 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-gather_logs_cmd = 'chef-server-ctl gather-logs'
-gather_logs_cmd = 'private-chef-ctl gather-logs' if current_flavor == :enterprise_chef 
+gather_logs_cmd = "#{current_server.ctl_exec} gather-logs"
 
 execute gather_logs_cmd do
   cwd Chef::Config[:file_cache_path]

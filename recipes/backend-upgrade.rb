@@ -20,4 +20,11 @@
 
 include_recipe 'qa-chef-server-cluster::node-setup'
 
-run_chef_server_upgrade_procedure
+chef_package current_server.package_name do
+  action :upgrade
+  package_url node['qa-chef-server-cluster']['chef-server']['url']
+  install_method node['qa-chef-server-cluster']['chef-server']['install_method']
+  version node['qa-chef-server-cluster']['chef-server']['version']
+  integration_builds node['qa-chef-server-cluster']['chef-server']['integration_builds']
+  repository node['qa-chef-server-cluster']['chef-server']['repo']
+end

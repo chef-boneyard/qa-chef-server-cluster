@@ -20,7 +20,14 @@
 
 include_recipe 'qa-chef-server-cluster::node-setup'
 
-install_chef_server
+chef_package current_server.package_name do
+  package_url node['qa-chef-server-cluster']['chef-server']['url']
+  install_method node['qa-chef-server-cluster']['chef-server']['install_method']
+  version node['qa-chef-server-cluster']['chef-server']['version']
+  integration_builds node['qa-chef-server-cluster']['chef-server']['integration_builds']
+  repository node['qa-chef-server-cluster']['chef-server']['repo']
+end
+
 
 # TODO: (jtimberman) Replace this with partial search.
 chef_servers = search('node', 'chef-server-cluster_role:backend').map do |server| #~FC003
@@ -40,7 +47,7 @@ chef_servers << {
 
 node.default['chef-server-cluster'].merge!(node['qa-chef-server-cluster']['chef-server'])
 
-template '/etc/opscode/chef-server.rb' do
+template ::File.join(current_server.config_path, current_server.config_file) do
   source 'chef-server.rb.erb'
   variables :chef_server_config => node['chef-server-cluster'],
             :topology => node['qa-chef-server-cluster']['topology'],
@@ -50,9 +57,20 @@ template '/etc/opscode/chef-server.rb' do
   sensitive true
 end
 
-reconfigure_chef_server
+chef_package current_server.package_name do
+  action :reconfigure
+  not_if { node['qa-chef-server-cluster']['chef-server']['version'].nil? }
+end
 
-install_opscode_manage
+chef_package 'manage' do
+  package_url node['qa-chef-server-cluster']['opscode-manage']['url']
+  install_method node['qa-chef-server-cluster']['opscode-manage']['install_method']
+  version node['qa-chef-server-cluster']['opscode-manage']['version']
+  integration_builds node['qa-chef-server-cluster']['opscode-manage']['integration_builds']
+  repository node['qa-chef-server-cluster']['opscode-manage']['repo']
+  reconfigure true
+  not_if { current_server.product_name == 'open_source_chef' }
+end
 
 # TODO (pwright) Run again for all I care!!!  Not really.  Temp hack for lack of dns
 execute 'add hosts entry' do

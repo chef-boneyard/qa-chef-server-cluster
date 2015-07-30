@@ -21,7 +21,13 @@
 
 include_recipe 'qa-chef-server-cluster::node-setup'
 
-install_chef_server
+chef_package current_server.package_name do
+  package_url node['qa-chef-server-cluster']['chef-server']['url']
+  install_method node['qa-chef-server-cluster']['chef-server']['install_method']
+  version node['qa-chef-server-cluster']['chef-server']['version']
+  integration_builds node['qa-chef-server-cluster']['chef-server']['integration_builds']
+  repository node['qa-chef-server-cluster']['chef-server']['repo']
+end
 
 # TODO: (jtimberman) Replace this with partial_search.
 chef_servers = search('node', 'chef-server-cluster_role:backend').map do |server| #~FC003
@@ -48,7 +54,7 @@ end
 
 node.default['chef-server-cluster'].merge!(node['qa-chef-server-cluster']['chef-server'])
 
-template '/etc/opscode/chef-server.rb' do
+template ::File.join(current_server.config_path, current_server.config_file) do
   source 'chef-server.rb.erb'
   variables :chef_server_config => node['chef-server-cluster'],
             :topology => node['qa-chef-server-cluster']['topology'],
@@ -57,12 +63,14 @@ template '/etc/opscode/chef-server.rb' do
   sensitive true
 end
 
-reconfigure_chef_server
+chef_package current_server.package_name do
+  action :reconfigure
+  not_if { node['qa-chef-server-cluster']['chef-server']['version'].nil? }
+end
 
-file '/etc/opscode/pivotal.pem' do
+file ::File.join(current_server.config_path, 'pivotal.pem') do
   mode 00644
   # without this guard, we create an empty file, causing bootstrap to
   # not actually work, as it checks the presence of this file.
-  only_if { ::File.exists?('/etc/opscode/pivotal.pem') }
-  subscribes :create, 'chef_server_ingredient[chef-server-core]'
+  only_if { ::File.exists?(::File.join(current_server.config_path, 'pivotal.pem')) }
 end
