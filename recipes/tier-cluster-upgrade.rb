@@ -27,9 +27,12 @@ end
 
 download_logs node['bootstrap-backend']
 
+download_bootstrap_files
+
 machine node['frontend'] do
   run_list [ 'qa-chef-server-cluster::frontend-upgrade' ]
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
+  files node['qa-chef-server-cluster']['chef-server']['files']
 end
 
 download_logs node['frontend']
