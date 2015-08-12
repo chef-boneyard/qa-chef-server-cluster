@@ -19,7 +19,7 @@ GRAPH
   apt-chef (0.1.0)
     apt (>= 0.0.0)
   build-essential (2.2.3)
-  chef-ingredient (0.8.1)
+  chef-ingredient (0.10.0)
     apt-chef (>= 0.0.0)
     yum-chef (>= 0.0.0)
   chef-vault (1.3.0)
