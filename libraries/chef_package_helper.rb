@@ -43,6 +43,7 @@ module QaChefServerCluster
     #
     #
     def reconfigure_product(resource)
+      install_mixlib_versioning
       chef_ingredient resource.product_name do
         action :reconfigure
       end
