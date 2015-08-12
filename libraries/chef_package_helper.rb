@@ -94,8 +94,9 @@ module QaChefServerCluster
         source url
       end
 
-      chef_ingredient "#{::File.basename(url)}" do
-         package_source local_source
+      package "#{::File.basename(url)}" do
+        source local_source
+        provider Chef::Provider::Package::Dpkg if platform_family?('debian')
       end
     end
 

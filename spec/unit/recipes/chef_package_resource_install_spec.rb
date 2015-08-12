@@ -86,7 +86,7 @@ describe 'chef_package_resource::install' do
       end
 
       it 'installs package' do
-        expect(chef_run).to install_chef_ingredient('package.ext')
+        expect(chef_run).to install_package('package.ext')
       end
     end
   end
