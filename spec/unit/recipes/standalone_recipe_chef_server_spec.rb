@@ -110,7 +110,7 @@ describe 'qa-chef-server-cluster::standalone' do
       end
 
       it 'uses chef_ingredient' do
-        expect(chef_run).to install_chef_ingredient('package.ext')
+        expect(chef_run).to install_package('package.ext')
       end
     end
 
