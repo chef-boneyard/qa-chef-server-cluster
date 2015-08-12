@@ -1,0 +1,16 @@
+topology 'ha'
+api_fqdn '<%= @chef_server_config['api_fqdn'] %>'
+
+<% @chef_servers.each do |server| -%>
+server '<%= server[:fqdn] %>',
+  :ipaddress => '<%= server[:ipaddress] %>',
+  <% if server[:bootstrap] -%>
+  :bootstrap => true,
+  <% end -%>
+  :role => '<%= server[:role] %>'
+<% end -%>
+
+backend_vip '<%= @ha_config['eni_ip'] %>',
+  :ipaddress => '<%= @ha_config['eni_ip'] %>',
+  :device => 'eth0',
+  :heartbeat_device => 'eth0'
