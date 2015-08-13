@@ -62,11 +62,11 @@ volume_secondary = aws_ebs_volume "#{node['qa-chef-server-cluster']['provisionin
 end
 
 # create and store aws network interface, all we want is the generated IP
-# eni = aws_network_interface "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
-#   subnet node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['subnet_id']
-#   security_groups node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['security_group_ids']
-#   aws_tags node['qa-chef-server-cluster']['aws']['machine_options']['aws_tags']
-# end
+eni = aws_network_interface "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
+  subnet node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['subnet_id']
+  security_groups node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['security_group_ids']
+  aws_tags node['qa-chef-server-cluster']['aws']['machine_options']['aws_tags']
+end
 
 # collect all ha data for chef-server.rb
 # TODO aws keys are added to ha_config which sets attributes on the machines
@@ -79,8 +79,7 @@ ruby_block 'fetch ebs volume and network interface info' do
   block do
     ha_config[:ebs_volume_id] = search(:aws_ebs_volume, "id:#{volume.name}").first[:reference][:id]
     ha_config[:ebs_device] = volume.device
-    #ha_config[:eni_ip] = eni.aws_object.private_ip_address
-    ha_config[:eni_ip] = '55.55.100.2'
+    ha_config[:eni_ip] = eni.aws_object.private_ip_address
   end
 end
 
@@ -132,7 +131,7 @@ download_logs node['secondary-backend']
 
 machine node['bootstrap-backend'] do
   run_list %w( qa-chef-server-cluster::ha-enterprise-chef-drbd-sync
-              qa-chef-server-cluster::ha-enterprise-chef-drbd-ready )
+               qa-chef-server-cluster::ha-enterprise-chef-drbd-ready )
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   attribute 'ha-config', ha_config
 end
