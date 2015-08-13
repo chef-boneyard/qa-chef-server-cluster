@@ -60,7 +60,7 @@ template ::File.join(current_server.config_path, current_server.config_file) do
             :topology => node['qa-chef-server-cluster']['topology'],
             :chef_servers => chef_servers,
             :ha_config => node['ha-config']
-  sensitive true
+#  sensitive true
 end
 
 file ::File.join(current_server.config_path, 'pivotal.pem') do
@@ -70,46 +70,31 @@ file ::File.join(current_server.config_path, 'pivotal.pem') do
   only_if { ::File.exists?(::File.join(current_server.config_path, 'pivotal.pem')) }
 end
 
-# UBUNTU 12.04 ONLY UNTIL REQUIRED
 package 'drbd8-utils'
 
-execute 'apt-get install gcc flex make' do
-  not_if 'modprobe drbd'
-  notifies :run, 'execute[wget http://oss.linbit.com/drbd/8.4/drbd-8.4.3.tar.gz]', :immediately
-end
+package 'gcc'
 
-execute 'wget http://oss.linbit.com/drbd/8.4/drbd-8.4.3.tar.gz' do
-  action :nothing
-  notifies :run, 'execute[tar xfvz drbd-8.4.3.tar.gz]', :immediately
-end
+package 'flex'
 
-execute 'tar xfvz drbd-8.4.3.tar.gz' do
-  action :nothing
-  notifies :run, 'execute[./configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc --with-km]', :immediately
-end
+package 'make'
+
+execute 'wget http://oss.linbit.com/drbd/8.4/drbd-8.4.3.tar.gz'
+
+execute 'tar xfvz drbd-8.4.3.tar.gz'
 
 execute './configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc --with-km' do
-  action :nothing
   cwd 'drbd-8.4.3'
-  notifies :run, 'execute[make KDIR=/lib/modules/`uname -r`/build]', :immediately
 end
 
 execute 'make KDIR=/lib/modules/`uname -r`/build' do
-  action :nothing
   cwd 'drbd-8.4.3'
-  notifies :run, 'execute[make install]', :immediately
 end
 
 execute 'make install' do
-  action :nothing
   cwd 'drbd-8.4.3'
 end
 
 execute 'modprobe drbd'
-
-service 'drbd' do
-  action :start
-end
 
 ruby_block 'reconfigure and kill' do
   block do
@@ -125,16 +110,20 @@ end
 
 # Ubuntu 12.04 step not included in docs
 # "on" nodes must match `hostname` value, so we strip the domain
-execute "sed -i s/.us-west-2.compute.internal/\/ /var/opt/opscode/drbd/etc/pc0.res" do
+execute 'remove domain from pc0.res' do
+  command 'sed -i s/.us-west-2.compute.internal/\/ /var/opt/opscode/drbd/etc/pc0.res'
   only_if 'cat /var/opt/opscode/drbd/etc/pc0.res | grep ".us-west-2.compute.internal"'
 end
 
 # Ubuntu 12.04 step not included in docs
 execute 'drbdadm create-md pc0' do
   only_if 'drbdadm dump-md pc0 2>&1 | grep "No valid meta data"'
-  notifies :run, 'execute[drbdadm up pc0]', :immediately
 end
 
 execute 'drbdadm up pc0' do
-  action :nothing
+  not_if 'drbdadm dump-md pc0 2>&1 | grep "Device \'0\' is configured!"'
+end
+
+service 'drbd' do
+  action :start
 end
