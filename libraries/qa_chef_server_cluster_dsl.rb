@@ -71,15 +71,6 @@ module QaChefServerCluster::DSL
   end
 
   def download_bootstrap_files(machine_name = node['bootstrap-backend'])
-    # download server files
-    %w{ actions-source.json webui_priv.pem }.each do |analytics_file|
-      machine_file "/etc/opscode-analytics/#{analytics_file}" do
-        local_path "#{node['qa-chef-server-cluster']['chef-server']['file-dir']}/#{analytics_file}"
-        machine machine_name
-        action :download
-      end
-    end
-
   # download more server files
     %w{ pivotal.pem webui_pub.pem private-chef-secrets.json }.each do |opscode_file|
       machine_file "/etc/opscode/#{opscode_file}" do
@@ -137,7 +128,6 @@ module QaChefServerCluster::DSL
   end
 
   def check_backend_ha_status(expected_status)
-    return if node['qa-chef-server-cluster']['chef-server']['version'].nil?
     ruby_block "is #{expected_status} backend?" do
       block do
         current_cluster_status = Mixlib::ShellOut.new("cat /var/opt/opscode/keepalived/current_cluster_status")
