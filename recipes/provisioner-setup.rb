@@ -76,7 +76,6 @@ end
 
 # set attribute so clusters know where to find bootstrapped server files
 node.default['qa-chef-server-cluster']['chef-server']['files'] = {
-  '/etc/opscode/webui_priv.pem' => "#{chef_server_files_dir}/webui_priv.pem",
   '/etc/opscode/webui_pub.pem' => "#{chef_server_files_dir}/webui_pub.pem",
   '/etc/opscode/pivotal.pem' => "#{chef_server_files_dir}/pivotal.pem",
   '/etc/opscode/private-chef-secrets.json' => "#{chef_server_files_dir}/private-chef-secrets.json"

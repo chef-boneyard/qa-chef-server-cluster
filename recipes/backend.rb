@@ -65,7 +65,6 @@ end
 
 chef_package current_server.package_name do
   action :reconfigure
-  not_if { node['qa-chef-server-cluster']['chef-server']['version'].nil? }
 end
 
 file ::File.join(current_server.config_path, 'pivotal.pem') do
