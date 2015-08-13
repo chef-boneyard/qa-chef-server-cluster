@@ -72,7 +72,7 @@ module QaChefServerCluster::DSL
 
   def download_bootstrap_files(machine_name = node['bootstrap-backend'])
   # download more server files
-    %w{ pivotal.pem webui_pub.pem private-chef-secrets.json }.each do |opscode_file|
+    %w{ pivotal.pem webui_pub.pem private-chef-secrets.json webui_priv.pem}.each do |opscode_file|
       machine_file "/etc/opscode/#{opscode_file}" do
         local_path "#{node['qa-chef-server-cluster']['chef-server']['file-dir']}/#{opscode_file}"
         machine machine_name
