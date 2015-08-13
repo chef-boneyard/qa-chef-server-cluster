@@ -63,6 +63,7 @@ end
 
 # create and store aws network interface, all we want is the generated IP
 eni = aws_network_interface "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
+  machine node['bootstrap-backend']
   subnet node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['subnet_id']
   security_groups node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['security_group_ids']
   aws_tags node['qa-chef-server-cluster']['aws']['machine_options']['aws_tags']
@@ -102,9 +103,9 @@ aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha-secondar
 end
 
 # destroy network interface, its served its purpose
-aws_network_interface "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
-  action :destroy
-end
+# aws_network_interface "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
+#   action :destroy
+# end
 
 # converge bootstrap server with all the bits!
 machine node['bootstrap-backend'] do
