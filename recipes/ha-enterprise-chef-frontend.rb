@@ -54,7 +54,6 @@ template ::File.join(current_server.config_path, current_server.config_file) do
             :chef_servers => chef_servers,
             :ha_config => node['ha-config']
   notifies :run, 'execute[add hosts entry]'
-  sensitive true
 end
 
 chef_package current_server.package_name do

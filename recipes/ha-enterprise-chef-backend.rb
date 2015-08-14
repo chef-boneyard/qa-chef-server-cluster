@@ -60,7 +60,6 @@ template ::File.join(current_server.config_path, current_server.config_file) do
             :topology => node['qa-chef-server-cluster']['topology'],
             :chef_servers => chef_servers,
             :ha_config => node['ha-config']
-#  sensitive true
 end
 
 file ::File.join(current_server.config_path, 'pivotal.pem') do

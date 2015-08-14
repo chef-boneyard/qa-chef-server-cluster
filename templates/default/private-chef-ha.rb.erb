@@ -4,10 +4,12 @@ api_fqdn '<%= @chef_server_config['api_fqdn'] %>'
 <% @chef_servers.each do |server| -%>
 server '<%= server[:fqdn] %>',
   :ipaddress => '<%= server[:ipaddress] %>',
-  :role => '<%= server[:role] %>',
   <% if server[:bootstrap] -%>
-  :bootstrap => true
+  :bootstrap => true,
+  <% end -%>
+  :role => '<%= server[:role] %>'
 
+  <% if server[:bootstrap] -%>
 backend_vip '<%= server[:ipaddress] %>',
   :ipaddress => '<%= server[:ipaddress] %>',
   :device => 'eth0'
