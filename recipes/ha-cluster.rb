@@ -18,6 +18,11 @@
 # limitations under the License.
 #
 
+if current_server.product_name == 'enterprise_chef'
+  include_recipe 'qa-chef-server-cluster::ha-enterprise-chef-cluster'
+  return
+end
+
 include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 
 # create machines and set attributes
