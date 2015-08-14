@@ -24,6 +24,6 @@ pedant_cmd = "#{current_server.ctl_exec} test"
 
 pedant_options = node['qa-chef-server-cluster']['chef-server-ctl-test-options']
 
-pedant_cmd << " #{pedant_options}" unless pedant_options.empty?
+pedant_cmd << " #{pedant_options}" unless pedant_options.nil?
 
 execute pedant_cmd
