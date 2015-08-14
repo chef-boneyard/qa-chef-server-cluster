@@ -20,12 +20,14 @@
 
 include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 
-machine node['frontend'] do
-  run_list [ 'qa-chef-server-cluster::ha-upgrade-stop-all-services' ]
-end
+machine_batch do
+  machine node['frontend'] do
+    run_list [ 'qa-chef-server-cluster::ha-upgrade-stop-all-services' ]
+  end
 
-machine node['secondary-backend'] do
-  run_list [ 'qa-chef-server-cluster::ha-upgrade-stop-keepalived' ]
+  machine node['secondary-backend'] do
+    run_list [ 'qa-chef-server-cluster::ha-upgrade-stop-keepalived' ]
+  end
 end
 
 machine_batch do

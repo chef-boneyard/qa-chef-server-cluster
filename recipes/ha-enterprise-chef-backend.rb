@@ -69,14 +69,6 @@ file ::File.join(current_server.config_path, 'pivotal.pem') do
   only_if { ::File.exists?(::File.join(current_server.config_path, 'pivotal.pem')) }
 end
 
-package 'drbd8-utils'
-
-package 'gcc'
-
-package 'flex'
-
-package 'make'
-
 execute 'wget http://oss.linbit.com/drbd/8.4/drbd-8.4.3.tar.gz'
 
 execute 'tar xfvz drbd-8.4.3.tar.gz'
@@ -111,7 +103,7 @@ end
 # "on" nodes must match `hostname` value, so we strip the domain
 execute 'remove domain from pc0.res' do
   command 'sed -i s/.us-west-2.compute.internal/\/ /var/opt/opscode/drbd/etc/pc0.res'
-  only_if 'cat /var/opt/opscode/drbd/etc/pc0.res | grep ".us-west-2.compute.internal"'
+  only_if 'grep ".us-west-2.compute.internal" /var/opt/opscode/drbd/etc/pc0.res'
 end
 
 # Ubuntu 12.04 step not included in docs
