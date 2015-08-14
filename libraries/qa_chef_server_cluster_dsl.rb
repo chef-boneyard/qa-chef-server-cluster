@@ -24,7 +24,7 @@ module QaChefServerCluster::DSL
   include ChefIngredientCookbook::Helpers
   include QaChefServerCluster::ServerFlavorHelper
 
-  SUPPORTED_FLAVORS = %w( chef_server enterprise_chef )
+  SUPPORTED_FLAVORS = %w( chef_server enterprise_chef open_source_chef )
 
   def current_flavor
     flavor = node['qa-chef-server-cluster']['chef-server']['flavor']
@@ -34,36 +34,23 @@ module QaChefServerCluster::DSL
     flavor
   end
 
-  def set_to_a_latest_version?(attribute)
-    [ :latest, :latest_stable, :latest_current,
-      'latest', 'latest_stable', 'latest_current',
-      'latest-stable', 'latest-current'
-    ].include?(attribute) ? true : false
-  end
-
   #
   # Returns a ChefServer instance for the current_flavor
   #
   def current_server
     case current_flavor
     when 'chef_server'
-      # TODO this is a such an ugly hack... must fix
-      version = node['qa-chef-server-cluster']['chef-server']['version']
-      version = '0' if version.nil?
-      if set_to_a_latest_version?(version) || version.start_with?('12')
-        current_server = chef_server
-      else
-        current_server = open_source_chef
-      end
+      chef_server
+    when 'open_source_chef'
+      open_source_chef
     when 'enterprise_chef'
-      current_server = enterprise_chef
+      enterprise_chef
     else
       raise "Chef Server flavor '#{current_flavor}' not supported.  Must be one of: #{SUPPORTED_FLAVORS}"
     end
-    current_server
   end
 
-  def create_chef_server_directory  
+  def create_chef_server_directory
     directory current_server.config_path do
       mode 0755
       recursive true
