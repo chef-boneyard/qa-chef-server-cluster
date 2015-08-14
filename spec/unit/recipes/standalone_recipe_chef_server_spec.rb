@@ -6,7 +6,6 @@ describe 'qa-chef-server-cluster::standalone' do
       let(:chef_run) do
         ChefSpec::SoloRunner.new do |node|
           node.set['qa-chef-server-cluster']['chef-server']['flavor'] = 'chef_server'
-          node.set['qa-chef-server-cluster']['chef-server']['version'] = :latest
         end.converge(described_recipe)
       end
 
@@ -18,8 +17,7 @@ describe 'qa-chef-server-cluster::standalone' do
     context 'when 11.x version' do
       let(:chef_run) do
         ChefSpec::SoloRunner.new do |node|
-          node.set['qa-chef-server-cluster']['chef-server']['flavor'] = 'chef_server'
-          node.set['qa-chef-server-cluster']['chef-server']['version'] = '11.0.0'
+          node.set['qa-chef-server-cluster']['chef-server']['flavor'] = 'open_source_chef'
         end.converge(described_recipe)
       end
 

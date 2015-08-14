@@ -5,7 +5,6 @@ describe 'qa-chef-server-cluster::generate-test-data' do
     let(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
         node.set['qa-chef-server-cluster']['chef-server']['flavor'] = 'chef_server'
-        node.set['qa-chef-server-cluster']['chef-server']['version'] = :latest
       end.converge(described_recipe)
     end
 
@@ -31,8 +30,7 @@ describe 'qa-chef-server-cluster::generate-test-data' do
   context 'when open source chef' do
     let(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['qa-chef-server-cluster']['chef-server']['flavor'] = 'chef_server'
-        node.set['qa-chef-server-cluster']['chef-server']['version'] = '11.0.0'
+        node.set['qa-chef-server-cluster']['chef-server']['flavor'] = 'open_source_chef'
       end.converge(described_recipe)
     end
 
@@ -78,6 +76,18 @@ describe 'qa-chef-server-cluster::generate-test-data' do
 
     it 'runs setup script' do
       expect(chef_run).to run_execute('sudo ./setup-ec.sh') 
+    end
+  end
+
+  context 'when bad server' do
+    let(:chef_run) do
+      ChefSpec::SoloRunner.new do |node|
+        node.set['qa-chef-server-cluster']['chef-server']['flavor'] = 'bad_server'
+      end.converge(described_recipe)
+    end
+
+    it 'raises an exception' do
+      expect { chef_run }.to raise_error(RuntimeError, /bad_server/)
     end
   end
 end
