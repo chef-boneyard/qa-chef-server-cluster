@@ -31,7 +31,7 @@ node.default['qa-chef-server-cluster']['chef-server'].tap do |chef_server|
   # TODO Consider...
   # chef_server['artifactory']['integration_builds'] = false
   # chef_server['artifactory']['repo'] = 'omnibus-stable-local'
-  chef_server['flavor'] = 'chef_server' # 'enterprise_chef'
+  chef_server['flavor'] = 'chef_server'
   chef_server['api_fqdn'] = 'api.chef.sh'
   chef_server['install_method'] = 'artifactory' # 'packagecloud', 'chef-server-ctl'
   chef_server['url'] = nil # setting this to a direct download url path will override all install_methods
