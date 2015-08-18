@@ -5,9 +5,6 @@ module QaChefServerCluster
     include ChefIngredientCookbook::Helpers
     include QaChefServerCluster::ServerFlavorHelper
 
-    #
-    #
-    #
     def install_product(resource)
       if resource.package_url
         install_via_url(resource.package_url)
@@ -39,10 +36,8 @@ module QaChefServerCluster
       end
     end
 
-    #
-    #
-    #
     def reconfigure_product(resource)
+      install_mixlib_versioning
       chef_ingredient resource.product_name do
         action :reconfigure
       end

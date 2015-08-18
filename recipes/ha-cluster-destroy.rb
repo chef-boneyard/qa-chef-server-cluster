@@ -20,15 +20,16 @@
 
 include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 
-aws_network_interface "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
-  action :destroy
-end
-
 machine_batch do
   machines node['bootstrap-backend'], node['secondary-backend'], node['frontend']
   action :destroy
 end
 
 aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
+  action :destroy
+end
+
+# ec ha
+aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha-secondary" do
   action :destroy
 end

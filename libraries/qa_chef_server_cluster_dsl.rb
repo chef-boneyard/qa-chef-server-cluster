@@ -188,7 +188,7 @@ module QaChefServerCluster::DSL
       # upgrade from chef-server
       server = open_source_chef
     else
-      server = nil
+      raise 'No installed Chef Server package found.'
     end
     server
   end
