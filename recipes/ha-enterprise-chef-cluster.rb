@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: qa-chef-server-cluster
-# Recipes:: ha-cluster
+# Recipes:: ha-enterprise-chef-cluster
 #
 # Author: Patrick Wright <patrick@chef.io>
 # Copyright (C) 2015, Chef Software, Inc. <legal@getchef.com>
@@ -17,6 +17,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+# UBUNTU 12.04 ONLY UNTIL REQUIRED
 
 include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 
@@ -43,7 +45,16 @@ end
 # create and store aws ebs volume
 volume = aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
   availability_zone "#{node['qa-chef-server-cluster']['aws']['availability_zone']}"
-  size 1
+  size 8
+  # volume_type :io1
+  # iops 300 # size * 30, 3000/4000? max default
+  device '/dev/xvdf'
+  aws_tags node['qa-chef-server-cluster']['aws']['machine_options']['aws_tags']
+end
+
+volume_secondary = aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha-secondary" do
+  availability_zone "#{node['qa-chef-server-cluster']['aws']['availability_zone']}"
+  size 8
   # volume_type :io1
   # iops 300 # size * 30, 3000/4000? max default
   device '/dev/xvdf'
@@ -61,7 +72,7 @@ ruby_block 'fetch ebs volume and network interface info' do
   block do
     ha_config[:ebs_volume_id] = search(:aws_ebs_volume, "id:#{volume.name}").first[:reference][:id]
     ha_config[:ebs_device] = volume.device
-    ha_config[:eni_ip] = '44.44.99.101'
+    ha_config[:eni_ip] = '44.44.100.99'
   end
 end
 
@@ -70,16 +81,23 @@ end
 aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
   machine node['bootstrap-backend']
   availability_zone "#{node['qa-chef-server-cluster']['aws']['availability_zone']}"
-  size 1
+  size 8
+  device '/dev/xvdf'
+  aws_tags node['qa-chef-server-cluster']['aws']['machine_options']['aws_tags']
+end
+
+aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha-secondary" do
+  machine node['secondary-backend']
+  availability_zone "#{node['qa-chef-server-cluster']['aws']['availability_zone']}"
+  size 8
   device '/dev/xvdf'
   aws_tags node['qa-chef-server-cluster']['aws']['machine_options']['aws_tags']
 end
 
 # converge bootstrap server with all the bits!
 machine node['bootstrap-backend'] do
-  run_list %w( qa-chef-server-cluster::ha-install-chef-ha-package
-               qa-chef-server-cluster::ha-lvm-volume-group
-               qa-chef-server-cluster::backend )
+  run_list %w( qa-chef-server-cluster::ha-enterprise-chef-lvm-volume-group
+               qa-chef-server-cluster::ha-enterprise-chef-backend )
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   attribute 'ha-config', ha_config
 end
@@ -90,9 +108,8 @@ download_bootstrap_files
 
 # converge secondary server with all the bits!
 machine node['secondary-backend'] do
-  run_list %w(qa-chef-server-cluster::ha-install-chef-ha-package
-              lvm
-              qa-chef-server-cluster::backend)
+  run_list %w( qa-chef-server-cluster::ha-enterprise-chef-lvm-volume-group
+               qa-chef-server-cluster::ha-enterprise-chef-backend )
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   attribute 'ha-config', ha_config
   files node['qa-chef-server-cluster']['chef-server']['files']
@@ -100,9 +117,22 @@ end
 
 download_logs node['secondary-backend']
 
+machine node['bootstrap-backend'] do
+  run_list %w( qa-chef-server-cluster::ha-enterprise-chef-drbd-sync
+               qa-chef-server-cluster::ha-enterprise-chef-drbd-ready )
+  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
+  attribute 'ha-config', ha_config
+end
+
+machine node['secondary-backend'] do
+  run_list %w( qa-chef-server-cluster::ha-enterprise-chef-drbd-ready )
+  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
+  attribute 'ha-config', ha_config
+end
+
 # converge frontend server with all the bits!
 machine node['frontend'] do
-  run_list [ 'qa-chef-server-cluster::frontend' ]
+  run_list [ 'qa-chef-server-cluster::ha-enterprise-chef-frontend' ]
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   attribute 'ha-config', ha_config
   files node['qa-chef-server-cluster']['chef-server']['files']
