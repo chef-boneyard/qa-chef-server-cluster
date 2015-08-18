@@ -38,14 +38,17 @@ end
 machine_batch do
   machine node['bootstrap-backend'] do
     run_list [ 'qa-chef-server-cluster::ha-install-chef-server-core-package', 'qa-chef-server-cluster::ha-install-chef-ha-package' ]
+    attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   end
 
   machine node['secondary-backend'] do
     run_list [ 'qa-chef-server-cluster::ha-install-chef-server-core-package', 'qa-chef-server-cluster::ha-install-chef-ha-package' ]
+    attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   end
 
   machine node['frontend'] do
     run_list [ 'qa-chef-server-cluster::ha-install-chef-server-core-package' ]
+    attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
   end
 end
 

@@ -20,33 +20,40 @@
 
 include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 
+# private-chef-ctl commands
 machine_batch do
   machine node['frontend'] do
     run_list [ 'qa-chef-server-cluster::ha-upgrade-stop-all-services' ]
+    attribute %w[ qa-chef-server-cluster chef-server flavor ], 'enterprise_chef'
   end
 
   machine node['secondary-backend'] do
     run_list [ 'qa-chef-server-cluster::ha-upgrade-stop-keepalived' ]
+    attribute %w[ qa-chef-server-cluster chef-server flavor ], 'enterprise_chef'
   end
 end
 
+# chef-server-ctl commands
 machine_batch do
   machine node['bootstrap-backend'] do
+    attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
     run_list [ 'qa-chef-server-cluster::ha-install-chef-server-core-package' ]
   end
 
   machine node['secondary-backend'] do
+    attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
     run_list [ 'qa-chef-server-cluster::ha-install-chef-server-core-package' ]
   end
 
   machine node['frontend'] do
+    attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
     run_list [ 'qa-chef-server-cluster::ha-install-chef-server-core-package' ]
   end
 end
 
 machine node['bootstrap-backend'] do
   run_list [ 'qa-chef-server-cluster::ha-upgrade-stop-all-services',
-             'qa-chef-server-cluster::ha-upgrade-exec' ]
+            'qa-chef-server-cluster::ha-upgrade-exec' ]
 end
 
 download_bootstrap_files
