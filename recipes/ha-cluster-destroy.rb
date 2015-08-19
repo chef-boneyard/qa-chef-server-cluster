@@ -33,3 +33,7 @@ end
 aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha-secondary" do
   action :destroy
 end
+
+aws_network_interface "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
+  action :destroy
+end

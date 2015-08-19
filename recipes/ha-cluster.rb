@@ -50,6 +50,13 @@ volume = aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha
   aws_tags node['qa-chef-server-cluster']['aws']['machine_options']['aws_tags']
 end
 
+# create and store aws network interface, all we want is the generated IP with the same network segment
+eni = aws_network_interface "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
+  subnet node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['subnet_id']
+  security_groups node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['security_group_ids']
+  aws_tags node['qa-chef-server-cluster']['aws']['machine_options']['aws_tags']
+end
+
 # collect all ha data for chef-server.rb
 # TODO aws keys are added to ha_config which sets attributes on the machines
 #  this exposes the keys in plain text to the client output. fix this.
@@ -61,7 +68,7 @@ ruby_block 'fetch ebs volume and network interface info' do
   block do
     ha_config[:ebs_volume_id] = search(:aws_ebs_volume, "id:#{volume.name}").first[:reference][:id]
     ha_config[:ebs_device] = volume.device
-    ha_config[:eni_ip] = '44.44.99.101'
+    ha_config[:eni_ip] = eni.aws_object.private_ip_address
   end
 end
 
@@ -73,6 +80,11 @@ aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
   size 1
   device '/dev/xvdf'
   aws_tags node['qa-chef-server-cluster']['aws']['machine_options']['aws_tags']
+end
+
+# destroy network interface, its served its purpose
+aws_network_interface "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
+  action :destroy
 end
 
 # converge bootstrap server with all the bits!
