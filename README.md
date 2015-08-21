@@ -1,6 +1,8 @@
 qa-chef-server-cluster Cookbook
 ===============================
-This cookbook installs and upgrades Chef Server clusters as defined in [Chef Docs](http://docs.chef.io/server/). This includes:
+This cookbook installs and upgrades Chef Server clusters as defined in [Chef Docs](http://docs.chef.io/server/). The recipes aim to follow the same procedures and commands in the prescribed sequences.  Since the docs are manual instructions, it should be understood that the recipes verify the published installation process versus an optimized automated solution.
+
+This includes:
 * Chef Server 12
 * Enterprise Chef
 * Open Source Chef
@@ -23,6 +25,35 @@ cookbook_path [ "#{current_dir}/../cookbooks", "#{current_dir}/../berks-cookbook
 cookbook 'omnibus-artifactory-artifact', github: 'opscode-cookbooks/omnibus-artifactory-artifact'
 cookbook 'qa-chef-server-cluster', github: 'chef/qa-chef-server-cluster'
 ```
+
+# Main Cluster Recipes
+Current supported topologies are `standalone-server`, `tier-cluster` and `ha-cluster`.
+
+`<topology>`: Creates and install the initial cluster
+
+`<topology>-upgrade`: Upgrades an existing cluster
+
+`<topology>-generate-test-data`: Loads data using [Chef Server Data Generator](https://github.com/chef/chef-server-data-generator)
+
+`<topology>-test`: Executes cluster tests (currently runs pedant)
+
+`<topology>-destroy`: Destroys the cluster
+
+## Other Recipes
+`<topology>-logs`: Runs `chef-server-ctl gather-logs`, and downloads the archives and any error logs (chef-stacktrace.out)
+Note: the install and upgrade provision recipes download logs during execution.  This is intended to be used on-demand.
+
+`ha-cluster-trigger-failover`: Triggers an HA failover and verifies backend statuses. (Currently only fails over from initial bootstrap for Chef Server versions.)
+
+`ha-enterprise-chef-ha-cluster`: Installs EC HA clusters. *NOTE: recommend using m3.large instance types for EC HA clusters.*
+
+`ha-enterprise-chef-ha-cluster-upgrade`: Upgrades EC HA clusters
+
+## Install and Upgrade Paths
+The cookbook provisions two specific paths for installing new servers and upgrading servers rather than a single provisioning point of entry.  This was done for the following reasons:
+* The Chef Docs define explicit install and upgrade paths, and it was important to maintain parity
+* Allows installs to run again if an error is encountered without the risk of accidentally running upgrade procudures
+* Allows devs to insert custom steps and different stages of the install/upgrade process like loading data, custom config, tools, etc.
 
 # Attributes
 The client run is driven by the configuration of the attributes.
@@ -96,34 +127,6 @@ Name | Description | Type | Default
 ### chef-server-ctl
 This only works for installing addons on Chef Server 12.  This will execute `chef-server-ctl install addon_name` for the configured package.
 
-# Main Cluster Recipes
-Current supported topologies are `standalone-server`, `tier-cluster` and `ha-cluster`.
-
-`<topology>`: Creates and install the initial cluster
-
-`<topology>-upgrade`: Upgrades an existing cluster
-
-`<topology>-generate-test-data`: Loads data using [Chef Server Data Generator](https://github.com/chef/chef-server-data-generator)
-
-`<topology>-test`: Executes cluster tests (currently runs pedant)
-
-`<topology>-destroy`: Destroys the cluster
-
-## Other Recipes
-`<topology>-logs`: Runs `chef-server-ctl gather-logs`, and downloads the archives and any error logs (chef-stacktrace.out)
-Note: the install and upgrade provision recipes download logs during execution.  This is intended to be used on-demand.
-
-`ha-cluster-trigger-failover`: Triggers an HA failover and verifies backend statuses. (Currently only fails over from initial bootstrap)
-
-`install`: Will run the appropriate install recipes when the `topology` attribute is configured.
-
-`upgrade`: Will run the appropriate upgrade recipes when the `topology` attribute is configured.
-
-`load-data`: Will run the appropriate data loading recipes when the `topology` attribute is configured.
-
-`destroy`: Will run the appropriate destroy recipes when the `topology` attribute is configured.
-
-
 ## Provisioning Ids
 The machine resources and other cluster-associated provisioning resources (ebs volumes, etc) will need to have unique names in order for a chef-repo to support multiple instances of topology clusters. Override the `['qa-chef-server-cluster']['provisioning-id']` attibute.  The default is `default`.
 
@@ -135,6 +138,7 @@ The machine resources and other cluster-associated provisioning resources (ebs v
 |HA|aws_ebs_volume, aws_eni|`id-ha`|
 
 ## Generating Environments with qa-csc-config
+**DEPRECATED** This project is out of date, but could be updated if needed.   
 Creating envionment files manually is a chore.  `qa-chef-server-cluster` has a counterpart utility named `qa-csc-config`. You can learn all about `qa-csc-config` by seeing the [README](https://github.com/chef/qa-csc-config)
 
 # License and Author
