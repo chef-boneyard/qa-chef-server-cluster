@@ -1,4 +1,4 @@
-source "https://supermarket.getchef.com"
+source 'https://supermarket.getchef.com'
 
 metadata
 
@@ -16,4 +16,3 @@ end
 group :integration do
   fixture 'chef_package_resource'
 end
-

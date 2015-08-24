@@ -27,7 +27,7 @@ execute 'git clone https://github.com/chef/chef-server-data-generator.git' do
   cwd '/tmp'
 end
 
-generator_dir = "/tmp/chef-server-data-generator"
+generator_dir = '/tmp/chef-server-data-generator'
 
 # execute 'git checkout tc/wtf-git-osc-support' do
 #   cwd generator_dir
@@ -39,11 +39,11 @@ end
 
 case current_server.product_name
 when 'enterprise_chef', 'chef_server'
-  knife_config = "knife-in-guest-ec.rb"
-  setup_cmd = "setup-ec.sh"
+  knife_config = 'knife-in-guest-ec.rb'
+  setup_cmd = 'setup-ec.sh'
 when 'open_source_chef'
-  knife_config = "knife-in-guest-osc.rb"
-  setup_cmd = "setup-osc.sh"
+  knife_config = 'knife-in-guest-osc.rb'
+  setup_cmd = 'setup-osc.sh'
 end
 
 cookbook_file "#{generator_dir}/.chef/knife-in-guest.rb" do
@@ -56,7 +56,7 @@ end
 
 execute "sudo cat private-chef.rb >> #{current_config.path}" do
   cwd generator_dir
-  only_if { current_server.product_name == 'enterprise_chef'} 
+  only_if { current_server.product_name == 'enterprise_chef' }
 end
 
 chef_package current_server.package_name do

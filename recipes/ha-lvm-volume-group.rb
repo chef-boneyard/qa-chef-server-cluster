@@ -21,7 +21,7 @@
 include_recipe 'lvm'
 
 lvm_volume_group 'chef' do
-  physical_volumes [ node['ha-config']['ebs_device'] ]
+  physical_volumes [node['lvm_phyiscal_volume']]
 
   logical_volume 'data' do
     size '85%VG'

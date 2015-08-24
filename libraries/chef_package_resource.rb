@@ -15,34 +15,37 @@
 # limitations under the License.
 #
 
-class Chef::Resource::ChefPackage < Chef::Resource::LWRPBase
-  resource_name :chef_package
+class Chef
+  class Resource
+    class ChefPackage < Chef::Resource::LWRPBase
+      resource_name :chef_package
 
-  actions :install, :upgrade, :reconfigure
-  default_action :install
-  
-  # name of the project
-  attribute :product_name, kind_of: String, name_attribute: true
-  
-  # run reconfigure after install or upgrade
-  attribute :reconfigure, kind_of: [TrueClass, FalseClass], default: false
+      actions :install, :upgrade, :reconfigure
+      default_action :install
 
-  #TODO chef_ingredient config attr
-  # project configuration
-  attribute :config, kind_of: String, default: nil
-  
-  # installation method
-  attribute :install_method, kind_of: String, default: nil, equal_to: %w( artifactory packagecloud chef-server-ctl )
+      # name of the project
+      attribute :product_name, kind_of: String, name_attribute: true
 
-  # Attribute to install package from remote file
-  attribute :package_url, kind_of: String, default: nil
+      # run reconfigure after install or upgrade
+      attribute :reconfigure, kind_of: [TrueClass, FalseClass], default: false
 
-  # Shared version for install methods
-  attribute :version, kind_of: [String, Symbol], default: nil
+      # chef_ingredient config
+      attribute :config, kind_of: String, default: nil
 
-  # Artifactory specific
-  attribute :integration_builds, kind_of: [TrueClass, FalseClass, NilClass], default: nil
+      # installation method
+      attribute :install_method, kind_of: String, default: nil, equal_to: %w( artifactory packagecloud chef-server-ctl )
 
-  # Artifactory specific
-  attribute :repository, kind_of: String, default: nil
+      # Attribute to install package from remote file
+      attribute :package_url, kind_of: String, default: nil
+
+      # Shared version for install methods
+      attribute :version, kind_of: [String, Symbol], default: nil
+
+      # Artifactory specific
+      attribute :integration_builds, kind_of: [TrueClass, FalseClass, NilClass], default: nil
+
+      # Artifactory specific
+      attribute :repository, kind_of: String, default: nil
+    end
+  end
 end

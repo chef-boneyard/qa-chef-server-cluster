@@ -1,6 +1,6 @@
 require 'chef_spec_helper'
 
-describe 'chef_package_resource::install' do  
+describe 'chef_package_resource::install' do
   context 'install chef-server' do
     context 'no version is specified' do
       let(:chef_run) do
@@ -19,6 +19,7 @@ describe 'chef_package_resource::install' do
 
       it 'sets up the resource' do
         expect(chef_run).to install_chef_package('chef-server-artifactory').with(
+          product_name: 'chef-server',
           install_method: 'artifactory',
           version: '12.1.1',
           integration_builds: false,
@@ -44,13 +45,14 @@ describe 'chef_package_resource::install' do
       end
     end
 
-    context 'using packagecloud' do  
+    context 'using packagecloud' do
       let(:chef_run) do
         ChefSpec::SoloRunner.new(step_into: ['chef_package']).converge(described_recipe)
       end
 
       it 'sets up the resource' do
         expect(chef_run).to install_chef_package('chef-server-packagecloud').with(
+          product_name: 'chef-server',
           install_method: 'packagecloud',
           version: '12.1.1'
         )
@@ -74,6 +76,7 @@ describe 'chef_package_resource::install' do
 
       it 'sets up the resource' do
         expect(chef_run).to install_chef_package('chef-server-url').with(
+          product_name: 'chef-server',
           install_method: 'artifactory', # bypassed
           package_url: 'https://mydomain.com/package.ext'
         )
@@ -86,7 +89,9 @@ describe 'chef_package_resource::install' do
       end
 
       it 'installs package' do
-        expect(chef_run).to install_package('package.ext')
+        expect(chef_run).to install_chef_ingredient('chef-server').with(
+          package_source: "#{::File.join(Chef::Config.file_cache_path, ::File.basename('/var/chef/cache/package.ext'))}"
+        )
       end
     end
   end

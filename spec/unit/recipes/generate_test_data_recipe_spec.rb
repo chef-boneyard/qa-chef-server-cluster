@@ -13,7 +13,7 @@ describe 'qa-chef-server-cluster::generate-test-data' do
     end
 
     it 'does not append existing private-chef config to current config' do
-      expect(chef_run).not_to run_execute("sudo cat private-chef.rb >> /etc/opscode/chef-server.rb")
+      expect(chef_run).not_to run_execute('sudo cat private-chef.rb >> /etc/opscode/chef-server.rb')
     end
 
     it 'creates the knife config' do
@@ -23,7 +23,7 @@ describe 'qa-chef-server-cluster::generate-test-data' do
     end
 
     it 'runs setup script' do
-      expect(chef_run).to run_execute('sudo ./setup-ec.sh') 
+      expect(chef_run).to run_execute('sudo ./setup-ec.sh')
     end
   end
 
@@ -39,7 +39,7 @@ describe 'qa-chef-server-cluster::generate-test-data' do
     end
 
     it 'does not append existing private-chef config to current config' do
-      expect(chef_run).not_to run_execute("sudo cat private-chef.rb >> /etc/chef-server/chef-server.rb")
+      expect(chef_run).not_to run_execute('sudo cat private-chef.rb >> /etc/chef-server/chef-server.rb')
     end
 
     it 'creates the knife config' do
@@ -49,7 +49,7 @@ describe 'qa-chef-server-cluster::generate-test-data' do
     end
 
     it 'runs setup script' do
-      expect(chef_run).to run_execute('sudo ./setup-osc.sh') 
+      expect(chef_run).to run_execute('sudo ./setup-osc.sh')
     end
   end
 
@@ -65,9 +65,9 @@ describe 'qa-chef-server-cluster::generate-test-data' do
     end
 
     it 'appends existing private-chef config to current config' do
-      expect(chef_run).to run_execute("sudo cat private-chef.rb >> /etc/opscode/private-chef.rb")
+      expect(chef_run).to run_execute('sudo cat private-chef.rb >> /etc/opscode/private-chef.rb')
     end
-   
+
     it 'creates the knife config' do
       expect(chef_run).to create_cookbook_file('/tmp/chef-server-data-generator/.chef/knife-in-guest.rb').with(
         source: 'knife-in-guest-ec.rb'
@@ -75,7 +75,7 @@ describe 'qa-chef-server-cluster::generate-test-data' do
     end
 
     it 'runs setup script' do
-      expect(chef_run).to run_execute('sudo ./setup-ec.sh') 
+      expect(chef_run).to run_execute('sudo ./setup-ec.sh')
     end
   end
 

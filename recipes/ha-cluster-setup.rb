@@ -25,3 +25,16 @@ node.default['qa-chef-server-cluster']['topology'] = 'ha'
 node.default['bootstrap-backend'] = "#{node['qa-chef-server-cluster']['provisioning-id']}-ha-bootstrap-backend"
 node.default['secondary-backend'] = "#{node['qa-chef-server-cluster']['provisioning-id']}-ha-secondary-backend"
 node.default['frontend'] = "#{node['qa-chef-server-cluster']['provisioning-id']}-ha-frontend"
+
+# Define the aws_instance resource and managed machine resources
+aws_instance node['bootstrap-backend'] do
+  action :nothing
+end
+
+aws_instance node['secondary-backend'] do
+  action :nothing
+end
+
+aws_instance node['frontend'] do
+  action :nothing
+end
