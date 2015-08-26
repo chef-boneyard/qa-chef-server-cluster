@@ -1,3 +1,4 @@
+# rubocop:disable Style/SingleSpaceBeforeFirstArg
 name             'qa-chef-server-cluster'
 maintainer       'Patrick Wright'
 maintainer_email 'patrick@chef.io'
@@ -11,3 +12,4 @@ depends 'lvm'
 depends 'apt'
 depends 'build-essential'
 depends 'packagecloud'
+# rubocop:enable Style/SingleSpaceBeforeFirstArg

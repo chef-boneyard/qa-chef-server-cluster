@@ -24,24 +24,25 @@ include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 machine_batch do
   machine node['bootstrap-backend'] do
     action :ready
-    attribute %w[ chef-server-cluster bootstrap enable ], true
-    attribute %w[ chef-server-cluster role ], 'backend'
+    attribute %w(chef-server-cluster bootstrap enable), true
+    attribute %w(chef-server-cluster role), 'backend'
   end
 
   machine node['secondary-backend'] do
     action :ready
-    attribute %w[ chef-server-cluster bootstrap enable ], false
-    attribute %w[ chef-server-cluster role ], 'backend'
+    attribute %w(chef-server-cluster bootstrap enable), false
+    attribute %w(chef-server-cluster role), 'backend'
   end
 
   machine node['frontend'] do
     action :ready
-    attribute %w[ chef-server-cluster role ], 'frontend'
+    attribute %w(chef-server-cluster role), 'frontend'
   end
 end
 
 # create and store aws ebs volume
 volume = aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
+  machine node['bootstrap-backend']
   availability_zone "#{node['qa-chef-server-cluster']['aws']['availability_zone']}"
   size 1
   # volume_type :io1
@@ -57,29 +58,47 @@ eni = aws_network_interface "#{node['qa-chef-server-cluster']['provisioning-id']
   aws_tags node['qa-chef-server-cluster']['aws']['machine_options']['aws_tags']
 end
 
-# collect all ha data for chef-server.rb
-# TODO aws keys are added to ha_config which sets attributes on the machines
-#  this exposes the keys in plain text to the client output. fix this.
-ha_config = {}
-aws_creds = Chef::Provisioning::AWSDriver::Credentials.new
-ha_config[:aws_access_key_id] = aws_creds['default'][:aws_access_key_id]
-ha_config[:aws_secret_access_key] = aws_creds['default'][:aws_secret_access_key]
-ruby_block 'fetch ebs volume and network interface info' do
-  block do
-    ha_config[:ebs_volume_id] = search(:aws_ebs_volume, "id:#{volume.name}").first[:reference][:id]
-    ha_config[:ebs_device] = volume.device
-    ha_config[:eni_ip] = eni.aws_object.private_ip_address
-  end
-end
+bootstrap = resources("aws_instance[#{node['bootstrap-backend']}]")
+secondary = resources("aws_instance[#{node['secondary-backend']}]")
+frontend = resources("aws_instance[#{node['frontend']}]")
 
-# attach volume so the device mount is available to the machine for chef-ha
-# TODO https://github.com/chef/chef-provisioning-aws/issues/215
-aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
-  machine node['bootstrap-backend']
-  availability_zone "#{node['qa-chef-server-cluster']['aws']['availability_zone']}"
-  size 1
-  device '/dev/xvdf'
-  aws_tags node['qa-chef-server-cluster']['aws']['machine_options']['aws_tags']
+chef_server_config = "\
+topology 'ha'
+api_fqdn '#{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}'
+
+"
+
+ruby_block 'server block info' do
+  block do
+    aws_creds = Chef::Provisioning::AWSDriver::Credentials.new
+
+    chef_server_config << "\
+ha['provider'] = 'aws'
+ha['aws_access_key_id'] = '#{aws_creds['default'][:aws_access_key_id]}'
+ha['aws_secret_access_key'] = '#{aws_creds['default'][:aws_secret_access_key]}'
+ha['ebs_volume_id'] = '#{volume.aws_object.id}'
+ha['ebs_device'] = '#{volume.device}'
+
+server '#{bootstrap.aws_object.private_dns_name}',
+  :ipaddress => '#{bootstrap.aws_object.private_ip_address}',
+  :bootstrap => true,
+  :role => 'backend'
+
+server '#{secondary.aws_object.private_dns_name}',
+  :ipaddress => '#{secondary.aws_object.private_ip_address}',
+  :role => 'backend'
+
+server '#{frontend.aws_object.private_dns_name}',
+  :ipaddress => '#{frontend.aws_object.private_ip_address}',
+  :role => 'frontend'
+
+backend_vip '#{eni.aws_object.private_ip_address}',
+  :ipaddress => '#{eni.aws_object.private_ip_address}',
+  :device => 'eth0',
+  :heartbeat_device => 'eth0'
+
+"
+  end
 end
 
 # destroy network interface, its served its purpose
@@ -93,7 +112,8 @@ machine node['bootstrap-backend'] do
                qa-chef-server-cluster::ha-lvm-volume-group
                qa-chef-server-cluster::backend )
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-  attribute 'ha-config', ha_config
+  attribute 'chef_server_config', chef_server_config
+  attribute 'lvm_phyiscal_volume', volume.device
 end
 
 download_logs node['bootstrap-backend']
@@ -106,7 +126,7 @@ machine node['secondary-backend'] do
               lvm
               qa-chef-server-cluster::backend)
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-  attribute 'ha-config', ha_config
+  attribute 'chef_server_config', chef_server_config
   files node['qa-chef-server-cluster']['chef-server']['files']
 end
 
@@ -114,9 +134,9 @@ download_logs node['secondary-backend']
 
 # converge frontend server with all the bits!
 machine node['frontend'] do
-  run_list [ 'qa-chef-server-cluster::frontend' ]
+  run_list ['qa-chef-server-cluster::frontend']
   attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-  attribute 'ha-config', ha_config
+  attribute 'chef_server_config', chef_server_config
   files node['qa-chef-server-cluster']['chef-server']['files']
 end
 
@@ -124,9 +144,9 @@ download_logs node['frontend']
 
 machine_batch do
   machine node['bootstrap-backend'] do
-    run_list [ 'qa-chef-server-cluster::ha-verify-backend-master' ]
+    run_list ['qa-chef-server-cluster::ha-verify-backend-master']
   end
   machine node['secondary-backend'] do
-    run_list [ 'qa-chef-server-cluster::ha-verify-backend-backup' ]
+    run_list ['qa-chef-server-cluster::ha-verify-backend-backup']
   end
 end

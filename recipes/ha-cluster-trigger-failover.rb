@@ -22,7 +22,7 @@ include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 
 # make sure the primary server is fully running before we stop keepalived
 machine node['bootstrap-backend'] do
-  run_list [ 'qa-chef-server-cluster::chef-server-readiness' ]
+  run_list ['qa-chef-server-cluster::chef-server-readiness']
 end
 
 machine_execute 'chef-server-ctl stop keepalived' do
@@ -31,9 +31,9 @@ end
 
 machine_batch do
   machine node['bootstrap-backend'] do
-    run_list [ 'qa-chef-server-cluster::ha-verify-backend-backup' ]
+    run_list ['qa-chef-server-cluster::ha-verify-backend-backup']
   end
   machine node['secondary-backend'] do
-    run_list [ 'qa-chef-server-cluster::ha-verify-backend-master' ]
+    run_list ['qa-chef-server-cluster::ha-verify-backend-master']
   end
 end

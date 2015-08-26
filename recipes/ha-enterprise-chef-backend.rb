@@ -27,46 +27,14 @@ chef_package current_server.package_name do
   version node['qa-chef-server-cluster']['chef-server']['version']
   integration_builds node['qa-chef-server-cluster']['chef-server']['integration_builds']
   repository node['qa-chef-server-cluster']['chef-server']['repo']
-end
-
-# TODO: (jtimberman) Replace this with partial_search.
-chef_servers = search('node', 'chef-server-cluster_role:backend').map do |server| #~FC003
-  {
-    :fqdn => server['fqdn'],
-    :ipaddress => server['ipaddress'],
-    :bootstrap => server['chef-server-cluster']['bootstrap']['enable'],
-    :role => server['chef-server-cluster']['role']
-  }
-end
-
-# If we didn't get search results, then populate with ourself (we're
-# bootstrapping after all)
-if chef_servers.empty?
-  chef_servers = [
-                  {
-                    :fqdn => node['fqdn'],
-                    :ipaddress => node['ipaddress'],
-                    :bootstrap => true,
-                    :role => 'backend'
-                  }
-                 ]
-end
-
-node.default['chef-server-cluster'].merge!(node['qa-chef-server-cluster']['chef-server'])
-
-template ::File.join(current_server.config_path, current_server.config_file) do
-  source 'private-chef-ha.rb.erb'
-  variables :chef_server_config => node['chef-server-cluster'],
-            :topology => node['qa-chef-server-cluster']['topology'],
-            :chef_servers => chef_servers,
-            :ha_config => node['ha-config']
+  config node['chef_server_config']
 end
 
 file ::File.join(current_server.config_path, 'pivotal.pem') do
   mode 00644
   # without this guard, we create an empty file, causing bootstrap to
   # not actually work, as it checks the presence of this file.
-  only_if { ::File.exists?(::File.join(current_server.config_path, 'pivotal.pem')) }
+  only_if { ::File.exist?(::File.join(current_server.config_path, 'pivotal.pem')) }
 end
 
 execute 'wget http://oss.linbit.com/drbd/8.4/drbd-8.4.3.tar.gz'

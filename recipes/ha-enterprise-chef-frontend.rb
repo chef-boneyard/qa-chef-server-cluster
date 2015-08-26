@@ -26,38 +26,8 @@ chef_package current_server.package_name do
   version node['qa-chef-server-cluster']['chef-server']['version']
   integration_builds node['qa-chef-server-cluster']['chef-server']['integration_builds']
   repository node['qa-chef-server-cluster']['chef-server']['repo']
-end
-
-
-# TODO: (jtimberman) Replace this with partial search.
-chef_servers = search('node', 'chef-server-cluster_role:backend').map do |server| #~FC003
-  {
-    :fqdn => server['fqdn'],
-    :ipaddress => server['ipaddress'],
-    :bootstrap => server['chef-server-cluster']['bootstrap']['enable'],
-    :role => server['chef-server-cluster']['role']
-  }
-end
-
-chef_servers << {
-               :fqdn => node['fqdn'],
-               :ipaddress => node['ipaddress'],
-               :role => 'frontend'
-              }
-
-node.default['chef-server-cluster'].merge!(node['qa-chef-server-cluster']['chef-server'])
-
-template ::File.join(current_server.config_path, current_server.config_file) do
-  source 'private-chef-ha.rb.erb'
-  variables :chef_server_config => node['chef-server-cluster'],
-            :topology => node['qa-chef-server-cluster']['topology'],
-            :chef_servers => chef_servers,
-            :ha_config => node['ha-config']
-  notifies :run, 'execute[add hosts entry]'
-end
-
-chef_package current_server.package_name do
-  action :reconfigure
+  config node['chef_server_config']
+  reconfigure true
 end
 
 chef_package 'manage' do
@@ -70,13 +40,13 @@ chef_package 'manage' do
   not_if { current_server.product_name == 'open_source_chef' }
 end
 
-# TODO (pwright) Run again for all I care!!!  Not really.  Temp hack for lack of dns
+# TODO: (pwright) Run again for all I care!!!  Not really.  Temp hack for lack of dns
 execute 'add hosts entry' do
   command "echo '#{node['ipaddress']} #{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}' >> /etc/hosts"
   action :nothing
 end
 
-# TODO check this out from chef-server cookbook
+# TODO: check this out from chef-server cookbook
 # ruby_block 'ensure node can resolve API FQDN' do
 #   extend ChefServerCoobook::Helpers
 #   block { repair_api_fqdn }

@@ -1,6 +1,6 @@
 # UBUNTU 12.04 ONLY UNTIL REQUIRED
 execute 'drbdadm -- --overwrite-data-of-peer primary pc0'
-# TODO add guard
+# TODO: add guard
 
 execute 'mkfs.ext4 /dev/drbd0' do
   not_if 'mount -l | grep /dev/drbd0'
@@ -10,7 +10,7 @@ DRBD_DIR = '/var/opt/opscode/drbd'
 DRBD_ETC_DIR =  ::File.join(DRBD_DIR, 'etc')
 DRBD_DATA_DIR = ::File.join(DRBD_DIR, 'data')
 
-[ DRBD_DIR, DRBD_ETC_DIR, DRBD_DATA_DIR ].each do |dir|
+[DRBD_DIR, DRBD_ETC_DIR, DRBD_DATA_DIR].each do |dir|
   directory dir do
     recursive true
     mode '0755'

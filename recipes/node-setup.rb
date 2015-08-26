@@ -29,7 +29,7 @@ end
 include_recipe 'build-essential'
 
 service 'iptables' do
-  action [ :disable, :stop ]
+  action [:disable, :stop]
   only_if { platform_family?('rhel') }
 end
 
@@ -37,7 +37,7 @@ end
 # for simplification, all rhel version import the key locally
 gpg_key = ::File.join(Chef::Config[:file_cache_path], 'packages-chef-io-public.key')
 remote_file gpg_key do
-  source "https://downloads.chef.io/packages-chef-io-public.key"
+  source 'https://downloads.chef.io/packages-chef-io-public.key'
   only_if { platform_family?('rhel') }
 end
 

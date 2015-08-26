@@ -39,4 +39,3 @@ chef_package 'manage' do
   reconfigure true
   not_if { current_server.product_name == 'open_source_chef' }
 end
-

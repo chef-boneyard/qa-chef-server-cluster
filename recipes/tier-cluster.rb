@@ -25,19 +25,48 @@ machine_batch do
   machine node['bootstrap-backend'] do
     action :ready
     attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-    attribute %w[ chef-server-cluster bootstrap enable ], true
-    attribute %w[ chef-server-cluster role ], 'backend'
+    attribute %w(chef-server-cluster bootstrap enable), true
+    attribute %w(chef-server-cluster role), 'backend'
   end
 
   machine node['frontend'] do
     action :ready
     attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-    attribute %w[ chef-server-cluster role ], 'frontend'
+    attribute %w(chef-server-cluster role), 'frontend'
+  end
+end
+
+bootstrap = resources("aws_instance[#{node['bootstrap-backend']}]")
+frontend = resources("aws_instance[#{node['frontend']}]")
+
+chef_server_config = "\
+topology 'tier'
+api_fqdn '#{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}'
+
+"
+
+ruby_block 'server block info' do
+  block do
+    chef_server_config << "\
+server '#{bootstrap.aws_object.private_dns_name}',
+  :ipaddress => '#{bootstrap.aws_object.private_ip_address}',
+  :bootstrap => true,
+  :role => 'backend'
+
+server '#{frontend.aws_object.private_dns_name}',
+  :ipaddress => '#{frontend.aws_object.private_ip_address}',
+  :role => 'frontend'
+
+backend_vip '#{bootstrap.aws_object.private_dns_name}',
+  :ipaddress => '#{bootstrap.aws_object.private_ip_address}'
+
+"
   end
 end
 
 machine node['bootstrap-backend'] do
-  run_list [ 'qa-chef-server-cluster::backend' ]
+  run_list ['qa-chef-server-cluster::backend']
+  attribute 'chef_server_config', chef_server_config
 end
 
 download_logs node['bootstrap-backend']
@@ -45,8 +74,9 @@ download_logs node['bootstrap-backend']
 download_bootstrap_files
 
 machine node['frontend'] do
-  run_list [ 'qa-chef-server-cluster::frontend' ]
+  run_list ['qa-chef-server-cluster::frontend']
   files node['qa-chef-server-cluster']['chef-server']['files']
+  attribute 'chef_server_config', chef_server_config
 end
 
 download_logs node['frontend']

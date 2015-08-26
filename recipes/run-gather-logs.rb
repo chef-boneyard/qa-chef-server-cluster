@@ -26,15 +26,19 @@ end
 
 ruby_block 'find latest gather-logs archive' do
   block do
-    latest_archive = Mixlib::ShellOut.new('ls -1t *.tbz2 | head -1',
-      :cwd => Chef::Config[:file_cache_path])
+    latest_archive = Mixlib::ShellOut.new(
+      'ls -1t *.tbz2 | head -1',
+      :cwd => Chef::Config[:file_cache_path]
+    )
     latest_archive.run_command
 
     node.default['latest_archive'] = latest_archive.stdout.strip!
 
-    node['latest_archive'] =~ /ip-.*-UTC.tbz2/ ?
-      Chef::Log.info("Found gather-logs archive #{node['latest_archive']}") :
+    if node['latest_archive'] =~ /ip-.*-UTC.tbz2/
+      Chef::Log.info("Found gather-logs archive #{node['latest_archive']}")
+    else
       Chef::Log.error('No gather-logs archive found')
+    end
   end
 end
 

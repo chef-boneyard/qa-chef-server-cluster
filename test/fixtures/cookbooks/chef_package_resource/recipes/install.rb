@@ -16,7 +16,7 @@ end
 chef_package 'chef-server-url' do
   product_name 'chef-server'
   version :latest
-  install_method 'artifactory' # bypassed
+  install_method 'artifactory'
   package_url 'https://mydomain.com/package.ext'
 end
 

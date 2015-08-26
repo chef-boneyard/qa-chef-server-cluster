@@ -24,3 +24,12 @@ node.default['qa-chef-server-cluster']['topology'] = 'tier'
 
 node.default['bootstrap-backend'] = "#{node['qa-chef-server-cluster']['provisioning-id']}-tier-bootstrap-backend"
 node.default['frontend'] = "#{node['qa-chef-server-cluster']['provisioning-id']}-tier-frontend"
+
+# Define the aws_instance resource and managed machine resources
+aws_instance node['bootstrap-backend'] do
+  action :nothing
+end
+
+aws_instance node['frontend'] do
+  action :nothing
+end
