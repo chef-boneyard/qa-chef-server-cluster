@@ -41,9 +41,9 @@ machine_batch do
 end
 
 # create and store aws ebs volume
-volume = aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
+aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
   machine node['bootstrap-backend']
-  availability_zone "#{node['qa-chef-server-cluster']['aws']['availability_zone']}"
+  availability_zone node['qa-chef-server-cluster']['aws']['availability_zone']
   size 1
   # volume_type :io1
   # iops 300 # size * 30, 3000/4000? max default
@@ -52,7 +52,7 @@ volume = aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha
 end
 
 # create and store aws network interface, all we want is the generated IP with the same network segment
-eni = aws_network_interface "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
+aws_network_interface "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
   subnet node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['subnet_id']
   security_groups node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['security_group_ids']
   aws_tags node['qa-chef-server-cluster']['aws']['machine_options']['aws_tags']
@@ -61,18 +61,17 @@ end
 bootstrap = resources("aws_instance[#{node['bootstrap-backend']}]")
 secondary = resources("aws_instance[#{node['secondary-backend']}]")
 frontend = resources("aws_instance[#{node['frontend']}]")
+eni = resources("aws_network_interface[#{node['qa-chef-server-cluster']['provisioning-id']}-ha]")
+volume = resources("aws_ebs_volume[#{node['qa-chef-server-cluster']['provisioning-id']}-ha]")
+aws_creds = Chef::Provisioning::AWSDriver::Credentials.new
+chef_server_config = ''
 
-chef_server_config = "\
+ruby_block 'HA Chef Server Config' do # ~FC014
+  block do
+    chef_server_config = <<-EOS\
 topology 'ha'
 api_fqdn '#{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}'
 
-"
-
-ruby_block 'server block info' do
-  block do
-    aws_creds = Chef::Provisioning::AWSDriver::Credentials.new
-
-    chef_server_config << "\
 ha['provider'] = 'aws'
 ha['aws_access_key_id'] = '#{aws_creds['default'][:aws_access_key_id]}'
 ha['aws_secret_access_key'] = '#{aws_creds['default'][:aws_secret_access_key]}'
@@ -97,7 +96,7 @@ backend_vip '#{eni.aws_object.private_ip_address}',
   :device => 'eth0',
   :heartbeat_device => 'eth0'
 
-"
+EOS
   end
 end
 

@@ -53,3 +53,5 @@ end
 node.default['qa-chef-server-cluster']['chef-server-ctl-test-options'] = nil
 
 node.default['qa-chef-server-cluster']['download-logs'] = false
+
+node.default['qa-chef-server-cluster']['data-generator']['branch'] = 'master'

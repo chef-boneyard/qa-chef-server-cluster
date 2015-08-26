@@ -37,20 +37,21 @@ file ::File.join(current_server.config_path, 'pivotal.pem') do
   only_if { ::File.exist?(::File.join(current_server.config_path, 'pivotal.pem')) }
 end
 
-execute 'wget http://oss.linbit.com/drbd/8.4/drbd-8.4.3.tar.gz'
-
-execute 'tar xfvz drbd-8.4.3.tar.gz'
-
-execute './configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc --with-km' do
-  cwd 'drbd-8.4.3'
+[
+  'wget http://oss.linbit.com/drbd/8.4/drbd-8.4.3.tar.gz',
+  'tar xfvz drbd-8.4.3.tar.gz'
+].each do |cmd|
+  execute cmd
 end
 
-execute 'make KDIR=/lib/modules/`uname -r`/build' do
-  cwd 'drbd-8.4.3'
-end
-
-execute 'make install' do
-  cwd 'drbd-8.4.3'
+[
+  './configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc --with-km',
+  'make KDIR=/lib/modules/`uname -r`/build',
+  'make install'
+].each do |cmd|
+  execute cmd do
+    cwd 'drbd-8.4.3'
+  end
 end
 
 execute 'modprobe drbd'
