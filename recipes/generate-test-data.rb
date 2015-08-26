@@ -23,15 +23,12 @@ include_recipe 'qa-chef-server-cluster::node-setup'
 
 package 'git'
 
-execute 'git clone https://github.com/chef/chef-server-data-generator.git' do
-  cwd '/tmp'
-end
-
 generator_dir = '/tmp/chef-server-data-generator'
 
-# execute 'git checkout tc/wtf-git-osc-support' do
-#   cwd generator_dir
-# end
+git generator_dir do
+  repository 'https://github.com/chef/chef-server-data-generator.git'
+  revision node['qa-chef-server-cluster']['data-generator']['branch']
+end
 
 directory "#{generator_dir}/cookbooks" do
   action :create

@@ -45,7 +45,7 @@ end
 # create and store aws ebs volume
 volume = aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha" do
   machine node['bootstrap-backend']
-  availability_zone "#{node['qa-chef-server-cluster']['aws']['availability_zone']}"
+  availability_zone node['qa-chef-server-cluster']['aws']['availability_zone']
   size 8
   # volume_type :io1
   # iops 300 # size * 30, 3000/4000? max default
@@ -55,7 +55,7 @@ end
 
 aws_ebs_volume "#{node['qa-chef-server-cluster']['provisioning-id']}-ha-secondary" do
   machine node['secondary-backend']
-  availability_zone "#{node['qa-chef-server-cluster']['aws']['availability_zone']}"
+  availability_zone node['qa-chef-server-cluster']['aws']['availability_zone']
   size 8
   # volume_type :io1
   # iops 300 # size * 30, 3000/4000? max default

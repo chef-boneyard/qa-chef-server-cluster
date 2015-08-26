@@ -42,8 +42,7 @@ end
 
 # TODO: (pwright) Run again for all I care!!!  Not really.  Temp hack for lack of dns
 execute 'add hosts entry' do
-  command "echo '#{node['ipaddress']} #{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}' >> /etc/hosts"
-  action :nothing
+  command "echo '#{node['ipaddress']} #{node['fqdn']} #{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}' >> /etc/hosts"
 end
 
 # TODO: check this out from chef-server cookbook

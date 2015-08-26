@@ -27,14 +27,12 @@ node.default['secondary-backend'] = "#{node['qa-chef-server-cluster']['provision
 node.default['frontend'] = "#{node['qa-chef-server-cluster']['provisioning-id']}-ha-frontend"
 
 # Define the aws_instance resource and managed machine resources
-aws_instance node['bootstrap-backend'] do
-  action :nothing
-end
-
-aws_instance node['secondary-backend'] do
-  action :nothing
-end
-
-aws_instance node['frontend'] do
-  action :nothing
+[
+  node['bootstrap-backend'],
+  node['secondary-backend'],
+  node['frontend']
+].each do |name|
+  aws_instance name do
+    action :nothing
+  end
 end

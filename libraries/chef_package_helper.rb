@@ -93,8 +93,8 @@ module QaChefServerCluster
 
     # rubocop:disable Metrics/AbcSize
     def install_via_url(resource)
-      local_source = "#{::File.join(Chef::Config.file_cache_path,
-                                    ::File.basename(resource.package_url))}"
+      local_source = ::File.join(Chef::Config.file_cache_path,
+                                 ::File.basename(resource.package_url))
       remote_file local_source do
         source resource.package_url
       end
