@@ -17,24 +17,6 @@
 
 include_recipe 'delivery-truck'
 
-delivery_github 'chef/qa-chef-server-cluster' do
-  deploy_key secrets['github']
-  branch node['delivery']['change']['pipeline']
-  remote_url "git@github.com:#{github_repo}.git"
-  repo_path node['delivery']['workspace']['repo']
-  cache_path node['delivery']['workspace']['cache']
-  action :clone
-end
-
-delivery_github 'opscode-cookbooks/omnibus-artifactory-artifact' do
-  deploy_key secrets['github']
-  branch node['delivery']['change']['pipeline']
-  remote_url "git@github.com:#{github_repo}.git"
-  repo_path node['delivery']['workspace']['repo']
-  cache_path node['delivery']['workspace']['cache']
-  action :clone
-end
-
 chef_gem 'mixlib-versioning' do
   compile_time false
   action :install
