@@ -10,3 +10,7 @@ cookbook 'delivery-truck',
 cookbook 'delivery-sugar',
   git: 'https://github.com/chef-cookbooks/delivery-sugar.git',
   branch: 'master'
+
+cookbook 'qa-chef-server-cluster',
+  git: 'https://github.com/chef/qa-chef-server-cluster.git',
+  branch: 'master'
