@@ -9,7 +9,8 @@
     "provision",
     "quality",
     "security",
-    "smoke"
+    "smoke",
+    "functional"
   ],
   "delivery-truck": {
     "publish": {
