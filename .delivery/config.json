@@ -16,7 +16,5 @@
       "github": "chef/qa-chef-server-cluster"
     }
   },
-  "build_nodes": {
-    "default"    : ["name:builder-*.delivery.chef.co NOT name:builder-8.delivery.chef.co"]
-  }
+  "build_nodes": {}
 }
