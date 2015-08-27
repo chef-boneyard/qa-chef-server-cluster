@@ -15,6 +15,5 @@
 # limitations under the License.
 #
 
-node.default['qa-chef-server-cluster']['chef-server']['version'] = :latest_stable
-
-include_recipe 'qa-chef-server-cluster::standalone-server'
+include_recipe 'qa-chef-server-cluster::standalone-server-test'
+include_recipe 'qa-chef-server-cluster::standalone-server-destroy'
