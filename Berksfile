@@ -6,7 +6,7 @@ cookbook 'chef-vault'
 cookbook 'apt'
 cookbook 'chef-ingredient'
 cookbook 'lvm'
-cookbook 'omnibus-artifactory-artifact', git: 'git@github.com:opscode-cookbooks/omnibus-artifactory-artifact.git', branch: '0.3.1'
+cookbook 'omnibus-artifactory-artifact', git: 'git@github.com:opscode-cookbooks/omnibus-artifactory-artifact.git', branch: 'master'
 cookbook 'packagecloud'
 
 def fixture(name)
