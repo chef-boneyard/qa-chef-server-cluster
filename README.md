@@ -14,17 +14,6 @@ See the [Provisioning Paths](PROVISIONING_PATHS.md) doc for additional details.
 
 # Requirements
 * AWS account and config
-* For local usage a chef repo is recommended to vendor the cookbook
-```ruby
-# .chef/knife.rb
-current_dir = File.dirname(__FILE__)
-cookbook_path [ "#{current_dir}/../cookbooks", "#{current_dir}/../berks-cookbooks" ]
-```
-```ruby
-# ./Berksfile
-cookbook 'omnibus-artifactory-artifact', github: 'opscode-cookbooks/omnibus-artifactory-artifact'
-cookbook 'qa-chef-server-cluster', github: 'chef/qa-chef-server-cluster'
-```
 
 # Main Cluster Recipes
 Current supported topologies are `standalone-server`, `tier-cluster` and `ha-cluster`.

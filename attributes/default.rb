@@ -25,7 +25,7 @@ node.default['qa-chef-server-cluster']['provisioning-id'] = 'default'
 node.default['qa-chef-server-cluster']['topology'] = nil
 
 node.default['qa-chef-server-cluster']['chef-server'].tap do |chef_server|
-  chef_server['version'] = nil # :latest
+  chef_server['version'] = :latest
   chef_server['integration_builds'] = false
   chef_server['repo'] = 'omnibus-stable-local'
   chef_server['flavor'] = 'chef_server'
