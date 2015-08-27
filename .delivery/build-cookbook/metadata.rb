@@ -7,4 +7,3 @@ long_description 'Installs/Configures build'
 version          '0.1.0'
 
 depends 'delivery-truck'
-depends 'qa-chef-server-cluster'
