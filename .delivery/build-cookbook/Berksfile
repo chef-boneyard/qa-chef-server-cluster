@@ -16,5 +16,5 @@ cookbook 'qa-chef-server-cluster',
   branch: 'master'
 
 cookbook 'omnibus-artifactory-artifact',
-  git: 'https://github.com/opscode-cookbooks/omnibus-artifactory-artifact.git',
+  git: 'builder@github.com:chef/omnibus-artifactory-artifact.git',
   branch: 'master'
