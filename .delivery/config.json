@@ -1,0 +1,8 @@
+{
+  "version": "2",
+  "build_cookbook": {
+    "name": "<your build cookbook name>",
+    "path": "<relative path from project root>"
+  },
+  "skip_phases": []
+}
