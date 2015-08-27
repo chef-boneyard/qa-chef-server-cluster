@@ -15,10 +15,6 @@
 # limitations under the License.
 #
 
-include_recipe 'delivery-truck'
+node.default['qa-chef-server-cluster']['chef-server']['version'] = :latest_stable
 
-chef_gem 'mixlib-versioning' do
-  compile_time false
-  action :install
-end
-
+include_recipe 'qa-chef-server-cluster::standalone-server'

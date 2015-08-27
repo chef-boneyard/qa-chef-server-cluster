@@ -5,12 +5,9 @@
     "name": "build-cookbook"
   },
   "skip_phases": [
-    "deploy",
     "provision",
     "quality",
-    "security",
-    "smoke",
-    "functional"
+    "security"
   ],
   "delivery-truck": {
     "publish": {
