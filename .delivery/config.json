@@ -1,0 +1,21 @@
+{
+  "version": "2",
+  "build_cookbook": {
+    "path": ".delivery/build-cookbook",
+    "name": "build-cookbook"
+  },
+  "skip_phases": [
+    "deploy",
+    "provision",
+    "quality",
+    "security",
+    "smoke",
+    "functional"
+  ],
+  "delivery-truck": {
+    "publish": {
+      "github": "chef/qa-chef-server-cluster"
+    }
+  },
+  "build_nodes": {}
+}

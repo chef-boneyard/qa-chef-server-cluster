@@ -20,6 +20,7 @@
 
 require_relative './server_flavor_helper'
 
+# rubocop:disable Metrics/ModuleLength
 module QaChefServerCluster
   module DSL
     include ChefIngredientCookbook::Helpers
@@ -184,6 +185,7 @@ module QaChefServerCluster
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength
 
 Chef::Recipe.send(:include, ::QaChefServerCluster::DSL)
 Chef::Resource.send(:include, ::QaChefServerCluster::DSL)
