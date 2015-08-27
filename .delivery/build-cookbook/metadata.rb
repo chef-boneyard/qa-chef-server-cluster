@@ -1,4 +1,4 @@
-name             'qa-chef-server-cluster-acceptance'
+name             'build-cookbook'
 maintainer       'Patrick Wright'
 maintainer_email 'patrick@chef.io'
 license          'all_rights'
