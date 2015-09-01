@@ -24,7 +24,6 @@ module QaChefServerCluster
           install_command = "chef-server-ctl install #{chef_ingredient_product_lookup}"
           # install_command << " --path "if resource.package_source
           execute install_command
-
         else
           raise 'Must provide a URL or install method.'
         end

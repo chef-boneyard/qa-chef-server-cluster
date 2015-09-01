@@ -26,7 +26,7 @@ chef_package current_server.package_name do
   version node['qa-chef-server-cluster']['chef-server']['version']
   integration_builds node['qa-chef-server-cluster']['chef-server']['integration_builds']
   repository node['qa-chef-server-cluster']['chef-server']['repo']
-  config node['chef_server_config']
+  config node['qa-chef-server-cluster']['chef-server-config']
   reconfigure true
 end
 

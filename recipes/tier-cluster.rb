@@ -24,25 +24,19 @@ include_recipe 'qa-chef-server-cluster::tier-cluster-setup'
 machine_batch do
   machine node['bootstrap-backend'] do
     action :ready
-    attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-    attribute %w(chef-server-cluster bootstrap enable), true
-    attribute %w(chef-server-cluster role), 'backend'
   end
 
   machine node['frontend'] do
     action :ready
-    attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-    attribute %w(chef-server-cluster role), 'frontend'
   end
 end
 
 bootstrap = resources("aws_instance[#{node['bootstrap-backend']}]")
 frontend = resources("aws_instance[#{node['frontend']}]")
-chef_server_config = ''
 
 ruby_block 'server block info' do
   block do
-    chef_server_config = "\
+    node.default['qa-chef-server-cluster']['chef-server-config'] = "\
 topology 'tier'
 api_fqdn '#{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}'
 
@@ -65,9 +59,7 @@ end
 machine node['bootstrap-backend'] do
   run_list ['qa-chef-server-cluster::backend']
   attributes lazy {
-    {
-      'chef_server_config' => chef_server_config
-    }
+    { 'qa-chef-server-cluster' => node['qa-chef-server-cluster'] }
   }
 end
 
@@ -79,9 +71,7 @@ machine node['frontend'] do
   run_list ['qa-chef-server-cluster::frontend']
   files node['qa-chef-server-cluster']['chef-server']['files']
   attributes lazy {
-    {
-      'chef_server_config' => chef_server_config
-    }
+    { 'qa-chef-server-cluster' => node['qa-chef-server-cluster'] }
   }
 end
 

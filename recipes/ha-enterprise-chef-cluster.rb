@@ -26,19 +26,14 @@ include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 machine_batch do
   machine node['bootstrap-backend'] do
     action :ready
-    attribute %w(chef-server-cluster bootstrap enable), true
-    attribute %w(chef-server-cluster role), 'backend'
   end
 
   machine node['secondary-backend'] do
     action :ready
-    attribute %w(chef-server-cluster bootstrap enable), false
-    attribute %w(chef-server-cluster role), 'backend'
   end
 
   machine node['frontend'] do
     action :ready
-    attribute %w(chef-server-cluster role), 'frontend'
   end
 end
 
@@ -66,11 +61,10 @@ end
 bootstrap = resources("aws_instance[#{node['bootstrap-backend']}]")
 secondary = resources("aws_instance[#{node['secondary-backend']}]")
 frontend = resources("aws_instance[#{node['frontend']}]")
-chef_server_config = ''
 
 ruby_block 'server block info' do
   block do
-    chef_server_config = "\
+    node.default['qa-chef-server-cluster']['chef-server-config'] = "\
 topology 'ha'
 api_fqdn '#{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}'
 
@@ -98,11 +92,10 @@ end
 # converge bootstrap server with all the bits!
 machine node['bootstrap-backend'] do
   run_list %w(qa-chef-server-cluster::ha-enterprise-chef-lvm-volume-group
-               qa-chef-server-cluster::ha-enterprise-chef-backend)
+              qa-chef-server-cluster::ha-enterprise-chef-backend)
   attributes lazy {
     {
       'qa-chef-server-cluster' => node['qa-chef-server-cluster'],
-      'chef_server_config' => chef_server_config,
       'lvm_phyiscal_volume' => volume.device
     }
   }
@@ -119,7 +112,6 @@ machine node['secondary-backend'] do
   attributes lazy {
     {
       'qa-chef-server-cluster' => node['qa-chef-server-cluster'],
-      'chef_server_config' => chef_server_config,
       'lvm_phyiscal_volume' => volume.device
     }
   }
@@ -131,12 +123,16 @@ download_logs node['secondary-backend']
 machine node['bootstrap-backend'] do
   run_list %w(qa-chef-server-cluster::ha-enterprise-chef-drbd-sync
               qa-chef-server-cluster::ha-enterprise-chef-drbd-ready)
-  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
+  attributes {
+    { 'qa-chef-server-cluster' => node['qa-chef-server-cluster'] }
+  }
 end
 
 machine node['secondary-backend'] do
   run_list %w(qa-chef-server-cluster::ha-enterprise-chef-drbd-ready)
-  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
+  attributes {
+    { 'qa-chef-server-cluster' => node['qa-chef-server-cluster'] }
+  }
 end
 
 # converge frontend server with all the bits!
@@ -144,8 +140,7 @@ machine node['frontend'] do
   run_list ['qa-chef-server-cluster::ha-enterprise-chef-frontend']
   attributes lazy {
     {
-      'qa-chef-server-cluster' => node['qa-chef-server-cluster'],
-      'chef_server_config' => chef_server_config
+      'qa-chef-server-cluster' => node['qa-chef-server-cluster']
     }
   }
   files node['qa-chef-server-cluster']['chef-server']['files']

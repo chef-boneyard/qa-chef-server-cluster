@@ -24,19 +24,14 @@ include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 machine_batch do
   machine node['bootstrap-backend'] do
     action :ready
-    attribute %w(chef-server-cluster bootstrap enable), true
-    attribute %w(chef-server-cluster role), 'backend'
   end
 
   machine node['secondary-backend'] do
     action :ready
-    attribute %w(chef-server-cluster bootstrap enable), false
-    attribute %w(chef-server-cluster role), 'backend'
   end
 
   machine node['frontend'] do
     action :ready
-    attribute %w(chef-server-cluster role), 'frontend'
   end
 end
 
@@ -64,11 +59,10 @@ frontend = resources("aws_instance[#{node['frontend']}]")
 eni = resources("aws_network_interface[#{node['qa-chef-server-cluster']['provisioning-id']}-ha]")
 volume = resources("aws_ebs_volume[#{node['qa-chef-server-cluster']['provisioning-id']}-ha]")
 aws_creds = Chef::Provisioning::AWSDriver::Credentials.new
-chef_server_config = ''
 
 ruby_block 'HA Chef Server Config' do # ~FC014
   block do
-    chef_server_config = <<-EOS\
+    node['qa-chef-server-cluster']['chef-server-config'] = <<-EOS\
 topology 'ha'
 api_fqdn '#{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}'
 
@@ -113,7 +107,6 @@ machine node['bootstrap-backend'] do
   attributes lazy {
     {
       'qa-chef-server-cluster' => node['qa-chef-server-cluster'],
-      'chef_server_config' => chef_server_config,
       'lvm_phyiscal_volume' => volume.device
     }
   }
@@ -130,8 +123,7 @@ machine node['secondary-backend'] do
               qa-chef-server-cluster::backend)
   attributes lazy {
     {
-      'qa-chef-server-cluster' => node['qa-chef-server-cluster'],
-      'chef_server_config' => chef_server_config
+      'qa-chef-server-cluster' => node['qa-chef-server-cluster']
     }
   }
   files node['qa-chef-server-cluster']['chef-server']['files']
@@ -144,8 +136,7 @@ machine node['frontend'] do
   run_list ['qa-chef-server-cluster::frontend']
   attributes lazy {
     {
-      'qa-chef-server-cluster' => node['qa-chef-server-cluster'],
-      'chef_server_config' => chef_server_config
+      'qa-chef-server-cluster' => node['qa-chef-server-cluster']
     }
   }
   files node['qa-chef-server-cluster']['chef-server']['files']
