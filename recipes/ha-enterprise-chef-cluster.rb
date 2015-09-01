@@ -69,7 +69,7 @@ frontend = resources("aws_instance[#{node['frontend']}]")
 
 ruby_block 'server block info' do
   block do
-    chef_server_config << "\
+    chef_server_config = "\
 topology 'ha'
 api_fqdn '#{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}'
 
