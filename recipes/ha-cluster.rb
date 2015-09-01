@@ -52,7 +52,7 @@ aws_creds = Chef::Provisioning::AWSDriver::Credentials.new
 
 ruby_block 'HA Chef Server Config' do # ~FC014
   block do
-    node['qa-chef-server-cluster']['chef-server-config'] = <<-EOS\
+    node.default['qa-chef-server-cluster']['chef-server-config'] = <<-EOS\
 topology 'ha'
 api_fqdn '#{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}'
 
