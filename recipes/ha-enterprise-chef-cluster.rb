@@ -67,15 +67,12 @@ bootstrap = resources("aws_instance[#{node['bootstrap-backend']}]")
 secondary = resources("aws_instance[#{node['secondary-backend']}]")
 frontend = resources("aws_instance[#{node['frontend']}]")
 
-chef_server_config = "\
-topology 'ha'
-api_fqdn '#{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}'
-
-"
-
 ruby_block 'server block info' do
   block do
     chef_server_config << "\
+topology 'ha'
+api_fqdn '#{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}'
+
 server '#{bootstrap.aws_object.private_dns_name}',
   :ipaddress => '#{bootstrap.aws_object.private_ip_address}',
   :bootstrap => true,
@@ -99,11 +96,15 @@ end
 
 # converge bootstrap server with all the bits!
 machine node['bootstrap-backend'] do
-  run_list %w( qa-chef-server-cluster::ha-enterprise-chef-lvm-volume-group
-               qa-chef-server-cluster::ha-enterprise-chef-backend )
-  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-  attribute 'lvm_phyiscal_volume', volume.device
-  attribute 'chef_server_config', chef_server_config
+  run_list %w(qa-chef-server-cluster::ha-enterprise-chef-lvm-volume-group
+               qa-chef-server-cluster::ha-enterprise-chef-backend)
+  attributes lazy {
+    {
+      'qa-chef-server-cluster' => node['qa-chef-server-cluster'],
+      'chef_server_config' => chef_server_config,
+      'lvm_phyiscal_volume' => volume.device
+    }
+  }
 end
 
 download_logs node['bootstrap-backend']
@@ -114,9 +115,13 @@ download_bootstrap_files
 machine node['secondary-backend'] do
   run_list %w(qa-chef-server-cluster::ha-enterprise-chef-lvm-volume-group
               qa-chef-server-cluster::ha-enterprise-chef-backend)
-  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-  attribute 'lvm_phyiscal_volume', volume.device
-  attribute 'chef_server_config', chef_server_config
+  attributes lazy {
+    {
+      'qa-chef-server-cluster' => node['qa-chef-server-cluster'],
+      'chef_server_config' => chef_server_config,
+      'lvm_phyiscal_volume' => volume.device
+    }
+  }
   files node['qa-chef-server-cluster']['chef-server']['files']
 end
 
@@ -136,8 +141,12 @@ end
 # converge frontend server with all the bits!
 machine node['frontend'] do
   run_list ['qa-chef-server-cluster::ha-enterprise-chef-frontend']
-  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-  attribute 'chef_server_config', chef_server_config
+  attributes lazy {
+    {
+      'qa-chef-server-cluster' => node['qa-chef-server-cluster'],
+      'chef_server_config' => chef_server_config
+    }
+  }
   files node['qa-chef-server-cluster']['chef-server']['files']
 end
 

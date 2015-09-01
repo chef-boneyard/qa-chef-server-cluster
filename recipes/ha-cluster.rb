@@ -107,12 +107,16 @@ end
 
 # converge bootstrap server with all the bits!
 machine node['bootstrap-backend'] do
-  run_list %w( qa-chef-server-cluster::ha-install-chef-ha-package
-               qa-chef-server-cluster::ha-lvm-volume-group
-               qa-chef-server-cluster::backend )
-  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-  attribute 'chef_server_config', chef_server_config
-  attribute 'lvm_phyiscal_volume', volume.device
+  run_list %w(qa-chef-server-cluster::ha-install-chef-ha-package
+              qa-chef-server-cluster::ha-lvm-volume-group
+              qa-chef-server-cluster::backend)
+  attributes lazy {
+    {
+      'qa-chef-server-cluster' => node['qa-chef-server-cluster'],
+      'chef_server_config' => chef_server_config,
+      'lvm_phyiscal_volume' => volume.device
+    }
+  }
 end
 
 download_logs node['bootstrap-backend']
@@ -124,8 +128,12 @@ machine node['secondary-backend'] do
   run_list %w(qa-chef-server-cluster::ha-install-chef-ha-package
               lvm
               qa-chef-server-cluster::backend)
-  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-  attribute 'chef_server_config', chef_server_config
+  attributes lazy {
+    {
+      'qa-chef-server-cluster' => node['qa-chef-server-cluster'],
+      'chef_server_config' => chef_server_config
+    }
+  }
   files node['qa-chef-server-cluster']['chef-server']['files']
 end
 
@@ -134,8 +142,12 @@ download_logs node['secondary-backend']
 # converge frontend server with all the bits!
 machine node['frontend'] do
   run_list ['qa-chef-server-cluster::frontend']
-  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-  attribute 'chef_server_config', chef_server_config
+  attributes lazy {
+    {
+      'qa-chef-server-cluster' => node['qa-chef-server-cluster'],
+      'chef_server_config' => chef_server_config
+    }
+  }
   files node['qa-chef-server-cluster']['chef-server']['files']
 end
 
