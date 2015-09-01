@@ -22,13 +22,7 @@
 include_recipe 'qa-chef-server-cluster::tier-cluster-setup'
 
 machine_batch do
-  machine node['bootstrap-backend'] do
-    action :ready
-  end
-
-  machine node['frontend'] do
-    action :ready
-  end
+  machines node['bootstrap-backend'], node['frontend']
 end
 
 bootstrap = resources("aws_instance[#{node['bootstrap-backend']}]")

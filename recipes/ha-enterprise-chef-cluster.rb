@@ -24,17 +24,7 @@ include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 
 # create machines and set attributes
 machine_batch do
-  machine node['bootstrap-backend'] do
-    action :ready
-  end
-
-  machine node['secondary-backend'] do
-    action :ready
-  end
-
-  machine node['frontend'] do
-    action :ready
-  end
+  machines node['bootstrap-backend'], node['secondary-backend'], node['frontend']
 end
 
 # create and store aws ebs volume
