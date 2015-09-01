@@ -38,6 +38,7 @@ end
 
 bootstrap = resources("aws_instance[#{node['bootstrap-backend']}]")
 frontend = resources("aws_instance[#{node['frontend']}]")
+chef_server_config = ''
 
 ruby_block 'server block info' do
   block do
