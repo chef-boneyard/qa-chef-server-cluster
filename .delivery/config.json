@@ -8,7 +8,8 @@
     "provision",
     "quality",
     "security",
-    "functional"
+    "functional",
+    "unit"
   ],
   "delivery-truck": {
     "publish": {

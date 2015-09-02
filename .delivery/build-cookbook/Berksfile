@@ -10,7 +10,3 @@ cookbook 'delivery-truck',
 cookbook 'delivery-sugar',
   git: 'https://github.com/chef-cookbooks/delivery-sugar.git',
   branch: 'master'
-
-group :delivery do
-  cookbook 'chef_package_resource', path: './test/fixtures/cookbooks/chef_package_resource'
-end
