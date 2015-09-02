@@ -113,16 +113,10 @@ download_logs node['secondary-backend']
 machine node['bootstrap-backend'] do
   run_list %w(qa-chef-server-cluster::ha-enterprise-chef-drbd-sync
               qa-chef-server-cluster::ha-enterprise-chef-drbd-ready)
-  attributes {
-    { 'qa-chef-server-cluster' => node['qa-chef-server-cluster'] }
-  }
 end
 
 machine node['secondary-backend'] do
   run_list %w(qa-chef-server-cluster::ha-enterprise-chef-drbd-ready)
-  attributes {
-    { 'qa-chef-server-cluster' => node['qa-chef-server-cluster'] }
-  }
 end
 
 # converge frontend server with all the bits!

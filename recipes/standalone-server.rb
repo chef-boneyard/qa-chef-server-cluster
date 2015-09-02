@@ -22,10 +22,9 @@ include_recipe 'qa-chef-server-cluster::standalone-server-setup'
 
 machine node['standalone'] do
   run_list ['qa-chef-server-cluster::standalone']
-  attributes {
+  attributes lazy {
     { 'qa-chef-server-cluster' => node['qa-chef-server-cluster'] }
   }
-
 end
 
 download_logs node['standalone']

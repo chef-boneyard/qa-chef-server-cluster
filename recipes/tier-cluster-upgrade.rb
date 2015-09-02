@@ -22,7 +22,7 @@ include_recipe 'qa-chef-server-cluster::tier-cluster-setup'
 
 machine node['bootstrap-backend'] do
   run_list ['qa-chef-server-cluster::backend-upgrade']
-  attributes {
+  attributes lazy {
     { 'qa-chef-server-cluster' => node['qa-chef-server-cluster'] }
   }
 end
@@ -33,7 +33,7 @@ download_bootstrap_files
 
 machine node['frontend'] do
   run_list ['qa-chef-server-cluster::frontend-upgrade']
-  attributes {
+  attributes lazy {
     { 'qa-chef-server-cluster' => node['qa-chef-server-cluster'] }
   }
   files node['qa-chef-server-cluster']['chef-server']['files']
