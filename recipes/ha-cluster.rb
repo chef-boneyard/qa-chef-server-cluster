@@ -22,22 +22,7 @@ include_recipe 'qa-chef-server-cluster::ha-cluster-setup'
 
 # create machines and set attributes
 machine_batch do
-  machine node['bootstrap-backend'] do
-    action :ready
-    attribute %w(chef-server-cluster bootstrap enable), true
-    attribute %w(chef-server-cluster role), 'backend'
-  end
-
-  machine node['secondary-backend'] do
-    action :ready
-    attribute %w(chef-server-cluster bootstrap enable), false
-    attribute %w(chef-server-cluster role), 'backend'
-  end
-
-  machine node['frontend'] do
-    action :ready
-    attribute %w(chef-server-cluster role), 'frontend'
-  end
+  machines node['bootstrap-backend'], node['secondary-backend'], node['frontend']
 end
 
 # create and store aws ebs volume
@@ -64,11 +49,10 @@ frontend = resources("aws_instance[#{node['frontend']}]")
 eni = resources("aws_network_interface[#{node['qa-chef-server-cluster']['provisioning-id']}-ha]")
 volume = resources("aws_ebs_volume[#{node['qa-chef-server-cluster']['provisioning-id']}-ha]")
 aws_creds = Chef::Provisioning::AWSDriver::Credentials.new
-chef_server_config = ''
 
 ruby_block 'HA Chef Server Config' do # ~FC014
   block do
-    chef_server_config = <<-EOS\
+    node.default['qa-chef-server-cluster']['chef-server-config'] = <<-EOS\
 topology 'ha'
 api_fqdn '#{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}'
 
@@ -107,12 +91,15 @@ end
 
 # converge bootstrap server with all the bits!
 machine node['bootstrap-backend'] do
-  run_list %w( qa-chef-server-cluster::ha-install-chef-ha-package
-               qa-chef-server-cluster::ha-lvm-volume-group
-               qa-chef-server-cluster::backend )
-  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-  attribute 'chef_server_config', chef_server_config
-  attribute 'lvm_phyiscal_volume', volume.device
+  run_list %w(qa-chef-server-cluster::ha-install-chef-ha-package
+              qa-chef-server-cluster::ha-lvm-volume-group
+              qa-chef-server-cluster::backend)
+  attributes lazy {
+    {
+      'qa-chef-server-cluster' => node['qa-chef-server-cluster'],
+      'lvm_phyiscal_volume' => volume.device
+    }
+  }
 end
 
 download_logs node['bootstrap-backend']
@@ -124,8 +111,11 @@ machine node['secondary-backend'] do
   run_list %w(qa-chef-server-cluster::ha-install-chef-ha-package
               lvm
               qa-chef-server-cluster::backend)
-  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-  attribute 'chef_server_config', chef_server_config
+  attributes lazy {
+    {
+      'qa-chef-server-cluster' => node['qa-chef-server-cluster']
+    }
+  }
   files node['qa-chef-server-cluster']['chef-server']['files']
 end
 
@@ -134,8 +124,11 @@ download_logs node['secondary-backend']
 # converge frontend server with all the bits!
 machine node['frontend'] do
   run_list ['qa-chef-server-cluster::frontend']
-  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
-  attribute 'chef_server_config', chef_server_config
+  attributes lazy {
+    {
+      'qa-chef-server-cluster' => node['qa-chef-server-cluster']
+    }
+  }
   files node['qa-chef-server-cluster']['chef-server']['files']
 end
 

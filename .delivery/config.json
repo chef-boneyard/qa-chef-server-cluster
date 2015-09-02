@@ -7,7 +7,9 @@
   "skip_phases": [
     "provision",
     "quality",
-    "security"
+    "security",
+    "functional",
+    "unit"
   ],
   "delivery-truck": {
     "publish": {

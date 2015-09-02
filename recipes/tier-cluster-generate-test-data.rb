@@ -22,5 +22,7 @@ include_recipe 'qa-chef-server-cluster::tier-cluster-setup'
 
 machine node['frontend'] do
   run_list ['qa-chef-server-cluster::generate-test-data']
-  attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
+  attributes lazy {
+    { 'qa-chef-server-cluster' => node['qa-chef-server-cluster'] }
+  }
 end
