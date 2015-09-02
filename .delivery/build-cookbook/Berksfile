@@ -14,3 +14,6 @@ cookbook 'delivery-sugar',
 cookbook 'omnibus-artifactory-artifact',
   git: 'git@github.com:opscode-cookbooks/omnibus-artifactory-artifact.git',
   branch: 'master'
+
+cookbook 'qa-chef-server-cluster',
+  path: '../../'
