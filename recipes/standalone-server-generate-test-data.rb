@@ -25,5 +25,4 @@ machine node['standalone'] do
   attributes lazy {
     { 'qa-chef-server-cluster' => node['qa-chef-server-cluster'] }
   }
-
 end
