@@ -10,3 +10,6 @@ cookbook 'delivery-truck',
 cookbook 'delivery-sugar',
   git: 'https://github.com/chef-cookbooks/delivery-sugar.git',
   branch: 'master'
+
+cookbook 'omnibus-artifactory-artifact',
+  git: 'git@github.com:opscode-cookbooks/omnibus-artifactory-artifact.git'
