@@ -7,19 +7,13 @@
 include_recipe 'build::prepare_deps'
 include_recipe 'build::prepare_acceptance'
 
-path = node['delivery']['workspace']['repo']
-cache = node['delivery']['workspace']['cache']
-qa_path = "#{path}/deps/qa-chef-server-cluster"
-
 json_filename = if node['chef-server-acceptance']['upgrade'] == true
   'upgrade.json'
 else
   'install.json'
 end
 
-attributes_install_file = File.join(cache, json_filename)
-
-template attributes_install_file do
+template json_filename do
   source 'attributes.json.erb'
   action :create
   variables tags: { delivery_stage: node['delivery']['change']['stage'] },
