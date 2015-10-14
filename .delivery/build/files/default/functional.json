@@ -1,0 +1,5 @@
+{
+  "qa-chef-server-cluster": {
+    "chef-server-ctl-test-options": "--all"
+  }
+}
