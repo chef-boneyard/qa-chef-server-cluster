@@ -1,21 +1,16 @@
 {
   "version": "2",
   "build_cookbook": {
-    "path": ".delivery/build",
-    "name": "build"
+    "path": ".delivery/build-cookbook",
+    "name": "build-cookbook"
   },
-  "build_nodes": {
-    "default"    : ["name:builder-*.delivery.chef.co NOT name:builder-1.delivery.chef.co NOT name:builder-7.delivery.chef.co"]
-  },
+  "skip_phases": [
+    "unit"
+  ],
   "delivery-truck": {
     "publish": {
       "github": "chef/qa-chef-server-cluster"
     }
   },
-  "skip_phases": [
-    "publish",
-    "quality",
-    "security",
-    "deploy"
-  ]
+  "build_nodes": {}
 }
