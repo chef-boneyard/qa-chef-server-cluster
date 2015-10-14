@@ -1,0 +1,37 @@
+{
+  "qa-chef-server-cluster": {
+    "chef-server": {
+      <% if @flavor %>
+      "flavor": "<%= @flavor %>",
+      <% end %>
+      <% if @url %>
+      "url": "<%= @url %>"
+      <% else %>
+      "version": "<%= @chef_version %>",
+      "integration_builds": <%= @integration_builds %>,
+      "repo": "<%= @repo %>"
+      <% end %>
+    },
+    "aws": {
+      "machine_options": {
+        "aws_tags": {
+          <% @tags.each do |k,v| %>
+          "<%= k %>": "<%= v %>",
+          <% end %>
+          "X-Project": "qa-chef-server-cluster-delivery-builder"
+        },
+        "ssh_username": "ubuntu",
+        "bootstrap_options": {
+          <% if @image_id %>
+          "image_id": "<%= @image_id %>",
+          <% end %>
+          <% if @instance_type %>
+          "instance_type": "<%= @instance_type %>"
+          <% else %>
+          "instance_type": "m3.medium"
+          <% end %>
+        }
+      }
+    }
+  }
+}

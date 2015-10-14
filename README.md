@@ -14,16 +14,18 @@ See the [Provisioning Paths](PROVISIONING_PATHS.md) doc for additional details.
 
 # Requirements
 * AWS account and config
-* For local usage a chef repo is recommended to vendor the cookbook
-```ruby
-# .chef/knife.rb
-current_dir = File.dirname(__FILE__)
-cookbook_path [ "#{current_dir}/../cookbooks", "#{current_dir}/../berks-cookbooks" ]
+
+# Chef Zero
 ```
-```ruby
-# ./Berksfile
-cookbook 'omnibus-artifactory-artifact', github: 'opscode-cookbooks/omnibus-artifactory-artifact'
-cookbook 'qa-chef-server-cluster', github: 'chef/qa-chef-server-cluster'
+bundle install
+
+bundle exec berks install
+
+# default config
+bundle exec chef-client -z -o qa-chef-server-cluster::<recipe>
+
+# attribute overrides
+bundle exec chef-client -z -j <attrs>.json -o qa-chef-server-cluster::<recipe>
 ```
 
 # Main Cluster Recipes

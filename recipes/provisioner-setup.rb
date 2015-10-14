@@ -31,14 +31,14 @@ symbolize_keys_deep!(provisioner_machine_opts)
 
 with_machine_options(provisioner_machine_opts)
 
-chef_server_files_dir = node.default['qa-chef-server-cluster']['chef-server']['file-dir'] = File.join(Chef::Config[:chef_repo_path], '.chef', 'stash')
+chef_server_files_dir = node.default['qa-chef-server-cluster']['chef-server']['file-dir'] = File.join(Chef::Config[:chef_repo_path], 'stash')
 
 directory chef_server_files_dir do
   mode 0700
   recursive true
 end
 
-keys_dir = File.join(Chef::Config[:chef_repo_path], '.chef', 'keys')
+keys_dir = File.join(Chef::Config[:chef_repo_path], 'keys')
 directory keys_dir do
   mode 0700
   recursive true
