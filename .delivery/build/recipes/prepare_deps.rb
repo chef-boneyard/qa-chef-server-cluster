@@ -36,17 +36,19 @@ execute 'git checkout c6c75773d5930ce77ab30ea21942515913b8d823' do
   cwd qa_path
 end
 
-directory "#{qa_path}/.chef" do
-  owner node['delivery_builder']['build_user']
-  mode '0755'
-  action :create
-end
+# TODO remove
+# directory "#{qa_path}/.chef" do
+#   owner node['delivery_builder']['build_user']
+#   mode '0755'
+#   action :create
+# end
 
-file "#{qa_path}/.chef/knife.rb" do
-  mode '0644'
-  action :create
-  content "ssl_verify_mode :verify_none"
-end
+# TODO remove
+# file "#{qa_path}/.chef/knife.rb" do
+#   mode '0644'
+#   action :create
+#   content "ssl_verify_mode :verify_none"
+# end
 
 install_dir = '/opt/chefdk'
 execute "bundle install --path=#{gem_cache}" do
@@ -58,7 +60,7 @@ execute "bundle install --path=#{gem_cache}" do
   )
 end
 
-execute 'bundle exec berks vendor cookbooks' do
+execute 'bundle exec berks vendor' do
   cwd qa_path
 end
 
