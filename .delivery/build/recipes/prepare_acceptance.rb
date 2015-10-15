@@ -44,8 +44,16 @@ template File.join(cache, '.aws/config') do
   )
 end
 
-link File.join(cache, '.aws/credentials') do
-  to File.join(cache, '.aws/config')
+env 'AWS_ACCESS_KEY_ID' do
+  value delivery_secrets['access_key_id']
+end
+
+env 'AWS_SECRET_ACCESS_KEY' do
+  value delivery_secrets['secret_access_key']
+end
+
+env 'AWS_DEFAULT_REGION' do
+  value delivery_secrets['region']
 end
 
 # TODO: support for other keys in qa-chef-server-cluster cookbook
