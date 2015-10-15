@@ -44,13 +44,6 @@ template File.join(cache, '.aws/config') do
   )
 end
 
-execute 'set aws env vars' do
-  command "\
-export AWS_ACCESS_KEY_ID=#{delivery_secrets['access_key_id']};
-export AWS_SECRET_ACCESS_KEY=#{delivery_secrets['secret_access_key']};
-export AWS_DEFAULT_REGION=#{delivery_secrets['region']}";
-end
-
 # TODO: support for other keys in qa-chef-server-cluster cookbook
 # template File.join(path, 'data_bags/secrets/lob-user-key.json') do
 #   sensitive true
