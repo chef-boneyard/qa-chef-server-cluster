@@ -2,5 +2,3 @@
 .kitchen.local.yml
 /.chef
 /berks-cookbooks
-
-Gemfile.lock
