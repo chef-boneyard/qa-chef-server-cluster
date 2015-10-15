@@ -9,3 +9,5 @@ version '0.1.1'
 depends 'delivery-truck'
 depends 'delivery-red-pill'
 depends 'delivery-sugar-extras'
+
+depends 'qa-chef-server-cluster'
