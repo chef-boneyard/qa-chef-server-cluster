@@ -29,3 +29,9 @@ template attributes_install_file do
             integration_builds: node['chef_server_test_integration_builds'],
             image_id: node['ami']['ubuntu-12.04']
 end
+
+ruby_block 'set node attributes' do
+  block do
+    node.json_create(JSON.parse(attributes_install_file)
+  end
+end
