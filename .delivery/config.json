@@ -5,7 +5,10 @@
     "name": "build"
   },
   "build_nodes": {
-    "default"    : ["name:builder-*.delivery.chef.co NOT name:builder-1.delivery.chef.co NOT name:builder-7.delivery.chef.co"]
+    "default"    : ["name:builder-*.delivery.chef.co \
+NOT name:builder-1.delivery.chef.co \
+NOT name:builder-7.delivery.chef.co \
+NOT name:builder-2.delivery.chef.co"]
   },
   "delivery-truck": {
     "publish": {
