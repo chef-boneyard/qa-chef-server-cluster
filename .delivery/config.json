@@ -4,9 +4,7 @@
     "path": ".delivery/build",
     "name": "build"
   },
-  "build_nodes": {
-    "default"    : []
-  },
+  "build_nodes": {},
   "delivery-truck": {
     "publish": {
       "github": "chef/qa-chef-server-cluster"

@@ -11,7 +11,6 @@ attributes_install_file = File.join(cache, 'install.json')
 repo_knife_file = File.join(qa_path, '.chef/knife.rb')
 repo_config_file = File.join(path, '.chef/config.rb')
 
-node_attributes = self
 ruby_block 'stand-up-machine' do
   block do
     node_attributes = JSON.parse(attributes_install_file)
