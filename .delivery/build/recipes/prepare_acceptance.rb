@@ -34,8 +34,8 @@ file ssh_public_key_path do
   mode '0644'
 end
 
-# template File.join(cache, '.aws/config') do
-template File.join(cache, '.aws/credentials') do
+template File.join(cache, '.aws/config') do
+#template File.join(cache, '.aws/credentials') do
   sensitive true
   source 'aws-config.erb'
   variables(
