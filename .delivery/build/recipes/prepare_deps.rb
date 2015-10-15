@@ -48,21 +48,21 @@ gem_cache = File.join(node['delivery']['workspace']['root'], "../../../project_g
 #   content "ssl_verify_mode :verify_none"
 # end
 
-install_dir = '/opt/chefdk'
-execute "bundle install --path=#{gem_cache}" do
-  #cwd qa_path
-  cwd path
-  environment(
-    'PATH' => node['chef-server-acceptance']['delivery-path'],
-    "LDFLAGS" => "-Wl,-rpath,#{install_dir}/embedded/lib -L#{install_dir}/embedded/lib",
-    "CFLAGS" => "-I#{install_dir}/embedded/include"
-  )
-end
-
-# execute 'bundle exec berks vendor cookbooks' do
-execute 'bundle exec berks vendor' do
-  # cwd qa_path
-  cwd path
-end
+# install_dir = '/opt/chefdk'
+# execute "bundle install --path=#{gem_cache}" do
+#   #cwd qa_path
+#   cwd path
+#   environment(
+#     'PATH' => node['chef-server-acceptance']['delivery-path'],
+#     "LDFLAGS" => "-Wl,-rpath,#{install_dir}/embedded/lib -L#{install_dir}/embedded/lib",
+#     "CFLAGS" => "-I#{install_dir}/embedded/include"
+#   )
+# end
+#
+# # execute 'bundle exec berks vendor cookbooks' do
+# execute 'bundle exec berks vendor' do
+#   # cwd qa_path
+#   cwd path
+# end
 
 # rubocop:enable LineLength
