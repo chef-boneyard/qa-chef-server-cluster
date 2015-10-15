@@ -44,6 +44,10 @@ template File.join(cache, '.aws/config') do
   )
 end
 
+link File.join(cache, '.aws/credentials') do
+  to File.join(cache, '.aws/config')
+end
+
 # TODO: support for other keys in qa-chef-server-cluster cookbook
 # template File.join(path, 'data_bags/secrets/lob-user-key.json') do
 #   sensitive true
