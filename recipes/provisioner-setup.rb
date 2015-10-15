@@ -47,14 +47,14 @@ end
 priv_key = File.join(keys_dir, node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['key_name'])
 file priv_key do
   mode 0600
-  content node['qa-chef-server-cluster']['private-key']
+  content node['qa-chef-server-cluster']['private-key'].strip
   sensitive true
 end
 
 pub_key = File.join(keys_dir, "#{node['qa-chef-server-cluster']['aws']['machine_options']['bootstrap_options']['key_name']}.pub")
 file pub_key do
   mode 0600
-  content node['qa-chef-server-cluster']['public-key']
+  content node['qa-chef-server-cluster']['public-key'].strip
   sensitive true
 end
 
