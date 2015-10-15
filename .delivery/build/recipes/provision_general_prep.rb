@@ -32,6 +32,6 @@ end
 
 ruby_block 'set node attributes' do
   block do
-    node.json_create(JSON.parse(attributes_install_file)
+    node.json_create(File.load(attributes_install_file))
   end
 end
