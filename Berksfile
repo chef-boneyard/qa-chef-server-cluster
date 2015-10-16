@@ -4,7 +4,7 @@ metadata
 
 cookbook 'chef-vault'
 cookbook 'apt'
-cookbook 'chef-ingredient'
+cookbook 'chef-ingredient', '0.11.3'
 cookbook 'lvm'
 cookbook 'omnibus-artifactory-artifact', git: 'git@github.com:opscode-cookbooks/omnibus-artifactory-artifact.git', branch: 'master'
 cookbook 'packagecloud'
