@@ -13,5 +13,5 @@ end
 cookbook 'qa-chef-server-cluster',
   github: 'chef/qa-chef-server-cluster'
 
-cookbook 'omnibus_artifactory_artifact',
+cookbook 'omnibus-artifactory-artifact',
   git: 'git@github.com:opscode-cookbooks/omnibus-artifactory-artifact.git'
