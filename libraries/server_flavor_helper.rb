@@ -1,5 +1,5 @@
 module QaChefServerCluster
-  class ChefServer
+  class ChefServerInfo
     attr_reader :product_name, :ctl_exec, :config_file, :config_path, :package_name
 
     def initialize(product_name:, ctl_exec:, config_file:, config_path:, package_name:)
@@ -13,7 +13,7 @@ module QaChefServerCluster
 
   module ServerFlavorHelper
     def open_source_chef_config
-      ChefServer.new(
+      ChefServerInfo.new(
         product_name: 'open_source_chef',
         ctl_exec: 'chef-server-ctl',
         config_file: 'chef-server.rb',
@@ -23,7 +23,7 @@ module QaChefServerCluster
     end
 
     def chef_server_config
-      ChefServer.new(
+      ChefServerInfo.new(
         product_name: 'chef_server',
         ctl_exec: 'chef-server-ctl',
         config_file: 'chef-server.rb',
@@ -33,7 +33,7 @@ module QaChefServerCluster
     end
 
     def enterprise_chef_config
-      ChefServer.new(
+      ChefServerInfo.new(
         product_name: 'enterprise_chef',
         ctl_exec: 'private-chef-ctl',
         config_file: 'private-chef.rb',
