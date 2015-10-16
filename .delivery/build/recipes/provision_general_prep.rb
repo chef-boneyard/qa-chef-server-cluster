@@ -4,7 +4,7 @@
 #
 # Copyright (c) 2015 The Authors, All Rights Reserved.
 
-include_recipe 'build::prepare_deps'
+#include_recipe 'build::prepare_deps'
 include_recipe 'build::prepare_acceptance'
 
 path = node['delivery']['workspace']['repo']
@@ -28,4 +28,10 @@ template attributes_install_file do
             repo: node['chef_server_test_repo'],
             integration_builds: node['chef_server_test_integration_builds'],
             image_id: node['ami']['ubuntu-12.04']
+end
+
+ruby_block 'load attributes' do
+  block do
+    node.json_create(JSON.load(File.open(attributes_install_file)))
+  end
 end
