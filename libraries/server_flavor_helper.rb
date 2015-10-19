@@ -12,7 +12,7 @@ module QaChefServerCluster
   end
 
   module ServerFlavorHelper
-    def open_source_chef
+    def open_source_chef_helper
       ChefServerInfo.new(
         product_name: 'open_source_chef',
         ctl_exec: 'chef-server-ctl',
@@ -22,7 +22,7 @@ module QaChefServerCluster
       )
     end
 
-    def chef_server
+    def chef_server_helper
       ChefServerInfo.new(
         product_name: 'chef_server',
         ctl_exec: 'chef-server-ctl',
@@ -32,7 +32,7 @@ module QaChefServerCluster
       )
     end
 
-    def enterprise_chef
+    def enterprise_chef_helper
       ChefServerInfo.new(
         product_name: 'enterprise_chef',
         ctl_exec: 'private-chef-ctl',
