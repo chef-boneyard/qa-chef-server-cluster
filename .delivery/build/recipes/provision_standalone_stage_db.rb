@@ -12,7 +12,7 @@ qa_path = "#{path}/deps/qa-chef-server-cluster"
 ruby_block 'store machine info' do
   block do
     Dir.chdir qa_path
-    
+
     identifier = node['chef-server-acceptance']['identifier']
 
     # load the json that represents this machine
@@ -20,7 +20,7 @@ ruby_block 'store machine info' do
     node.run_state['delivery']['stage'] ||= {}
     node.run_state['delivery']['stage']['data'] ||= {}
     node.run_state['delivery']['stage']['data'][identifier] ||= {}
-    node.run_state['delivery']['stage']['data'][identifier]['standalone'] = JSON.parse(File.read('nodes/default-standalone.json'))
+    node.run_state['delivery']['stage']['data'][identifier]['standalone'] = JSON.parse(File.read('.chef/nodes/default-standalone.json'))
   end
 end
 

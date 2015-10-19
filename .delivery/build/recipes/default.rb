@@ -17,6 +17,11 @@ directory gem_cache do
   action :create
 end
 
+chef_gem 'mixlib-versioning' do
+  compile_time false
+  action :install
+end
+
 include_recipe 'delivery-sugar-extras::default'
 include_recipe 'delivery-red-pill::default'
 include_recipe 'delivery-truck::default'

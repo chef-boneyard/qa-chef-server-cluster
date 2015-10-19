@@ -42,11 +42,11 @@ module QaChefServerCluster
     def current_server
       case current_flavor
       when 'chef_server'
-        chef_server
+        chef_server_helper
       when 'open_source_chef'
-        open_source_chef
+        open_source_chef_helper
       when 'enterprise_chef'
-        enterprise_chef
+        enterprise_chef_helper
       else
         raise "Chef Server flavor '#{current_flavor}' not supported.  Must be one of: #{SUPPORTED_FLAVORS}"
       end
@@ -171,13 +171,13 @@ module QaChefServerCluster
       #   # chef-server and private-chef installed... what should I do in this edge case?
       if installed_packages.include?('chef-server-core')
         # upgrade from chef-server-core
-        server = chef_server
+        server = chef_server_helper
       elsif installed_packages.include?('private-chef')
         # upgrade from private-chef
-        server = enterprise_chef
+        server = enterprise_chef_helper
       elsif installed_packages.include?('chef-server')
         # upgrade from chef-server
-        server = open_source_chef
+        server = open_source_chef_helper
       else
         raise 'No installed Chef Server package found.'
       end
