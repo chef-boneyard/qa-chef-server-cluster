@@ -9,6 +9,12 @@ class Chef
         true
       end
 
+      # def initialize(name, run_context = nil)
+      #   super(name, run_context)
+      #   # extend ::QaChefServerCluster::
+      #   end
+      # end
+
       action :install do
         install_product(new_resource)
       end
