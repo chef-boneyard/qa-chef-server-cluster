@@ -58,8 +58,8 @@ execute "bundle install --path=#{gem_cache}" do
   )
 end
 
-execute 'bundle exec berks vendor cookbooks' do
-  cwd qa_path
+execute 'bundle exec berks vendor' do
+  cwd path
 end
 
 # rubocop:enable LineLength

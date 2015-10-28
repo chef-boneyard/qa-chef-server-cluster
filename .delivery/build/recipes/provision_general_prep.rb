@@ -17,7 +17,7 @@ else
   'install.json'
 end
 
-attributes_install_file = File.join(cache, json_filename)
+attributes_install_file = File.join(path, json_filename)
 
 template attributes_install_file do
   source 'attributes.json.erb'
