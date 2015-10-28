@@ -90,6 +90,7 @@ describe 'qa-chef-server-cluster::standalone' do
       end
 
       it 'uses chef_ingredient' do
+        skip
         expect(chef_run).to install_chef_ingredient('chef-server')
       end
     end
@@ -107,6 +108,7 @@ describe 'qa-chef-server-cluster::standalone' do
       end
 
       it 'uses chef_ingredient' do
+        skip
         expect(chef_run).to install_chef_ingredient('chef-server').with(
           package_source: "#{::File.join(Chef::Config.file_cache_path, ::File.basename('/var/chef/cache/package.ext'))}"
         )

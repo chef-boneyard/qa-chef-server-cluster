@@ -50,7 +50,7 @@ end
 
 install_dir = '/opt/chefdk'
 execute "bundle install --path=#{gem_cache}" do
-  cwd qa_path
+  cwd path
   environment(
     'PATH' => node['chef-server-acceptance']['delivery-path'],
     "LDFLAGS" => "-Wl,-rpath,#{install_dir}/embedded/lib -L#{install_dir}/embedded/lib",
@@ -58,8 +58,8 @@ execute "bundle install --path=#{gem_cache}" do
   )
 end
 
-execute 'bundle exec berks vendor cookbooks' do
-  cwd qa_path
+execute 'bundle exec berks vendor' do
+  cwd path
 end
 
 # rubocop:enable LineLength

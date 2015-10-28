@@ -12,9 +12,7 @@ repo_knife_file = File.join(qa_path, '.chef/knife.rb')
 
 ruby_block 'stand-up-machine' do
   block do
-    Dir.chdir qa_path
+    Dir.chdir path
     shell_out_retry("bundle exec chef-client -z -p 10257 -j #{attributes_install_file} -c #{repo_knife_file} -o qa-chef-server-cluster::standalone-server --force-formatter")
   end
 end
-
-
