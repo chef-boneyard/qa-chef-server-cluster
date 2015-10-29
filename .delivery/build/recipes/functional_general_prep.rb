@@ -9,7 +9,7 @@ include_recipe 'build::prepare_acceptance'
 
 path = node['delivery']['workspace']['repo']
 cache = node['delivery']['workspace']['cache']
-qa_path = "#{path}/deps/qa-chef-server-cluster"
+
 attributes_functional_file = File.join(cache, 'functional.json')
 
 cookbook_file attributes_functional_file do

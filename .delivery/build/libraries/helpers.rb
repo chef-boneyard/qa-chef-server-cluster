@@ -8,6 +8,7 @@ module ChefServerAcceptanceCookbook
                  }
       client_run = Mixlib::ShellOut.new(command_string, live_stream: STDOUT, timeout: 7200, environment: env_hash, cwd: cwd)
       client_run.run_command
+      client_run.error!
     end
 
     # This is a temporary solution to the frequent
