@@ -5,7 +5,7 @@
     "name": "build"
   },
   "build_nodes": {
-    "default"    : ["name:builder-*.delivery.chef.co NOT name:builder-ami-3d50120d-6.delivery.chef.co NOT name:builder-ami-2cfe1a1f-1.delivery.chef.co"]
+    "default"    : ["name:builder-*.delivery.chef.co NOT name:builder-ami-3d50120d-6.delivery.chef.co NOT name:builder-ami-2cfe1a1f-1.delivery.chef.co NOT name:builder-ami-2cfe1a1f-3.delivery.chef.co"]
   },
   "delivery-truck": {
     "publish": {
