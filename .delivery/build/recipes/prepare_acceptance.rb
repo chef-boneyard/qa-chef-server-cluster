@@ -35,7 +35,7 @@ file ssh_public_key_path do
 end
 
 template File.join(cache, '.aws/config') do
-  # sensitive true
+  sensitive true
   source 'aws-config.erb'
   variables(
     aws_access_key_id: delivery_secrets['access_key_id'],
