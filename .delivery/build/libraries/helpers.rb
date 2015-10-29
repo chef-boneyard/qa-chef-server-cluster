@@ -2,12 +2,20 @@ module ChefServerAcceptanceCookbook
   module Helpers
     include Chef::Mixin::ShellOut
 
+    def shell_out(command_string, cwd)
+      env_hash = {
+                   'AWS_CONFIG_FILE' => File.join(node['delivery']['workspace']['repo'], '.aws/config')
+                 }
+      client_run = Mixlib::ShellOut.new(command_string, live_stream: STDOUT, timeout: 7200, environment: env_hash, cwd: cwd)
+      client_run.run_command
+    end
+
     # This is a temporary solution to the frequent
     #  and intermittent AuthFailure exceptions
     def shell_out_retry(command_string)
       attempt = 1
       begin
-        env_hash = {	
+        env_hash = {
                      'AWS_CONFIG_FILE' => File.join(node['delivery']['workspace']['cache'], '.aws/config')
                    }
         client_run = Mixlib::ShellOut.new(command_string, live_stream: STDOUT, timeout: 7200, environment: env_hash)
