@@ -16,6 +16,6 @@ cookbook_file attributes_functional_file do
   source 'functional.json'
 end
 
-directory File.join(qa_path, 'nodes') do
+directory File.join(path, '.chef', 'nodes') do
   action :create
 end
