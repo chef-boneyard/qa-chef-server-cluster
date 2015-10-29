@@ -7,12 +7,11 @@
 # store all of the machine info in a data bag we can pass to the smoke and functional stages
 
 path = node['delivery']['workspace']['repo']
-qa_path = "#{path}/deps/qa-chef-server-cluster"
 
 ruby_block 'store machine info' do
   block do
-    Dir.chdir qa_path
-    
+    Dir.chdir File.join(path, '.chef')
+
     identifier = node['chef-server-acceptance']['identifier']
 
     # load the json that represents this machine
