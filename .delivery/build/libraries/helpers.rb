@@ -4,7 +4,7 @@ module ChefServerAcceptanceCookbook
 
     def shell_out(command_string, cwd)
       env_hash = {
-                   'AWS_CONFIG_FILE' => File.join(node['delivery']['workspace']['repo'], '.aws/config')
+                   'AWS_CONFIG_FILE' => File.join(node['delivery']['workspace']['cache'], '.aws/config')
                  }
       client_run = Mixlib::ShellOut.new(command_string, live_stream: STDOUT, timeout: 7200, environment: env_hash, cwd: cwd)
       client_run.run_command
