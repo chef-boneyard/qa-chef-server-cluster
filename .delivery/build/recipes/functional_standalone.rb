@@ -8,7 +8,7 @@ path = node['delivery']['workspace']['repo']
 cache = node['delivery']['workspace']['cache']
 
 attributes_functional_file = File.join(cache, 'functional.json')
-repo_config_file = File.join(path, '.chef/knife.rb')
+repo_config_file = File.join(path, '.chef/config.rb')
 
 ruby_block 'run-pedant' do
   block do
