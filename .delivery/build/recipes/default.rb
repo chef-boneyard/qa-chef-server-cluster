@@ -20,3 +20,4 @@ end
 include_recipe 'delivery-sugar-extras::default'
 include_recipe 'delivery-red-pill::default'
 include_recipe 'delivery-truck::default'
+include_recipe 'build-essential'
