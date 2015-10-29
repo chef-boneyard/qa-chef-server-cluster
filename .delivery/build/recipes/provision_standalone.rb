@@ -7,7 +7,7 @@
 path = node['delivery']['workspace']['repo']
 cache = node['delivery']['workspace']['cache']
 qa_path = "#{path}/deps/qa-chef-server-cluster"
-attributes_install_file = File.join(cache, 'install.json')
+attributes_install_file = File.join(path, 'install.json')
 repo_knife_file = File.join(qa_path, '.chef/knife.rb')
 repo_config_file = File.join(path, '.chef/config.rb')
 
