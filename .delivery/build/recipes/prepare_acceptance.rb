@@ -53,17 +53,17 @@ end
 #   )
 # end
 
-ruby_block 'DEBUG: Output Information about the Environment and System' do
-  block do
-    Chef::Log.info "USER: #{Mixlib::ShellOut.new('whoami').run_command.stdout}"
-    Chef::Log.info "HOST: #{Mixlib::ShellOut.new('hostname -f').run_command.stdout}"
-    Chef::Log.info "PATH: #{repo}"
-    Chef::Log.info Mixlib::ShellOut.new("ls -la #{repo}").run_command.stdout
-    Chef::Log.info "CACHE: #{cache}"
-    Chef::Log.info Mixlib::ShellOut.new("ls -la #{cache}").run_command.stdout
-    Chef::Log.info 'DISK SPACE:'
-    Chef::Log.info Mixlib::ShellOut.new('df -h').run_command.stdout
-  end
-end
+# ruby_block 'DEBUG: Output Information about the Environment and System' do
+#   block do
+#     Chef::Log.info "USER: #{Mixlib::ShellOut.new('whoami').run_command.stdout}"
+#     Chef::Log.info "HOST: #{Mixlib::ShellOut.new('hostname -f').run_command.stdout}"
+#     Chef::Log.info "PATH: #{repo}"
+#     Chef::Log.info Mixlib::ShellOut.new("ls -la #{repo}").run_command.stdout
+#     Chef::Log.info "CACHE: #{cache}"
+#     Chef::Log.info Mixlib::ShellOut.new("ls -la #{cache}").run_command.stdout
+#     Chef::Log.info 'DISK SPACE:'
+#     Chef::Log.info Mixlib::ShellOut.new('df -h').run_command.stdout
+#   end
+# end
 
 # rubocop:enable LineLength
