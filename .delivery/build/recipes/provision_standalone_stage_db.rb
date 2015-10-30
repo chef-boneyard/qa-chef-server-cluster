@@ -6,12 +6,9 @@
 #
 # store all of the machine info in a data bag we can pass to the smoke and functional stages
 
-path = node['delivery']['workspace']['repo']
-
 ruby_block 'store machine info' do
   block do
-    Dir.chdir File.join(path, '.chef')
-
+    nodes_dir = File.join(node['delivery']['workspace']['repo'], '.chef', 'nodes')
     identifier = node['chef-server-acceptance']['identifier']
 
     # load the json that represents this machine
@@ -19,9 +16,12 @@ ruby_block 'store machine info' do
     node.run_state['delivery']['stage'] ||= {}
     node.run_state['delivery']['stage']['data'] ||= {}
     node.run_state['delivery']['stage']['data'][identifier] ||= {}
-    node.run_state['delivery']['stage']['data'][identifier]['standalone'] = JSON.parse(File.read('nodes/default-standalone.json'))
+    node.run_state['delivery']['stage']['data'][identifier]['standalone'] = JSON.parse(
+      File.read(
+        File.join(nodes_dir, 'default-standalone.json')
+      )
+    )
   end
 end
-
 
 delivery_stage_db

@@ -4,21 +4,17 @@
 #
 # Copyright (c) 2015 The Authors, All Rights Reserved.
 
-path = node['delivery']['workspace']['repo']
-cache = node['delivery']['workspace']['cache']
-
-attributes_functional_file = File.join(cache, 'functional.json')
-repo_config_file = File.join(path, '.chef/config.rb')
+repo = node['delivery']['workspace']['repo']
+attributes_functional_file = File.join(repo, 'functional.json')
 
 ruby_block 'run-pedant' do
   block do
-    shell_out("bundle exec chef-client -z -p 10257 -j #{attributes_functional_file} -c #{repo_config_file} -o qa-chef-server-cluster::standalone-server-test --force-formatter", path)
+    run_chef_client('standalone-server-test', attributes_file: attributes_functional_file)
   end
 end
 
 ruby_block 'destroy-machine' do
   block do
-    shell_out("bundle exec chef-client -z -p 10257 -c #{repo_config_file} -o qa-chef-server-cluster::standalone-server-destroy --force-formatter", path)
+    run_chef_client('standalone-server-destroy')
   end
-  action :run
 end

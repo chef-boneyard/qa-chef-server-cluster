@@ -4,11 +4,10 @@
 #
 # Copyright (c) 2015 The Authors, All Rights Reserved.
 
-path = node['delivery']['workspace']['repo']
-repo_config_file = File.join(path, '.chef/config.rb')
+install_file = File.join(node['delivery']['workspace']['repo'], 'install.json')
 
 ruby_block 'stand-up-machine' do
   block do
-    shell_out("bundle exec chef-client -z -p 10257 -j install.json -c #{repo_config_file} -o qa-chef-server-cluster::standalone-server --force-formatter", path)
+    run_chef_client('standalone-server', attributes_file: install_file)
   end
 end

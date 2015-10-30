@@ -7,17 +7,13 @@
 include_recipe 'build::prepare_deps'
 include_recipe 'build::prepare_acceptance'
 
-repo = node['delivery']['workspace']['repo']
-
 json_filename = if node['chef-server-acceptance']['upgrade'] == true
   'upgrade.json'
 else
   'install.json'
 end
 
-attributes_install_file = File.join(repo, json_filename)
-
-template attributes_install_file do
+template File.join(node['delivery']['workspace']['repo'], json_filename) do
   source 'attributes.json.erb'
   action :create
   variables tags: { delivery_stage: node['delivery']['change']['stage'] },

@@ -7,15 +7,12 @@
 include_recipe 'build::prepare_deps'
 include_recipe 'build::prepare_acceptance'
 
-path = node['delivery']['workspace']['repo']
-cache = node['delivery']['workspace']['cache']
+repo = node['delivery']['workspace']['repo']
 
-attributes_functional_file = File.join(cache, 'functional.json')
-
-cookbook_file attributes_functional_file do
+cookbook_file File.join(repo, 'functional.json') do
   source 'functional.json'
 end
 
-directory File.join(path, '.chef', 'nodes') do
+directory File.join(repo, '.chef', 'nodes') do
   action :create
 end
