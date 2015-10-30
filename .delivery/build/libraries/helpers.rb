@@ -48,6 +48,7 @@ module ChefServerAcceptanceCookbook
                                    '.chef',
                                    'nodes',
                                    "default-#{machine}.json")
+                )
               )
             )
           end
