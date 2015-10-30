@@ -27,7 +27,37 @@ module ChefServerAcceptanceCookbook
       client_run.run_command
       client_run.error!
     end
+
+    def store_machine_data(identifier, machines)
+      # load the json that represents this machine
+      node.run_state['delivery'] ||= {}
+      node.run_state['delivery']['stage'] ||= {}
+      node.run_state['delivery']['stage']['data'] ||= {}
+      node.run_state['delivery']['stage']['data'][identifier] ||= {}
+
+      machines.each do |machine|
+        node.run_state['delivery']['stage']['data'][identifier][machine] = JSON.parse(
+          File.read(
+            File.join(nodes_dir, "default-#{machine}.json")
+          )
+        )
+      end
+    end
+
+    def write_machine_data(identifier, machines)
+      machines.each do |machine|
+        machine_state = ::Chef.node.run_state['delivery']['stage']['data'][identifier][machine]
+        IO.write(File.join(nodes_dir, "default-#{machine}.json"), machine_state.to_json)
+      end
+    end
+  end
+
+  private
+
+  def nodes_dir
+    File.join(node['delivery']['workspace']['repo'], '.chef', 'nodes')
   end
 end
 
-Chef::Resource::RubyBlock.send(:include, ::ChefServerAcceptanceCookbook::Helpers)
+#Chef::Resource::RubyBlock.send(:include, ::ChefServerAcceptanceCookbook::Helpers)
+Chef::Resource::Recipe.send(:extend, ::ChefServerAcceptanceCookbook::Helpers)
