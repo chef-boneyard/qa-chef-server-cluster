@@ -9,5 +9,5 @@ repo = node['delivery']['workspace']['repo']
 attributes_install_file = File.join(repo, 'install.json')
 attributes_upgrade_file = File.join(repo, 'upgrade.json')
 
-run_chef_client('standalone-server-generate-test-data', attributes_install_file)
-run_chef_client('standalone-server-upgrade', attributes_upgrade_file)
+run_chef_client('standalone-server-generate-test-data', attributes_file: attributes_install_file)
+run_chef_client('standalone-server-upgrade', attributes_file: attributes_upgrade_file)
