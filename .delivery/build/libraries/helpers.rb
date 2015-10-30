@@ -33,7 +33,7 @@ module ChefServerAcceptanceCookbook
     end
 
     def store_machine_data(identifier, machines)
-      ruby_block "Store data for machines #{machines.join(', ')}" do
+      ruby_block "Store data for machine(s) #{machines.join(', ')}" do
         block do
           # load the json that represents this machine
           node.run_state['delivery'] ||= {}
@@ -53,7 +53,7 @@ module ChefServerAcceptanceCookbook
     end
 
     def write_machine_data(identifier, machines)
-      ruby_block "Write data for machines #{machines.join(', ')}" do
+      ruby_block "Write data for machine(s) #{machines.join(', ')}" do
         block do
           machines.each do |machine|
             machine_state = ::Chef.node.run_state['delivery']['stage']['data'][identifier][machine]
