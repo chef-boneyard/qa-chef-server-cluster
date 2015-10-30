@@ -24,8 +24,8 @@ module ChefServerAcceptanceCookbook
                                          timeout: 7200,
                                          environment: env_hash,
                                          cwd: repo)
-      client_run.run_command
-      client_run.error!
+      chef_client.run_command
+      chef_client.error!
     end
 
     def store_machine_data(identifier, machines)
