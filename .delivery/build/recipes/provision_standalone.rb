@@ -7,9 +7,3 @@
 install_file = File.join(node['delivery']['workspace']['repo'], 'install.json')
 
 run_chef_client('standalone-server', attributes_file: install_file)
-
-# ruby_block 'stand-up-machine' do
-#   block do
-#     run_chef_client('standalone-server', attributes_file: install_file)
-#   end
-# end
