@@ -21,15 +21,15 @@ if node['delivery']['change']['stage'] == 'acceptance'
     # TODO: 'ha_clean_aws',
 
     # chef_server_latest_released_version > chef_server_version upgrade testing
-    'standalone_upgrade_aws',
+    # 'standalone_upgrade_aws',
     # TODO: 'tier_upgrade_aws',
     # TODO: 'ha_upgrade_aws',
 
     # OSC 11.latest > chef_server_version upgrade testing (standalone only)
-    # TODO: 'standalone_osc_upgrade_aws',
+    'standalone_osc_upgrade_aws',
 
     # EC 11.latest > chef_server_version upgrade testing
-    # TODO: 'standalone_ec_upgrade_aws',
+    'standalone_ec_upgrade_aws',
     # TODO: 'tier_ec_upgrade_aws',
     # TODO: 'ha_ec_upgrade_aws'
   ]

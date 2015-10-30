@@ -20,10 +20,10 @@
 
 include_recipe 'qa-chef-server-cluster::chef-server-readiness'
 
-pedant_cmd = "#{current_server.ctl_exec} test"
-
 pedant_options = node['qa-chef-server-cluster']['chef-server-ctl-test-options']
 
-pedant_cmd << " #{pedant_options}" unless pedant_options.nil?
+pedant_cmd = []
+pedant_cmd << "#{current_server.ctl_exec} test"
+pedant_cmd << pedant_options if pedant_options
 
-execute pedant_cmd
+execute pedant_cmd.join(' ').strip

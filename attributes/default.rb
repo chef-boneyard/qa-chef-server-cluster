@@ -50,7 +50,7 @@ node.default['qa-chef-server-cluster']['chef-ha'].tap do |chef_ha|
   chef_ha['url'] = nil # setting this to a direct download url path will override all install_methods
 end
 
-node.default['qa-chef-server-cluster']['chef-server-ctl-test-options'] = nil
+node.default['qa-chef-server-cluster']['chef-server-ctl-test-options'] = ''
 
 node.default['qa-chef-server-cluster']['download-logs'] = false
 
