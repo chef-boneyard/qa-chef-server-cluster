@@ -44,7 +44,10 @@ module ChefServerAcceptanceCookbook
           machines.each do |machine|
             node.run_state['delivery']['stage']['data'][identifier][machine] = JSON.parse(
               File.read(
-                File.join(nodes_dir, "default-#{machine}.json")
+                File.join(File.join(node['delivery']['workspace']['repo'],
+                                   '.chef',
+                                   'nodes',
+                                   "default-#{machine}.json")
               )
             )
           end
@@ -57,17 +60,16 @@ module ChefServerAcceptanceCookbook
         block do
           machines.each do |machine|
             machine_state = ::Chef.node.run_state['delivery']['stage']['data'][identifier][machine]
-            IO.write(File.join(nodes_dir, "default-#{machine}.json"), machine_state.to_json)
+            IO.write(File.join(node['delivery']['workspace']['repo'],
+                               '.chef',
+                               'nodes',
+                               "default-#{machine}.json"),
+                     machine_state.to_json)
           end
         end
       end
     end
   end
-
-  def nodes_dir
-    File.join(node['delivery']['workspace']['repo'], '.chef', 'nodes')
-  end
 end
 
-#Chef::Resource::RubyBlock.send(:include, ::ChefServerAcceptanceCookbook::Helpers)
 Chef::Recipe.send(:include, ::ChefServerAcceptanceCookbook::Helpers)
