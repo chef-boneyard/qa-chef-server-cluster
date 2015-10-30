@@ -52,8 +52,6 @@ module ChefServerAcceptanceCookbook
     end
   end
 
-  private
-
   def nodes_dir
     File.join(node['delivery']['workspace']['repo'], '.chef', 'nodes')
   end
