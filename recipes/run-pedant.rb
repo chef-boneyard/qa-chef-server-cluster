@@ -26,4 +26,4 @@ pedant_cmd = []
 pedant_cmd << "#{current_server.ctl_exec} test"
 pedant_cmd << pedant_options if pedant_options
 
-execute pedant_cmd.join(' ')
+execute pedant_cmd.join(' ').strip
