@@ -65,7 +65,6 @@ module ChefServerAcceptanceCookbook
                                'nodes',
                                "default-#{machine}.json"),
                      machine_state.to_json)
-            )
           end
         end
       end
