@@ -7,7 +7,6 @@
 # rubocop:disable LineLength
 
 delivery_secrets = get_project_secrets
-path             = node['delivery']['workspace']['repo']
 cache            = node['delivery']['workspace']['cache']
 
 ssh_private_key_path =  File.join(cache, '.ssh', 'chef-server-build-key')
@@ -45,7 +44,7 @@ template File.join(cache, '.aws/config') do
 end
 
 # TODO: support for other keys in qa-chef-server-cluster cookbook
-# template File.join(path, 'data_bags/secrets/lob-user-key.json') do
+# template File.join(repo, 'data_bags/secrets/lob-user-key.json') do
 #   sensitive true
 #   source 'lob-user-key.json.erb'
 #   variables(
@@ -58,8 +57,8 @@ ruby_block 'DEBUG: Output Information about the Environment and System' do
   block do
     Chef::Log.info "USER: #{Mixlib::ShellOut.new('whoami').run_command.stdout}"
     Chef::Log.info "HOST: #{Mixlib::ShellOut.new('hostname -f').run_command.stdout}"
-    Chef::Log.info "PATH: #{path}"
-    Chef::Log.info Mixlib::ShellOut.new("ls -la #{path}").run_command.stdout
+    Chef::Log.info "PATH: #{repo}"
+    Chef::Log.info Mixlib::ShellOut.new("ls -la #{repo}").run_command.stdout
     Chef::Log.info "CACHE: #{cache}"
     Chef::Log.info Mixlib::ShellOut.new("ls -la #{cache}").run_command.stdout
     Chef::Log.info 'DISK SPACE:'

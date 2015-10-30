@@ -8,15 +8,14 @@ delivery_stage_db do
   action :download
 end
 
-path = node['delivery']['workspace']['repo']
+write_machine_data(node['chef-server-acceptance']['identifier'], ['standalone'])
 
-ruby_block 'write-machine-configs' do
-  block do
-    Dir.chdir File.join(path, '.chef')
-
-    identifier = node['chef-server-acceptance']['identifier']
-
-    standalone_state = ::Chef.node.run_state['delivery']['stage']['data'][identifier]['standalone']
-    IO.write('nodes/default-standalone.json', standalone_state.to_json)
-  end
-end
+# ruby_block 'write-machine-configs' do
+#   block do
+#     nodes_dir = File.join(node['delivery']['workspace']['repo'], '.chef', 'nodes')
+#     identifier = node['chef-server-acceptance']['identifier']
+#
+#     standalone_state = ::Chef.node.run_state['delivery']['stage']['data'][identifier]['standalone']
+#     IO.write(File.join(nodes_dir, 'default-standalone.json'), standalone_state.to_json)
+#   end
+# end

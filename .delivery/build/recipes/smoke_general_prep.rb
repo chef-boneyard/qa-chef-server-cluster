@@ -7,9 +7,7 @@
 include_recipe 'build::prepare_deps'
 include_recipe 'build::prepare_acceptance'
 
-path = node['delivery']['workspace']['repo']
-
 # and then write it back to disk where qa-chef-server-cluster expects it
-directory File.join(path, '.chef', 'nodes') do
+directory File.join(node['delivery']['workspace']['repo'], '.chef', 'nodes') do
   action :create
 end
