@@ -60,4 +60,4 @@ module ChefServerAcceptanceCookbook
 end
 
 #Chef::Resource::RubyBlock.send(:include, ::ChefServerAcceptanceCookbook::Helpers)
-Chef::Recipe.send(:extend, ::ChefServerAcceptanceCookbook::Helpers)
+Chef::Recipe.send(:include, ::ChefServerAcceptanceCookbook::Helpers)
