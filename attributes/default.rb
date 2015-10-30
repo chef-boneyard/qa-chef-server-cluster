@@ -35,7 +35,7 @@ node.default['qa-chef-server-cluster']['chef-server'].tap do |chef_server|
 end
 
 node.default['qa-chef-server-cluster']['opscode-manage'].tap do |opscode_manage|
-  opscode_manage['version'] = :latest
+  opscode_manage['version'] = nil
   opscode_manage['integration_builds'] = false
   opscode_manage['repo'] = 'omnibus-stable-local'
   opscode_manage['install_method'] = 'packagecloud' # 'packagecloud', 'chef-server-ctl' 'artifactory'
