@@ -67,19 +67,27 @@ module ChefServerAcceptanceCookbook
     end
 
     def store_data_bag(identifier, data_bag, data_bag_item)
-      repo = node['delivery']['workspace']['repo']
-      data_bag_item_file = File.join(repo, 'data_bags', data_bag, "default-#{data_bag_item}.json")
+      ruby_block "Store data dag #{data_bag}:#{data_bag_item}" do
+        block do
+          repo = node['delivery']['workspace']['repo']
+          data_bag_item_file = File.join(repo, 'data_bags', data_bag, "default-#{data_bag_item}.json")
 
-      if File.exist?(data_bag_item_file)
-        node.run_state['delivery']['stage']['data'][identifier][data_bag] = JSON.parse(File.read(data_bag_item_file))
+          if File.exist?(data_bag_item_file)
+            node.run_state['delivery']['stage']['data'][identifier][data_bag] = JSON.parse(File.read(data_bag_item_file))
+          end
+        end
       end
     end
 
     def write_data_bag(identifier, data_bag, data_bag_item)
-      data_bag_state = ::Chef.node.run_state['delivery']['stage']['data'][identifier][data_bag]
+      ruby_block "Write data dag #{data_bag}:#{data_bag_item}" do
+        block do
+          data_bag_state = ::Chef.node.run_state['delivery']['stage']['data'][identifier][data_bag]
 
-      unless data_bag_state.nil?
-        IO.write(File.join('data_bags', data_bag, "default-#{data_bag_item}.json"), data_bag_state.to_json)
+          unless data_bag_state.nil?
+            IO.write(File.join('data_bags', data_bag, "default-#{data_bag_item}.json"), data_bag_state.to_json)
+          end
+        end
       end
     end
   end
