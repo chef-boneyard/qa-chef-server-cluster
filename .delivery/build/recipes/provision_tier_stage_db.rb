@@ -26,6 +26,6 @@
 #   end
 # end
 
-store_machine_data(node['chef-server-acceptance']['identifier'], ['frontend', 'bootstrap-backend'])
+store_machine_data(node['chef-server-acceptance']['identifier'], ['tier-frontend', 'tier-bootstrap-backend'])
 
 delivery_stage_db
