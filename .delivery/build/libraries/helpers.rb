@@ -35,6 +35,8 @@ module ChefServerAcceptanceCookbook
     def store_machine_data(identifier, machines)
       ruby_block "Store data for machine(s) #{machines.join(', ')}" do
         block do
+          repo = node['delivery']['workspace']['repo']
+
           # load the json that represents this machine
           node.run_state['delivery'] ||= {}
           node.run_state['delivery']['stage'] ||= {}
@@ -43,13 +45,7 @@ module ChefServerAcceptanceCookbook
 
           machines.each do |machine|
             node.run_state['delivery']['stage']['data'][identifier][machine] = JSON.parse(
-              File.read(
-                File.join(File.join(node['delivery']['workspace']['repo'],
-                                   '.chef',
-                                   'nodes',
-                                   "default-#{machine}.json")
-                )
-              )
+              File.read(File.join(repo, '.chef', 'nodes', "default-#{machine}.json"))
             )
           end
         end
@@ -59,16 +55,32 @@ module ChefServerAcceptanceCookbook
     def write_machine_data(identifier, machines)
       ruby_block "Write data for machine(s) #{machines.join(', ')}" do
         block do
+          repo = node['delivery']['workspace']['repo']
+
           machines.each do |machine|
             machine_state = ::Chef.node.run_state['delivery']['stage']['data'][identifier][machine]
-            IO.write(File.join(node['delivery']['workspace']['repo'],
-                               '.chef',
-                               'nodes',
-                               "default-#{machine}.json"),
+            IO.write(File.join(repo, '.chef', 'nodes', "default-#{machine}.json"),
                      machine_state.to_json)
           end
         end
       end
+    end
+  end
+
+  def store_data_bag(identifier, data_bag, data_bag_item)
+    repo = node['delivery']['workspace']['repo']
+    data_bag_item_file = File.join(repo, 'data_bags', data_bag, "default-#{data_bag_item}.json")
+
+    if File.exist?(data_bag_item_file)
+      node.run_state['delivery']['stage']['data'][identifier][data_bag] = JSON.parse(File.read(data_bag_item_file))
+    end
+  end
+
+  def write_data_bag(identifier, data_bag, data_bag_item)
+    data_bag_state = ::Chef.node.run_state['delivery']['stage']['data'][identifier][data_bag]
+
+    unless data_bag_state.nil?
+      IO.write(File.join('data_bags', data_bag, "default-#{data_bag_item}.json"), data_bag_state.to_json)
     end
   end
 end
