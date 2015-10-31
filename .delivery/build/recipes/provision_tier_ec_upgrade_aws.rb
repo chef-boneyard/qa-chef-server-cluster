@@ -9,8 +9,7 @@ node.override['chef-server-acceptance']['upgrade'] = true
 
 include_recipe 'build::provision_general_prep'
 
-cache = node['delivery']['workspace']['cache']
-attributes_install_file = File.join(cache, 'install.json')
+attributes_install_file = File.join(node['delivery']['workspace']['repo'], 'install.json')
 template attributes_install_file do
   source 'attributes.json.erb'
   action :create
