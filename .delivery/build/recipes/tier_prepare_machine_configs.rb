@@ -25,4 +25,4 @@ end
 #   end
 # end
 
-write_machine_data(node['chef-server-acceptance']['identifier'], ['frontend', 'bootstrap-backend'])
+write_machine_data(node['chef-server-acceptance']['identifier'], ['tier-frontend', 'tier-bootstrap-backend'])
