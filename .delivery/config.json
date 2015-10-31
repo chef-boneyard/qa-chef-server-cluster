@@ -13,6 +13,7 @@
     }
   },
   "skip_phases": [
+    "functional",
     "publish",
     "quality",
     "security",
