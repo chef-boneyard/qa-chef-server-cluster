@@ -60,6 +60,8 @@ chef_package current_server.package_name do
   action :reconfigure
 end
 
+include_recipe 'qa-chef-server-cluster::chef-server-readiness'
+
 execute "sudo ./#{setup_cmd}" do
   cwd generator_dir
 end

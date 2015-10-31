@@ -74,6 +74,8 @@ module ChefServerAcceptanceCookbook
 
           if File.exist?(data_bag_item_file)
             node.run_state['delivery']['stage']['data'][identifier][data_bag] = JSON.parse(File.read(data_bag_item_file))
+          else
+            Chef::Log.warn "Data bag file '#{data_bag}' not found. Nothing to store."
           end
         end
       end
@@ -82,10 +84,13 @@ module ChefServerAcceptanceCookbook
     def write_data_bag(identifier, data_bag, data_bag_item)
       ruby_block "Write data dag #{data_bag}:#{data_bag_item}" do
         block do
+          repo = node['delivery']['workspace']['repo']
           data_bag_state = ::Chef.node.run_state['delivery']['stage']['data'][identifier][data_bag]
 
-          unless data_bag_state.nil?
-            IO.write(File.join('data_bags', data_bag, "default-#{data_bag_item}.json"), data_bag_state.to_json)
+          if data_bag_state.nil?
+            Chef::Log.warn "Run state data for data bag '#{data_bag}' not found. Nothing to write."
+          else
+            IO.write(File.join(repo, 'data_bags', data_bag, "default-#{data_bag_item}.json"), data_bag_state.to_json)
           end
         end
       end
