@@ -32,17 +32,23 @@ end
 
 machine_batch do
   machine node['bootstrap-backend'] do
-    attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
+    attributes lazy {
+      { 'qa-chef-server-cluster' => node['qa-chef-server-cluster'] }
+    }
     run_list ['qa-chef-server-cluster::ha-install-chef-server-core-package']
   end
 
   machine node['secondary-backend'] do
-    attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
+    attributes lazy {
+      { 'qa-chef-server-cluster' => node['qa-chef-server-cluster'] }
+    }
     run_list ['qa-chef-server-cluster::ha-install-chef-server-core-package']
   end
 
   machine node['frontend'] do
-    attribute 'qa-chef-server-cluster', node['qa-chef-server-cluster']
+    attributes lazy {
+      { 'qa-chef-server-cluster' => node['qa-chef-server-cluster'] }
+    }
     run_list ['qa-chef-server-cluster::ha-install-chef-server-core-package']
   end
 end

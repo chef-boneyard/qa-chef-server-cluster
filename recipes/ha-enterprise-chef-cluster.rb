@@ -124,7 +124,8 @@ machine node['frontend'] do
   run_list ['qa-chef-server-cluster::ha-enterprise-chef-frontend']
   attributes lazy {
     {
-      'qa-chef-server-cluster' => node['qa-chef-server-cluster']
+      'qa-chef-server-cluster' => node['qa-chef-server-cluster'],
+      'bootstrap-ip' => bootstrap.aws_object.private_ip_address
     }
   }
   files node['qa-chef-server-cluster']['chef-server']['files']

@@ -26,15 +26,3 @@ write_machine_data(node['chef-server-acceptance']['identifier'],
                    ['ha-frontend', 'ha-bootstrap-backend', 'ha-secondary-backend'])
 write_data_bag(node['chef-server-acceptance']['identifier'], 'aws_ebs_volume', 'ha')
 write_data_bag(node['chef-server-acceptance']['identifier'], 'aws_network_interface', 'ha')
-
-# # data bags
-# Chef::Log.fatal("EBS VOLUME DATA BAG")
-# Chef::Log.fatal(::Chef.node.run_state['delivery']['stage']['data']['ha'][identifier]['ebs-volume'])
-# aws_ebs_volume_state = ::Chef.node.run_state['delivery']['stage']['data']['ha'][identifier]['ebs-volume']
-# IO.write('data_bags/aws_ebs_volume/default-ha.json', aws_ebs_volume_state.to_json)
-# Chef::Log.fatal(aws_ebs_volume_state.to_json)
-#
-# unless ::Chef.node.run_state['delivery']['stage']['data']['ha']['network-interface'].nil?
-#   aws_network_interface_state = ::Chef.node.run_state['delivery']['stage']['data']['ha'][identifier]['network-interface']
-#   IO.write('data_bags/aws_network_interface/default-ha.json', aws_network_interface_state.to_json)
-# end
