@@ -10,4 +10,4 @@ include_recipe 'build::functional_general_prep'
 
 include_recipe 'build::ha_prepare_machine_configs'
 
-include_recipe 'build::functional_ha'
+run_chef_client('ha-enterprise-chef-cluster-test')
