@@ -25,25 +25,10 @@ template attributes_install_file do
             instance_type: 'm3.large'
 end
 
-# # must use non-default EC ha recipe, so we cannot use provision_ha recipe
-# ruby_block 'stand-up-machine' do
-#   block do
-#     Dir.chdir qa_path
-#     shell_out_retry("bundle exec chef-client -z -p 10257 -j #{attributes_install_file} -c #{repo_knife_file} -o qa-chef-server-cluster::ha-enterprise-chef-cluster --force-formatter")
-#   end
-# end
-
 run_chef_client('ha-enterprise-chef-cluster', attributes_file: attributes_install_file)
 
 # must use non-default EC ha recipe, so we cannot use provision_ha_generate_test_data_and_upgrade
 include_recipe 'build::provision_ha_generate_test_data'
-# 
-# ruby_block 'upgrade-machine' do
-#   block do
-#     Dir.chdir qa_path
-#     shell_out_retry("bundle exec chef-client -z -p 10257 -j #{attributes_upgrade_file} -c #{repo_knife_file} -o qa-chef-server-cluster::ha-enterprise-chef-cluster-upgrade --force-formatter")
-#   end
-# end
 
 run_chef_client('ha-enterprise-chef-cluster-upgrade', attributes_file: attributes_upgrade_file)
 
