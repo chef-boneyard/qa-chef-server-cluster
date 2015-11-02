@@ -40,9 +40,8 @@ chef_package 'manage' do
   not_if { current_server.product_name == 'open_source_chef' }
 end
 
-# Force api fqdn to hit backend directory. Getting EC HA to run in ec2 is a hack anyway.
 execute 'add hosts entry' do
-  command "echo '#{node['bootstrap-ip']} #{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}' >> /etc/hosts"
+  command "echo '#{node['ipaddress']} #{node['fqdn']} #{node['qa-chef-server-cluster']['chef-server']['api_fqdn']}' >> /etc/hosts"
 end
 
 # TODO: check this out from chef-server cookbook

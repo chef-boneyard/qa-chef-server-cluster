@@ -71,8 +71,8 @@ server '#{frontend.aws_object.private_dns_name}',
   :ipaddress => '#{frontend.aws_object.private_ip_address}',
   :role => 'frontend'
 
-backend_vip '44.44.100.99',
-  :ipaddress => '44.44.100.99',
+backend_vip '#{bootstrap.aws_object.private_dns_name}',
+  :ipaddress => '#{bootstrap.aws_object.private_ip_address}',
   :device => 'eth0'
 
 "
@@ -124,8 +124,7 @@ machine node['frontend'] do
   run_list ['qa-chef-server-cluster::ha-enterprise-chef-frontend']
   attributes lazy {
     {
-      'qa-chef-server-cluster' => node['qa-chef-server-cluster'],
-      'bootstrap-ip' => bootstrap.aws_object.private_ip_address
+      'qa-chef-server-cluster' => node['qa-chef-server-cluster']
     }
   }
   files node['qa-chef-server-cluster']['chef-server']['files']

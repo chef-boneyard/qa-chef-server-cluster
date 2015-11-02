@@ -36,11 +36,7 @@ end
 
 case current_server.product_name
 when 'enterprise_chef', 'chef_server'
-  if node['qa-chef-server-cluster']['topology'] == 'ha'
-    knife_config = 'knife-in-guest-ec-ha.rb'
-  else
-    knife_config = 'knife-in-guest-ec.rb'
-  end
+  knife_config = 'knife-in-guest-ec.rb'
   setup_cmd = 'setup-ec.sh'
 when 'open_source_chef'
   knife_config = 'knife-in-guest-osc.rb'
