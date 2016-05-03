@@ -41,7 +41,7 @@ node.default['qa-chef-server-cluster']['opscode-manage'].tap do |opscode_manage|
   opscode_manage['version'] = nil
   opscode_manage['integration_builds'] = false
   opscode_manage['repo'] = 'omnibus-stable-local'
-  opscode_manage['install_method'] = 'packagecloud' # 'packagecloud', 'chef-server-ctl' 'artifactory'
+  opscode_manage['install_method'] = 'artifactory' # 'packagecloud', 'chef-server-ctl' 'artifactory'
   opscode_manage['url'] = nil # setting this to a direct download url path will override all install_methods
 end
 
@@ -49,7 +49,7 @@ node.default['qa-chef-server-cluster']['chef-ha'].tap do |chef_ha|
   chef_ha['version'] =  '1.0.0' # TODO this is annoying to have to set, figure this out
   chef_ha['integration_builds'] = false
   chef_ha['repo'] = 'omnibus-stable-local'
-  chef_ha['install_method'] = 'packagecloud' # 'packagecloud', 'chef-server-ctl' 'artifactory'
+  chef_ha['install_method'] = 'artifactory' # 'packagecloud', 'chef-server-ctl' 'artifactory'
   chef_ha['url'] = nil # setting this to a direct download url path will override all install_methods
 end
 
