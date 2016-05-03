@@ -7,7 +7,7 @@ DEPENDENCIES
   lvm
   omnibus-artifactory-artifact
     git: git@github.com:opscode-cookbooks/omnibus-artifactory-artifact.git
-    revision: 5056cc3fb3254b9a1d044f7eefe67cbfc4ed5a7a
+    revision: 3b760df01e8241e87d17a09a8946d9638de6a3b3
     branch: master
   packagecloud
   qa-chef-server-cluster
@@ -28,7 +28,7 @@ GRAPH
   lvm (1.4.0)
   omnibus-artifactory-artifact (0.3.1)
   packagecloud (0.1.0)
-  qa-chef-server-cluster (0.1.9)
+  qa-chef-server-cluster (0.1.10)
     apt (>= 0.0.0)
     build-essential (>= 0.0.0)
     chef-ingredient (>= 0.0.0)
