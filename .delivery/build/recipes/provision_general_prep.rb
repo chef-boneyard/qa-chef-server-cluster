@@ -19,7 +19,6 @@ template File.join(node['delivery']['workspace']['repo'], json_filename) do
   variables tags: { delivery_stage: node['delivery']['change']['stage'] },
             url: node['chef_server_test_url_override'],
             chef_version: node['chef_server_test_version'],
-            repo: node['chef_server_test_repo'],
-            integration_builds: node['chef_server_test_integration_builds'],
+            channel: node['chef_server_test_channel'],
             image_id: node['ami']['ubuntu-12.04']
 end

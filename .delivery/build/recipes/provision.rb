@@ -31,6 +31,6 @@ ruby_block 'Cleanup AWS instances' do
   end
 end
 
-# Unless delivery-red-pill::functional is also included, the parent job will
+# Unless delivery-matrix::functional is also included, the parent job will
 # report success even if the child job failed.
-include_recipe 'delivery-red-pill::provision'
+include_recipe 'delivery-matrix::provision'

@@ -7,4 +7,4 @@
 # we are ignoring the URD for now
 return unless node['delivery']['change']['stage'] == 'acceptance'
 
-include_recipe 'delivery-red-pill::smoke'
+include_recipe 'delivery-matrix::smoke'

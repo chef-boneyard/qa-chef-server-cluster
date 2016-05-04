@@ -32,20 +32,14 @@ class Chef
       # chef_ingredient config
       attribute :config, kind_of: String, default: nil
 
-      # installation method
-      attribute :install_method, kind_of: String, default: nil, equal_to: %w( artifactory packagecloud chef-server-ctl )
-
       # Attribute to install package from remote file
       attribute :package_url, kind_of: String, default: nil
 
       # Shared version for install methods
       attribute :version, kind_of: [String, Symbol], default: nil
 
-      # Artifactory specific
-      attribute :integration_builds, kind_of: [TrueClass, FalseClass, NilClass], default: nil
-
-      # Artifactory specific
-      attribute :repository, kind_of: String, default: nil
+      # Artifact channel
+      attribute :channel, kind_of: [String, Symbol], default: :stable
     end
   end
 end

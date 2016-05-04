@@ -6,6 +6,6 @@ cookbook 'delivery-truck',         git: 'https://github.com/opscode-cookbooks/de
 cookbook 'delivery-sugar',         git: 'https://github.com/chef-cookbooks/delivery-sugar.git'
 
 group :delivery do
-  cookbook 'delivery-red-pill', git: 'https://github.com/opscode-cookbooks/delivery-cluster.git', rel: '.delivery/build/cookbooks/delivery-red-pill'
+  cookbook 'delivery-matrix', git: 'https://github.com/opscode-cookbooks/delivery-cluster.git', rel: '.delivery/build/cookbooks/delivery-matrix'
   cookbook 'delivery-sugar-extras', git: 'https://github.com/opscode-cookbooks/delivery-sugar-extras.git'
 end

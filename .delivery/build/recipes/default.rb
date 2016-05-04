@@ -17,5 +17,5 @@ directory gem_cache do
 end
 
 include_recipe 'delivery-sugar-extras::default'
-include_recipe 'delivery-red-pill::default'
+include_recipe 'delivery-matrix::default'
 include_recipe 'delivery-truck::default'
