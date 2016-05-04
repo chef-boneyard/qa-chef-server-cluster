@@ -1,34 +1,24 @@
 {
   "qa-chef-server-cluster": {
     "chef-server": {
-      <% if @flavor %>
-      "flavor": "<%= @flavor %>",
-      <% end %>
-      <% if @url %>
-      "url": "<%= @url %>"
+      "flavor": "<%= node['chef_server_flavor'] %>",
+      <% if node['chef_server_test_url_override'] %>
+        "url": "<%= node['chef_server_test_url_override'] %>"
       <% else %>
-      "version": "<%= @chef_version %>",
-      "channel": "<%= @channel %>"
+        "version": "<%= @chef_version || node['chef_server_test_version'] %>",
+        "channel": "<%= node['chef_server_test_channel'] %>"
       <% end %>
     },
     "aws": {
       "machine_options": {
         "aws_tags": {
-          <% @tags.each do |k,v| %>
-          "<%= k %>": "<%= v %>",
-          <% end %>
+          "delivery_stage": "<%= node['delivery']['change']['stage'] %>",
           "X-Project": "qa-chef-server-cluster-delivery-builder"
         },
         "ssh_username": "ubuntu",
         "bootstrap_options": {
-          <% if @image_id %>
-          "image_id": "<%= @image_id %>",
-          <% end %>
-          <% if @instance_type %>
-          "instance_type": "<%= @instance_type %>"
-          <% else %>
-          "instance_type": "m3.medium"
-          <% end %>
+          "image_id": "<%= node['ami']['ubuntu-12.04'] %>",
+          "instance_type": "<%= @instance_type || "m3.medium" %>"
         }
       }
     }

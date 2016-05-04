@@ -23,19 +23,15 @@ include_recipe 'qa-chef-server-cluster::node-setup'
 chef_package current_server.package_name do
   action :upgrade
   package_url node['qa-chef-server-cluster']['chef-server']['url']
-  install_method node['qa-chef-server-cluster']['chef-server']['install_method']
   version node['qa-chef-server-cluster']['chef-server']['version']
-  integration_builds node['qa-chef-server-cluster']['chef-server']['integration_builds']
-  repository node['qa-chef-server-cluster']['chef-server']['repo']
+  channel node['qa-chef-server-cluster']['chef-server']['channel']
 end
 
 chef_package 'manage' do
   action :upgrade
   package_url node['qa-chef-server-cluster']['opscode-manage']['url']
-  install_method node['qa-chef-server-cluster']['opscode-manage']['install_method']
   version node['qa-chef-server-cluster']['opscode-manage']['version']
-  integration_builds node['qa-chef-server-cluster']['opscode-manage']['integration_builds']
-  repository node['qa-chef-server-cluster']['opscode-manage']['repo']
+  channel node['qa-chef-server-cluster']['opscode-manage']['channel']
   reconfigure true
   not_if { current_server.product_name == 'open_source_chef' }
 end

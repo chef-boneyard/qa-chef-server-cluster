@@ -10,14 +10,11 @@ end
 
 node.default['qa-chef-server-cluster']['aws']['machine_options'].tap do |machine_options|
   machine_options['aws_tags'] = { 'X-Project' => 'qa-chef-server-cluster' }
-  # machine_options['transport_address_location'] = :private_ip TODO: use as default
-  machine_options['transport_address_location'] = :public_ip
+  machine_options['transport_address_location'] = :private_ip
   machine_options['ssh_username'] = 'ubuntu'
   machine_options['bootstrap_options'].tap do |bootstrap_options|
-    bootstrap_options['associate_public_ip_address'] = true # TODO: remove
     bootstrap_options['key_name'] = 'qa-chef-server-cluster-default'
-    # bootstrap_options['subnet_id'] = 'subnet-6fab6818' # QA Private TODO: use as default
-    bootstrap_options['subnet_id'] = 'subnet-5cab682b' # QA Public
+    bootstrap_options['subnet_id'] = 'subnet-6fab6818' # QA Private
     bootstrap_options['security_group_ids'] = ['sg-52a8f837'] # qa-chef-server-cluster
     bootstrap_options['image_id'] = 'ami-3d50120d' # Ubuntu 14.04
     bootstrap_options['instance_type'] = 'm3.medium'
