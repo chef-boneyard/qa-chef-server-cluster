@@ -9,9 +9,7 @@ module ChefServerAcceptanceCookbook
           repo_config_file = File.join(repo, '.chef', 'config.rb')
 
           command = []
-          # command << 'bundle exec' TODO: just use chefdk!
           command << 'chef-client -z'
-          command << '-p 10257'
           command << "-j #{options[:attributes_file]}" if options[:attributes_file]
           command << "-c #{repo_config_file}"
           command << "-o qa-chef-server-cluster::#{recipe}"
