@@ -36,6 +36,10 @@ module QaChefServerCluster
         config resource.config
       end
 
+      ingredient_config resource.product_name do
+        only_if { resource.config }
+      end
+
       reconfigure_product(resource) if resource.reconfigure
     end
 
