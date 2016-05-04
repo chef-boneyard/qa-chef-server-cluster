@@ -19,10 +19,8 @@
 #
 
 # called during ha install orchestration
-chef_package 'chef-ha' do
+chef_package 'ha' do
   package_url node['qa-chef-server-cluster']['chef-ha']['url']
-  install_method node['qa-chef-server-cluster']['chef-ha']['install_method']
   version node['qa-chef-server-cluster']['chef-ha']['version']
-  integration_builds node['qa-chef-server-cluster']['chef-ha']['integration_builds']
-  repository node['qa-chef-server-cluster']['chef-ha']['repo']
+  channel node['qa-chef-server-cluster']['chef-ha']['channel']
 end
