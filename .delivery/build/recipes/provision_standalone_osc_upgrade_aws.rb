@@ -6,6 +6,7 @@
 
 node.override['chef-server-acceptance']['identifier'] = 'standalone-osc-upgrade'
 node.override['chef-server-acceptance']['upgrade'] = true
+node.override['chef_server_flavor'] = 'open_source_chef'
 
 include_recipe 'build::provision_general_prep'
 
@@ -13,12 +14,7 @@ attributes_install_file = File.join(node['delivery']['workspace']['repo'], 'inst
 template attributes_install_file do
   source 'attributes.json.erb'
   action :create
-  variables tags: { delivery_stage: node['delivery']['change']['stage'] },
-            flavor: 'open_source_chef',
-            repo: 'omnibus-stable-local',
-            chef_version: '11.1.7',
-            integration_builds: false,
-            image_id: node['ami']['ubuntu-12.04']
+  variables chef_version: '11.1.7',
 end
 
 include_recipe 'build::provision_standalone'

@@ -13,10 +13,6 @@ attributes_install_file = File.join(node['delivery']['workspace']['repo'], 'inst
 template attributes_install_file do
   source 'attributes.json.erb'
   action :create
-  variables tags: { delivery_stage: node['delivery']['change']['stage'] },
-            chef_version: node['chef_server_latest_released_version'],
-            channel: node['chef_server_latest_released_channel'],
-            image_id: node['ami']['ubuntu-12.04']
 end
 
 include_recipe 'build::provision_standalone'
