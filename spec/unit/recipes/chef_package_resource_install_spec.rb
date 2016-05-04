@@ -12,62 +12,6 @@ describe 'chef_package_resource::install' do
       end
     end
 
-    context 'using artifactory' do
-      let(:chef_run) do
-        ChefSpec::SoloRunner.new(step_into: ['chef_package']).converge(described_recipe)
-      end
-
-      it 'sets up the resource' do
-        expect(chef_run).to install_chef_package('chef-server-artifactory').with(
-          product_name: 'chef-server',
-          install_method: 'artifactory',
-          version: '12.1.1',
-          integration_builds: false,
-          repository: 'omnibus-stable-local',
-          reconfigure: true
-        )
-      end
-
-      it 'calls omnibus_artifactory_artifact' do
-        expect(chef_run).to create_omnibus_artifactory_artifact('chef-server').with(
-          version: '12.1.1',
-          integration_builds: false,
-          repo: 'omnibus-stable-local'
-        )
-      end
-
-      it 'installs package' do
-        expect(chef_run).to install_chef_ingredient('chef-server')
-      end
-
-      it 'reconfigures' do
-        skip
-        expect(chef_run).to reconfigure_chef_ingredient('chef-server')
-      end
-    end
-
-    context 'using packagecloud' do
-      let(:chef_run) do
-        ChefSpec::SoloRunner.new(step_into: ['chef_package']).converge(described_recipe)
-      end
-
-      it 'sets up the resource' do
-        expect(chef_run).to install_chef_package('chef-server-packagecloud').with(
-          product_name: 'chef-server',
-          install_method: 'packagecloud',
-          version: '12.1.1'
-        )
-      end
-
-      it 'calls packagecloud_repo' do
-        expect(chef_run).to create_packagecloud_repo('chef/stable')
-      end
-
-      it 'installs package' do
-        expect(chef_run).to install_chef_ingredient('chef-server')
-      end
-    end
-
     context 'using url' do
       let(:chef_run) do
         ChefSpec::SoloRunner.new(
@@ -78,7 +22,6 @@ describe 'chef_package_resource::install' do
       it 'sets up the resource' do
         expect(chef_run).to install_chef_package('chef-server-url').with(
           product_name: 'chef-server',
-          install_method: 'artifactory', # bypassed
           package_url: 'https://mydomain.com/package.ext'
         )
       end
