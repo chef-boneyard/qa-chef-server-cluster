@@ -10,11 +10,14 @@ end
 
 node.default['qa-chef-server-cluster']['aws']['machine_options'].tap do |machine_options|
   machine_options['aws_tags'] = { 'X-Project' => 'qa-chef-server-cluster' }
-  machine_options['use_private_ip_for_ssh'] = true
+  # machine_options['transport_address_location'] = :private_ip TODO: use as default
+  machine_options['transport_address_location'] = :public_ip
   machine_options['ssh_username'] = 'ubuntu'
   machine_options['bootstrap_options'].tap do |bootstrap_options|
+    bootstrap_options['associate_public_ip_address'] = true # TODO: remove
     bootstrap_options['key_name'] = 'qa-chef-server-cluster-default'
-    bootstrap_options['subnet_id'] = 'subnet-6fab6818' # QA Private
+    # bootstrap_options['subnet_id'] = 'subnet-6fab6818' # QA Private TODO: use as default
+    bootstrap_options['subnet_id'] = 'subnet-5cab682b' # QA Public
     bootstrap_options['security_group_ids'] = ['sg-52a8f837'] # qa-chef-server-cluster
     bootstrap_options['image_id'] = 'ami-3d50120d' # Ubuntu 14.04
     bootstrap_options['instance_type'] = 'm3.medium'
@@ -25,28 +28,22 @@ node.default['qa-chef-server-cluster']['provisioning-id'] = 'default'
 node.default['qa-chef-server-cluster']['topology'] = nil
 
 node.default['qa-chef-server-cluster']['chef-server'].tap do |chef_server|
-  chef_server['version'] = :latest
-  chef_server['integration_builds'] = false
-  chef_server['repo'] = 'omnibus-stable-local'
+  chef_server['version'] = 'latest'
+  chef_server['channel'] = 'stable'
   chef_server['flavor'] = 'chef_server'
   chef_server['api_fqdn'] = 'api.chef.sh'
-  chef_server['install_method'] = 'artifactory' # 'packagecloud', 'chef-server-ctl'
   chef_server['url'] = nil # setting this to a direct download url path will override all install_methods
 end
 
 node.default['qa-chef-server-cluster']['opscode-manage'].tap do |opscode_manage|
   opscode_manage['version'] = nil
-  opscode_manage['integration_builds'] = false
-  opscode_manage['repo'] = 'omnibus-stable-local'
-  opscode_manage['install_method'] = 'packagecloud' # 'packagecloud', 'chef-server-ctl' 'artifactory'
+  opscode_manage['channel'] = 'stable'
   opscode_manage['url'] = nil # setting this to a direct download url path will override all install_methods
 end
 
 node.default['qa-chef-server-cluster']['chef-ha'].tap do |chef_ha|
-  chef_ha['version'] =  '1.0.0' # TODO: this is annoying to have to set, figure this out
-  chef_ha['integration_builds'] = false
-  chef_ha['repo'] = 'omnibus-stable-local'
-  chef_ha['install_method'] = 'packagecloud' # 'packagecloud', 'chef-server-ctl' 'artifactory'
+  chef_ha['version'] =  '1.0.0'
+  chef_ha['channel'] = 'stable'
   chef_ha['url'] = nil # setting this to a direct download url path will override all install_methods
 end
 

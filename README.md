@@ -144,7 +144,7 @@ The machine resources and other cluster-associated provisioning resources (ebs v
 Creating envionment files manually is a chore.  `qa-chef-server-cluster` has a counterpart utility named `qa-csc-config`. You can learn all about `qa-csc-config` by seeing the [README](https://github.com/chef/qa-csc-config)
 
 # License and Author
-Author: Patrick Wright patrick@chef.io.com
+Author: Patrick Wright patrick@chef.io
 
 Copyright (C) 2014-2015 Chef Software, Inc. legal@chef.io
 

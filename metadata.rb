@@ -8,8 +8,6 @@ version          '0.1.10'
 # rubocop:enable Style/SingleSpaceBeforeFirstArg
 
 depends 'chef-ingredient'
-depends 'omnibus-artifactory-artifact'
 depends 'lvm'
 depends 'apt'
 depends 'build-essential'
-depends 'packagecloud'

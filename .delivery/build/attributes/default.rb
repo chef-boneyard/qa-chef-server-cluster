@@ -35,13 +35,11 @@ if node['delivery']['change']['stage'] == 'acceptance'
   ]
 end
 
-default['chef_server_latest_released_version'] = '12.1.2'
-default['chef_server_latest_released_repo'] = 'omnibus-stable-local'
-default['chef_server_latest_released_integration_builds'] = false
+default['chef_server_latest_released_version'] = 'latest'
+default['chef_server_latest_released_channel'] = 'stable'
 
-default['chef_server_test_version'] = '12.2.0'
-default['chef_server_test_repo'] = 'omnibus-current-local'
-default['chef_server_test_integration_builds'] = true
+default['chef_server_test_version'] = 'latest'
+default['chef_server_test_channel'] = 'current'
 
 # Set this attribute to a direct download link (jenkins url) to supercede the chef_server_test-* artifactory attributes
 # default['chef_server_test_url_override'] = 'http://wilson.ci.chef.co/view/Chef%20Server%2012/job/chef-server-12-build/lastSuccessfulBuild/architecture=x86_64,platform=ubuntu-10.04,project=chef-server,role=builder/artifact/omnibus/pkg/chef-server-core_12.2.0+20150901045019-1_amd64.deb'

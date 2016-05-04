@@ -15,8 +15,7 @@ template attributes_install_file do
   action :create
   variables tags: { delivery_stage: node['delivery']['change']['stage'] },
             chef_version: node['chef_server_latest_released_version'],
-            repo: node['chef_server_latest_released_repo'],
-            integration_builds: node['chef_server_latest_released_integration_builds'],
+            channel: node['chef_server_latest_released_channel'],
             image_id: node['ami']['ubuntu-12.04']
 end
 
