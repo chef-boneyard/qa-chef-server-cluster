@@ -6,10 +6,10 @@
 
 # if we are not in the URD run pedant
 if node['delivery']['change']['stage'] == 'acceptance'
-  # This is necessary for delivery-red-pill to catch failures in earlier steps.
+  # This is necessary for delivery-matrix to catch failures in earlier steps.
   # Without including this recipe, the parent job will report success even if the
   # child job failed.
-  include_recipe 'delivery-red-pill::functional'
+  include_recipe 'delivery-matrix::functional'
 
 # this is the only part of the URD we are using currently, publish to github
 elsif node['delivery']['change']['stage'] == 'delivered'

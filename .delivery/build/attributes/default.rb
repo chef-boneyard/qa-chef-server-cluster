@@ -4,7 +4,7 @@
 #
 # Copyright (c) 2015 The Authors, All Rights Reserved.
 
-include_attribute 'delivery-red-pill'
+include_attribute 'delivery-matrix'
 
 default['chef-server-acceptance'] = {}
 default['chef-server-acceptance']['identifier'] = 'standalone-clean'
@@ -12,9 +12,9 @@ default['chef-server-acceptance']['upgrade'] = false
 default['chef-server-acceptance']['delivery-path'] ='/opt/chefdk/embedded/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games'
 
 # By including this recipe we trigger a matrix of acceptance envs specified
-# in the node attribute node['delivery-red-pill']['acceptance']['matrix']
+# in the node attribute node['delivery-matrix']['acceptance']['matrix']
 if node['delivery']['change']['stage'] == 'acceptance'
-  default['delivery-red-pill']['acceptance']['matrix'] = [
+  default['delivery-matrix']['acceptance']['matrix'] = [
     # fresh install of chef_server_version
     'standalone_clean_aws',
     # 'tier_clean_aws',

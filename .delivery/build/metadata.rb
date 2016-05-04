@@ -7,5 +7,6 @@ long_description 'Installs/Configures build'
 version '0.1.1'
 
 depends 'delivery-truck'
-depends 'delivery-red-pill'
+# depends 'delivery-matrix'
+depends 'delivery-matrix'
 depends 'delivery-sugar-extras'
