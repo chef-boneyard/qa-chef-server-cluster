@@ -36,13 +36,9 @@ if node['delivery']['change']['stage'] == 'acceptance'
 end
 
 default['chef_server_flavor'] = 'chef_server'
+default['chef_server_instance_size'] = 'm3.medium'
 
-# These set the default version of the Chef Server to install before our test
-# build when we're testing upgrade scenarios.
-default['chef_server_latest_released_version'] = 'latest'
-default['chef_server_latest_released_channel'] = 'stable'
-
-# These set the default version of the Chef Server to test.
+# These set the version of the Chef Server that we intend to test.
 default['chef_server_test_version'] = 'latest'
 default['chef_server_test_channel'] = 'current'
 

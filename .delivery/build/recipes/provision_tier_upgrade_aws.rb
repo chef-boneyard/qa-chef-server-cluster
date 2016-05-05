@@ -6,6 +6,8 @@
 
 node.override['chef-server-acceptance']['identifier'] = 'tier-upgrade'
 node.override['chef-server-acceptance']['upgrade'] = true
+node.override['chef_server_upgrade_from_version'] = 'latest'
+node.override['chef_server_upgrade_from_channel'] = 'stable'
 
 include_recipe 'build::provision_general_prep'
 
