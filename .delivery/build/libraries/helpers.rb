@@ -148,3 +148,4 @@ module ChefServerAcceptanceCookbook
 end
 
 Chef::Recipe.send(:include, ::ChefServerAcceptanceCookbook::Helpers)
+Chef::Resource.send(:include, ::ChefServerAcceptanceCookbook::Helpers)
