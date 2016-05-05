@@ -13,6 +13,6 @@
     "lint",
     "quality",
     "security",
-    "deploy",
+    "deploy"
   ]
 }
