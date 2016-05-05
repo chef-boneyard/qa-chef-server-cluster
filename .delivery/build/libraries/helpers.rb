@@ -30,6 +30,55 @@ module ChefServerAcceptanceCookbook
       end
     end
 
+    def attributes_functional_file
+      ::File.join(node['delivery']['workspace']['repo'], 'functional.json')
+    end
+
+    def attributes_install_file
+      ::File.join(node['delivery']['workspace']['repo'], 'install.json')
+    end
+
+    def attributes_upgrade_file
+      ::File.join(node['delivery']['workspace']['repo'], 'upgrade.json')
+    end
+
+    # Return the attributes required for our initial Chef Server installation.
+    # In the case of upgrades this will be the upgrade from Chef Server version.
+    # If we're not doing an upgrade the we'll simply install the package we
+    # wish to test.
+    def attribute_install_variables
+      if node['chef-server-acceptance']['upgrade']
+        vars =
+          if node['chef_server_upgrade_from_url_override']
+            { url_override: node['chef_server_test_from_url_override'] }
+          else
+            { version: node['chef_server_upgrade_from_version'],
+              channel: node['chef_server_upgrade_from_channel']
+            }
+          end
+        vars.merge!(flavor: node['chef_server_upgrade_flavor'])
+      else
+        attribute_upgrade_variables
+      end
+    end
+
+    # Return the attributes required to upgrade to our desired test version.
+    def attribute_upgrade_variables
+      vars =
+        if node['chef_server_test_url_override']
+          { url_override: node['chef_server_test_url_override'] }
+        else
+          { version: node['chef_server_test_version'],
+            channel: node['chef_server_test_channel']
+          }
+        end
+      vars.merge!(flavor: node['chef_server_test_flavor'])
+    end
+
+    def functional_test_all?
+      node['chef-server-acceptance']['functional']['test_all']
+    end
+
     def store_machine_data(identifier, machines)
       ruby_block "Store data for machine(s) #{machines.join(', ')}" do
         block do

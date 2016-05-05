@@ -19,7 +19,7 @@ GRAPH
   chef_package_resource (0.0.0)
     qa-chef-server-cluster (>= 0.0.0)
   lvm (2.0.0)
-  qa-chef-server-cluster (0.1.11)
+  qa-chef-server-cluster (0.1.12)
     apt (>= 0.0.0)
     build-essential (>= 0.0.0)
     chef-ingredient (>= 0.0.0)

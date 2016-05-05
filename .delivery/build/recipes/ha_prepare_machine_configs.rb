@@ -8,9 +8,6 @@ delivery_stage_db do
   action :download
 end
 
-repo = node['delivery']['workspace']['repo']
-
-attributes_functional_file = File.join(repo, 'functional.json')
 cookbook_file attributes_functional_file do
   source 'functional.json'
 end

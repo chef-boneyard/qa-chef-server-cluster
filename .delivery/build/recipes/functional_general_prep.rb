@@ -9,7 +9,7 @@ include_recipe 'build::prepare_acceptance'
 
 repo = node['delivery']['workspace']['repo']
 
-cookbook_file File.join(repo, 'functional.json') do
+cookbook_file attributes_functional_file do
   source 'functional.json'
 end
 
