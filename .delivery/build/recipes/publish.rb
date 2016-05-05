@@ -4,7 +4,7 @@
 #
 # Copyright (c) 2015 The Authors, All Rights Reserved.
 
-include_recipe "delivery-truck::publish"
+#include_recipe "delivery-truck::publish"
 
 #secrets = get_project_secrets
 #github_repo = node['delivery']['config']['delivery-truck']['publish']['github']
