@@ -1,12 +1,12 @@
 {
   "qa-chef-server-cluster": {
     "chef-server": {
-      "flavor": "<%= node['chef_server_flavor'] %>",
-      <% if node['chef_server_test_url_override'] %>
-        "url": "<%= node['chef_server_test_url_override'] %>"
+      "flavor": "<%= @flavor %>",
+      <% if @url_override %>
+        "url": "<%= @url_override %>"
       <% else %>
-        "version": "<%= node['chef_server_upgrade_from_version'] || node['chef_server_test_version'] %>",
-        "channel": "<%= node['chef_server_upgrade_from_channel'] || node['chef_server_test_channel'] %>"
+        "version": "<%= @version %>",
+        "channel": "<%= @channel %>"
       <% end %>
     },
     "aws": {

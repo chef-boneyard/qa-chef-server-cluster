@@ -29,19 +29,19 @@ node.default['qa-chef-server-cluster']['chef-server'].tap do |chef_server|
   chef_server['channel'] = 'stable'
   chef_server['flavor'] = 'chef_server'
   chef_server['api_fqdn'] = 'api.chef.sh'
-  chef_server['url'] = nil # setting this to a direct download url path will override all install_methods
+  chef_server['url'] = nil # setting this will override version and channel settings
 end
 
 node.default['qa-chef-server-cluster']['opscode-manage'].tap do |opscode_manage|
   opscode_manage['version'] = nil
   opscode_manage['channel'] = 'stable'
-  opscode_manage['url'] = nil # setting this to a direct download url path will override all install_methods
+  opscode_manage['url'] = nil # setting this will override version and channel settings
 end
 
 node.default['qa-chef-server-cluster']['chef-ha'].tap do |chef_ha|
   chef_ha['version'] =  '1.0.0'
   chef_ha['channel'] = 'stable'
-  chef_ha['url'] = nil # setting this to a direct download url path will override all install_methods
+  chef_ha['url'] = nil # setting this will override version and channel settings
 end
 
 node.default['qa-chef-server-cluster']['chef-server-ctl-test-options'] = ''

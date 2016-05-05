@@ -8,14 +8,9 @@ node.override['chef-server-acceptance']['identifier'] = 'ha-upgrade'
 node.override['chef-server-acceptance']['upgrade'] = true
 node.override['chef_server_upgrade_from_version'] = 'latest'
 node.override['chef_server_upgrade_from_channel'] = 'stable'
+node.override['chef_server_upgrade_from_flavor'] = 'chef_server'
 
 include_recipe 'build::provision_general_prep'
-
-attributes_install_file = File.join(node['delivery']['workspace']['repo'], 'install.json')
-template attributes_install_file do
-  source 'attributes.json.erb'
-  action :create
-end
 
 include_recipe 'build::provision_ha'
 

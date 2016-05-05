@@ -24,11 +24,6 @@ module QaChefServerCluster
       end
     end
 
-    def chef_ingredient_product_lookup
-      ensure_mixlib_versioning_gem_installed!
-      ingredient_package_name
-    end
-
     def install_via_channel(resource)
       chef_ingredient resource.product_name do
         channel resource.channel.to_sym
