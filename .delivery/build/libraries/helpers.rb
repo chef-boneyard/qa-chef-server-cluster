@@ -57,6 +57,7 @@ module ChefServerAcceptanceCookbook
             }
           end
         vars.merge!(flavor: node['chef_server_upgrade_flavor'])
+        vars
       else
         attribute_upgrade_variables
       end
@@ -73,6 +74,7 @@ module ChefServerAcceptanceCookbook
           }
         end
       vars.merge!(flavor: node['chef_server_test_flavor'])
+      vars
     end
 
     def functional_test_all?

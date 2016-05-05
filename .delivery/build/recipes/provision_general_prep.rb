@@ -9,13 +9,13 @@ include_recipe 'build::prepare_acceptance'
 
 template attributes_install_file do
   source 'install_attributes.json.erb'
-  variables attribute_install_variables
+  variables(attribute_install_variables)
   action :create
 end
 
 template attributes_upgrade_file do
   source 'attributes.json.erb'
   action :create
-  variables attribute_upgrade_variables
+  variables(attribute_upgrade_variables)
   only_if { node['chef-server-acceptance']['upgrade'] }
 end
