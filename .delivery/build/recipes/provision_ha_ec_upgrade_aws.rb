@@ -7,6 +7,9 @@
 node.override['chef-server-acceptance']['identifier'] = 'ha-ec-upgrade'
 node.override['chef-server-acceptance']['upgrade'] = true
 node.override['chef_server_flavor'] = 'enterprise_chef'
+node.override['chef_server_upgrade_from_version'] = '11.3.2'
+node.override['chef_server_upgrade_from_channel'] = 'stable'
+node.override['chef_server_instance_size'] = 'm3.large'
 
 include_recipe 'build::provision_general_prep'
 
@@ -17,7 +20,6 @@ attributes_upgrade_file = File.join(repo, 'upgrade.json')
 template attributes_install_file do
   source 'attributes.json.erb'
   action :create
-  variables instance_type: 'm3.large'
 end
 
 run_chef_client('ha-enterprise-chef-cluster', attributes_file: attributes_install_file)

@@ -1,11 +1,13 @@
 #
 # Cookbook Name:: build
-# Recipe:: provision_tier_ec_upgrade_aws
+# Recipe:: provision_ha_upgrade_aws
 #
 # Copyright (c) 2015 The Authors, All Rights Reserved.
 
 node.override['chef-server-acceptance']['identifier'] = 'ha-upgrade'
 node.override['chef-server-acceptance']['upgrade'] = true
+node.override['chef_server_upgrade_from_version'] = 'latest'
+node.override['chef_server_upgrade_from_channel'] = 'stable'
 
 include_recipe 'build::provision_general_prep'
 
