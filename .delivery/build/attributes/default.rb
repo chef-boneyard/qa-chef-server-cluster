@@ -50,7 +50,7 @@ default['chef_server_test_channel'] = 'current'
 # In upgrade scenarios these set the version of the Chef Server you intend
 # to upgrade from. These need to be set in each test recipe but are here for
 # reference.
-#default['chef_server_upgrade_flavor'] = 'enterprise_chef'
+#default['chef_server_upgrade_from_flavor'] = 'enterprise_chef'
 #default['chef_server_upgrade_from_version'] = '11.3.2'
 #default['chef_server_upgrade_from_channel'] = 'stable'
 # default['chef_server_upgrade_from_url_override'] = 'http://wilson.ci.chef.co/view/Chef%20Server%2012/job/chef-server-12-build/lastSuccessfulBuild/architecture=x86_64,platform=ubuntu-10.04,project=chef-server,role=builder/artifact/omnibus/pkg/chef-server-core_12.2.0+20150901045019-1_amd64.deb'

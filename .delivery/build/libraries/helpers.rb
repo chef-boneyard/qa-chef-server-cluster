@@ -56,7 +56,7 @@ module ChefServerAcceptanceCookbook
               channel: node['chef_server_upgrade_from_channel']
             }
           end
-        vars.merge!(flavor: node['chef_server_upgrade_flavor'])
+        vars.merge!(flavor: node['chef_server_upgrade_from_flavor'])
         vars
       else
         attribute_upgrade_variables
