@@ -8,7 +8,7 @@ include_recipe 'build::prepare_deps'
 include_recipe 'build::prepare_acceptance'
 
 template attributes_install_file do
-  source 'install_attributes.json.erb'
+  source 'attributes.json.erb'
   variables(attribute_install_variables)
   action :create
 end
