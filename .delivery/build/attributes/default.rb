@@ -16,22 +16,22 @@ default['chef-server-acceptance']['delivery-path'] ='/opt/chefdk/embedded/bin:/u
 if node['delivery']['change']['stage'] == 'acceptance'
   default['delivery-matrix']['acceptance']['matrix'] = [
     # fresh install of chef_server_version
-#    'standalone_clean_aws',
-#    'tier_clean_aws',
-#    'ha_clean_aws',
+    'standalone_clean_aws',
+    'tier_clean_aws',
+    'ha_clean_aws',
 
     # chef_server_latest_released_version > chef_server_version upgrade testing
-##    'standalone_upgrade_aws',
-#    'tier_upgrade_aws',
-    'ha_upgrade_aws',
+    'standalone_upgrade_aws',
+    'tier_upgrade_aws',
+#    'ha_upgrade_aws',
 
     # OSC 11.latest > chef_server_version upgrade testing (standalone only)
-    'standalone_osc_upgrade_aws',
+#    'standalone_osc_upgrade_aws',
 
     # EC 11.latest > chef_server_version upgrade testing
-    'standalone_ec_upgrade_aws',
-    'tier_ec_upgrade_aws',
-    'ha_ec_upgrade_aws'
+#    'standalone_ec_upgrade_aws',
+#   'tier_ec_upgrade_aws',
+#    'ha_ec_upgrade_aws'
   ]
 end
 
@@ -45,7 +45,7 @@ default['chef_server_instance_size'] = 'm3.medium'
 default['chef_server_test_flavor'] = 'chef_server'
 default['chef_server_test_version'] = 'latest'
 default['chef_server_test_channel'] = 'current'
-# default['chef_server_test_url_override'] = 'http://wilson.ci.chef.co/view/Chef%20Server%2012/job/chef-server-12-build/lastSuccessfulBuild/architecture=x86_64,platform=ubuntu-10.04,project=chef-server,role=builder/artifact/omnibus/pkg/chef-server-core_12.2.0+20150901045019-1_amd64.deb'
+default['chef_server_test_url_override'] = 'http://artifactory.chef.co/omnibus-unstable-local/com/getchef/chef-server/12.6.0+20160503174048/ubuntu/14.04/chef-server-core_12.6.0+20160503174048-1_amd64.deb'
 
 # In upgrade scenarios these set the version of the Chef Server you intend
 # to upgrade from. These need to be set in each test recipe but are here for
