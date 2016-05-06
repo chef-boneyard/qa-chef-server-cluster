@@ -13,7 +13,7 @@ cookbook_file attributes_functional_file do
 end
 
 %w( nodes data_bags/aws_ebs_volume data_bags/aws_network_interface ).each do |dir|
-  directory File.join(repo, dir) do
+  directory ::File.join(node['delivery']['workspace']['repo'], dir) do
     action :create
     recursive true
   end
