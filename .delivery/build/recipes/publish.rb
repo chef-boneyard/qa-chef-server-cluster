@@ -16,4 +16,5 @@ delivery_github github_repo do
  repo_path node['delivery']['workspace']['repo']
  cache_path node['delivery']['workspace']['cache']
  action :push
+ only_if { node['delivery']['change']['pipeline'] == 'master' }
 end
