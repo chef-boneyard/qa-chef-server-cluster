@@ -16,14 +16,14 @@ default['chef-server-acceptance']['delivery-path'] ='/opt/chefdk/embedded/bin:/u
 if node['delivery']['change']['stage'] == 'acceptance'
   default['delivery-matrix']['acceptance']['matrix'] = [
     # fresh install of chef_server_version
-    'standalone_clean_aws',
-    #'tier_clean_aws',
-    #'ha_clean_aws',
+    #'standalone_clean_aws',
+    'tier_clean_aws',
+    'ha_clean_aws',
 
     #chef_server_latest_released_version > chef_server_version upgrade testing
-    #'standalone_upgrade_aws',
-    #'tier_upgrade_aws',
-    #'ha_upgrade_aws',
+    'standalone_upgrade_aws',
+    'tier_upgrade_aws',
+    'ha_upgrade_aws',
 
     # OSC 11.latest > chef_server_version upgrade testing (standalone only)
     #'standalone_osc_upgrade_aws',
