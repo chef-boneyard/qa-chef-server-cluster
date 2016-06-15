@@ -22,7 +22,7 @@ if node['delivery']['change']['stage'] == 'acceptance'
 
     #chef_server_latest_released_version > chef_server_version upgrade testing
     'standalone_upgrade_aws',
-    'tier_upgrade_aws',
+    'tier_upgrade_aws'
     #'ha_upgrade_aws',
 
     # OSC 11.latest > chef_server_version upgrade testing (standalone only)
