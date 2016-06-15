@@ -46,6 +46,7 @@ default['chef_server_instance_size'] = 'm3.medium'
 default['chef_server_test_flavor'] = 'chef_server'
 default['chef_server_test_version'] = 'latest'
 default['chef_server_test_channel'] = 'current'
+#testing comment
 default['chef_server_test_url_override'] = 'http://artifactory.chef.co/omnibus-current-local/com/getchef/chef-server/12.6.0+20160613213209/ubuntu/14.04/chef-server-core_12.6.0+20160613213209-1_amd64.deb'
 
 # In upgrade scenarios these set the version of the Chef Server you intend
