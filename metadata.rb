@@ -4,7 +4,7 @@ maintainer       'Patrick Wright'
 maintainer_email 'patrick@chef.io'
 license          'all_rights'
 description      'Installs/Configures QA clusters'
-version          '0.1.16'
+version          '0.1.17'
 # rubocop:enable Style/SingleSpaceBeforeFirstArg
 
 depends 'chef-ingredient'
