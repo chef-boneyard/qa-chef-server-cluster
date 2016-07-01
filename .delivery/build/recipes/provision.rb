@@ -33,4 +33,5 @@ end
 
 # Unless delivery-matrix::functional is also included, the parent job will
 # report success even if the child job failed.
+ENV['TERM'] = nil #hack hack hack for testing
 include_recipe 'delivery-matrix::provision'
