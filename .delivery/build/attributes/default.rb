@@ -31,7 +31,8 @@ if node['delivery']['change']['stage'] == 'acceptance'
     # EC 11.latest > chef_server_version upgrade testing
     'standalone_ec_upgrade_aws',
     'tier_ec_upgrade_aws',
-    'ha_ec_upgrade_aws'
+    # Commented out because it is so unreliable as to tell us nothing useful.
+    # 'ha_ec_upgrade_aws'
   ]
 end
 
