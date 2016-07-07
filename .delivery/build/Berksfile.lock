@@ -4,7 +4,7 @@ DEPENDENCIES
     metadata: true
   delivery-matrix
     git: https://github.com/opscode-cookbooks/delivery-cluster.git
-    revision: a3a88cd23fc6c0780faab78801792373eca45180
+    revision: 6f91b30b711596235b1d6ffb80d7a3b5c731c54b
     rel: .delivery/build/cookbooks/delivery-matrix
   delivery-sugar
     git: https://github.com/chef-cookbooks/delivery-sugar.git
@@ -17,7 +17,7 @@ DEPENDENCIES
     revision: 4044544f951225d099ce5b30d726506ad40be6b3
 
 GRAPH
-  build (0.1.1)
+  build (0.1.8)
     delivery-matrix (>= 0.0.0)
     delivery-sugar-extras (>= 0.0.0)
     delivery-truck (>= 0.0.0)
