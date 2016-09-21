@@ -47,7 +47,7 @@ default['chef_server_test_flavor'] = 'chef_server'
 default['chef_server_test_version'] = 'latest'
 default['chef_server_test_channel'] = 'current'
 #testing comment
-default['chef_server_test_url_override'] = 'http://artifactory.chef.co/omnibus-current-local/com/getchef/chef-server/12.7.0+20160705183030/ubuntu/14.04/chef-server-core_12.7.0+20160705183030-1_amd64.deb'
+default['chef_server_test_url_override'] = 'http://artifactory.chef.co/omnibus-current-local/com/getchef/chef-server/12.8.1+20160915214032/ubuntu/14.04/chef-server-core_12.8.1+20160915214032-1_amd64.deb'
 
 # In upgrade scenarios these set the version of the Chef Server you intend
 # to upgrade from. These need to be set in each test recipe but are here for
