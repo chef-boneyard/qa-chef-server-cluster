@@ -47,7 +47,7 @@ default['chef_server_test_flavor'] = 'chef_server'
 default['chef_server_test_version'] = 'latest'
 default['chef_server_test_channel'] = 'current'
 #testing comment
-default['chef_server_test_url_override'] = 'https://packages.chef.io/current/ubuntu/16.04/chef-server-core_12.11.0+20161117200032-1_amd64.deb'
+default['chef_server_test_url_override'] = 'https://packages.chef.io/files/current/chef-server/12.11.2+20170126102125/ubuntu/16.04/chef-server-core_12.11.2+20170126102125-1_amd64.deb'
 
 # In upgrade scenarios these set the version of the Chef Server you intend
 # to upgrade from. These need to be set in each test recipe but are here for
