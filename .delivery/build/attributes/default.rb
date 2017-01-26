@@ -16,21 +16,21 @@ default['chef-server-acceptance']['delivery-path'] ='/opt/chefdk/embedded/bin:/u
 if node['delivery']['change']['stage'] == 'acceptance'
   default['delivery-matrix']['acceptance']['matrix'] = [
     # fresh install of chef_server_version
-    'standalone_clean_aws',
-    'tier_clean_aws',
+    #'standalone_clean_aws',
+    #'tier_clean_aws',
     'ha_clean_aws',
 
     #chef_server_latest_released_version > chef_server_version upgrade testing
-    'standalone_upgrade_aws',
-    'tier_upgrade_aws',
-    'ha_upgrade_aws',
+    #'standalone_upgrade_aws',
+    #'tier_upgrade_aws',
+    #'ha_upgrade_aws',
 
     # OSC 11.latest > chef_server_version upgrade testing (standalone only)
-    'standalone_osc_upgrade_aws',
+    #'standalone_osc_upgrade_aws',
 
     # EC 11.latest > chef_server_version upgrade testing
-    'standalone_ec_upgrade_aws',
-    'tier_ec_upgrade_aws',
+    #'standalone_ec_upgrade_aws',
+    #'tier_ec_upgrade_aws',
     # Commented out because it is so unreliable as to tell us nothing useful.
     # 'ha_ec_upgrade_aws'
   ]
@@ -44,11 +44,14 @@ default['chef_server_instance_size'] = 'm3.medium'
 
 # These set the version of the Chef Server that we intend to test.
 default['chef_server_test_flavor'] = 'chef_server'
-default['chef_server_test_version'] = 'latest'
-default['chef_server_test_channel'] = 'current'
+default['chef_server_test_version'] = '12.10.0'
+default['chef_server_test_channel'] = 'stable'
 #testing comment
-default['chef_server_test_url_override'] = 'https://packages.chef.io/files/current/chef-server/12.11.2+20170126161121/ubuntu/16.04/chef-server-core_12.11.2+20170126161121-1_amd64.deb'
-
+#current
+#default['chef_server_test_url_override'] = 'https://packages.chef.io/files/current/chef-server/12.11.2+20170126161121/ubuntu/16.04/chef-server-core_12.11.2+20170126161121-1_amd64.deb'
+# Currently testing 12.10 to 12.11 to verify that things broken in the current build
+# are testing ok here.
+default['chef_server_test_url_override'] = 'https://packages.chef.io/files/stable/chef-server/12.11.1/ubuntu/16.04/chef-server-core_12.11.1-1_amd64.deb'
 # In upgrade scenarios these set the version of the Chef Server you intend
 # to upgrade from. These need to be set in each test recipe but are here for
 # reference.
@@ -56,7 +59,6 @@ default['chef_server_test_url_override'] = 'https://packages.chef.io/files/curre
 #default['chef_server_upgrade_from_version'] = '11.3.2'
 #default['chef_server_upgrade_from_channel'] = 'stable'
 # default['chef_server_upgrade_from_url_override'] = 'http://wilson.ci.chef.co/view/Chef%20Server%2012/job/chef-server-12-build/lastSuccessfulBuild/architecture=x86_64,platform=ubuntu-10.04,project=chef-server,role=builder/artifact/omnibus/pkg/chef-server-core_12.2.0+20150901045019-1_amd64.deb'
-
 default['ami'] = {
   'ubuntu-14.04' => 'ami-3d50120d',
   'ubuntu-12.04' => 'ami-0f47053f'
