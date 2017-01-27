@@ -44,14 +44,14 @@ default['chef_server_instance_size'] = 'm3.medium'
 
 # These set the version of the Chef Server that we intend to test.
 default['chef_server_test_flavor'] = 'chef_server'
-default['chef_server_test_version'] = '12.10.0'
-default['chef_server_test_channel'] = 'stable'
+default['chef_server_test_version'] = 'latest'
+default['chef_server_test_channel'] = 'current'
 #testing comment
 #current
-#default['chef_server_test_url_override'] = 'https://packages.chef.io/files/current/chef-server/12.11.2+20170126161121/ubuntu/16.04/chef-server-core_12.11.2+20170126161121-1_amd64.deb'
-# Currently testing 12.10 to 12.11 to verify that things broken in the current build
-# are testing ok here.
-default['chef_server_test_url_override'] = 'https://packages.chef.io/files/stable/chef-server/12.11.1/ubuntu/16.04/chef-server-core_12.11.1-1_amd64.deb'
+# Us a specific target by URL instead:
+default['chef_server_test_url_override'] = 'https://packages.chef.io/files/current/chef-server/12.11.2+20170106205122/ubuntu/16.04/chef-server-core_12.11.2+20170106205122-1_amd64.deb'
+
+#default['chef_server_test_url_override'] = 'https://packages.chef.io/files/stable/chef-server/12.11.1/ubuntu/16.04/chef-server-core_12.11.1-1_amd64.deb'
 # In upgrade scenarios these set the version of the Chef Server you intend
 # to upgrade from. These need to be set in each test recipe but are here for
 # reference.
