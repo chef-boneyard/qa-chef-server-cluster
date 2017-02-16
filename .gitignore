@@ -2,4 +2,3 @@
 .kitchen.local.yml
 /.chef
 /berks-cookbooks
-.delivery/cli.toml
