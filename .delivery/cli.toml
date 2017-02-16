@@ -1,0 +1,4 @@
+api_protocol = "https"
+enterprise = "chef"
+organization = "engineering-services"
+server = "delivery.chef.co"
