@@ -48,6 +48,8 @@ default['chef_server_test_version'] = 'latest'
 default['chef_server_test_channel'] = 'unstable'
 #testing comment
 #current
+default['chef_server_test_url_override'] = 'https://packages.chef.io/files/unstable/chef-server/12.12.0+20170216163121/ubuntu/14.04/chef-server-core_12.12.0+20170216163121-1_amd64.deb'
+
 # Us a specific target by URL instead:
 # default['chef_server_test_url_override'] = 'https://packages.chef.io/files/unstable/chef-server/12.11.2+20170127181122/ubuntu/14.04/chef-server-core_12.11.2+20170127181122-1_amd64.deb'
 # In upgrade scenarios these set the version of the Chef Server you intend
