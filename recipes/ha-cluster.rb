@@ -116,7 +116,7 @@ machine node['secondary-backend'] do
       'qa-chef-server-cluster' => node['qa-chef-server-cluster']
     }
   }
-  files node['qa-chef-server-cluster']['chef-server']['files']
+  files lazy { filter_existing_files node['qa-chef-server-cluster']['chef-server']['files'] }
 end
 
 download_logs node['secondary-backend']
@@ -129,7 +129,7 @@ machine node['frontend'] do
       'qa-chef-server-cluster' => node['qa-chef-server-cluster']
     }
   }
-  files node['qa-chef-server-cluster']['chef-server']['files']
+  files lazy { filter_existing_files node['qa-chef-server-cluster']['chef-server']['files'] }
 end
 
 download_logs node['frontend']

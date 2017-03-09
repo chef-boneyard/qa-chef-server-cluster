@@ -65,12 +65,12 @@ download_bootstrap_files
 machine_batch do
   machine node['frontend'] do
     run_list ['qa-chef-server-cluster::ha-upgrade-exec']
-    files node['qa-chef-server-cluster']['chef-server']['files']
+    files lazy { filter_existing_files node['qa-chef-server-cluster']['chef-server']['files'] }
   end
 
   machine node['secondary-backend'] do
     run_list ['qa-chef-server-cluster::ha-upgrade-exec']
-    files node['qa-chef-server-cluster']['chef-server']['files']
+    files lazy { filter_existing_files node['qa-chef-server-cluster']['chef-server']['files'] }
   end
 end
 
