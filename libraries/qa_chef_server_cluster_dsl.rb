@@ -61,6 +61,8 @@ module QaChefServerCluster
 
     def download_bootstrap_files(machine_name = node['bootstrap-backend'])
       # download more server files
+      # Note: this fails and rescues and returns nil when one of these files
+      # does not exist
       %w(pivotal.pem webui_pub.pem private-chef-secrets.json webui_priv.pem).each do |opscode_file|
         machine_file "/etc/opscode/#{opscode_file}" do
           local_path "#{node['qa-chef-server-cluster']['chef-server']['file-dir']}/#{opscode_file}"
@@ -68,6 +70,19 @@ module QaChefServerCluster
           action :download
         end
       end
+    end
+
+    def filter_existing_files(files = {})
+      ret = {}
+      files.each do |remote_path, local_path|
+        if ::File.exists?(local_path)
+          ret[remote_path] = local_path
+        else
+          Chef::Log.warn("File #{local_path} not found, not copying to #{remote_path}")
+        end
+      end
+
+      ret
     end
 
     # rubocop:disable Metrics/AbcSize

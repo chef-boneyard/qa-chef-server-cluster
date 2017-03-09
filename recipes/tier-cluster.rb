@@ -63,7 +63,7 @@ download_bootstrap_files
 
 machine node['frontend'] do
   run_list ['qa-chef-server-cluster::frontend']
-  files node['qa-chef-server-cluster']['chef-server']['files']
+  files lazy { filter_existing_files node['qa-chef-server-cluster']['chef-server']['files'] }
   attributes lazy {
     { 'qa-chef-server-cluster' => node['qa-chef-server-cluster'] }
   }
