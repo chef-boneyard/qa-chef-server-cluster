@@ -1,5 +1,8 @@
 {
   "version": "2",
+  "job_dispatch": {
+    "version": "v2"
+  },
   "build_cookbook": {
     "path": ".delivery/build",
     "name": "build"
@@ -10,6 +13,7 @@
     }
   },
   "skip_phases": [
+    "unit",
     "lint",
     "quality",
     "security",
