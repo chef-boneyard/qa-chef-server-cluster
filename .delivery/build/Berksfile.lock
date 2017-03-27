@@ -3,8 +3,9 @@ DEPENDENCIES
     path: .
     metadata: true
   delivery-matrix
-    git: https://github.com/opscode-cookbooks/delivery-cluster.git
-    revision: 5371465da2cbd28a8a0f9f1351ae66bee2f5e60d
+    git: https://github.com/srenatus/delivery-cluster.git
+    revision: 5183788da48b3cbc56fafea15bb475a27c06675c
+    branch: sr/add-stderr
     rel: .delivery/build/cookbooks/delivery-matrix
   delivery-sugar
     git: https://github.com/chef-cookbooks/delivery-sugar.git
