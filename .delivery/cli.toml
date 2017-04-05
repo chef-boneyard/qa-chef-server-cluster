@@ -1,6 +1,6 @@
 api_protocol = "https"
 enterprise = "chef"
-organization = "engineering-services"
+organization = "pool"
 server = "delivery.chef.co"
 user = "builder"
 project = "qa-chef-server-cluster"
