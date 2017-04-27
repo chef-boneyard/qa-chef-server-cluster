@@ -27,6 +27,8 @@ with_driver("aws::#{node['qa-chef-server-cluster']['aws']['region']}")
 
 provisioner_machine_opts = node['qa-chef-server-cluster']['aws']['machine_options'].to_hash
 
+require 'pp'; pp provisioner_machine_opts
+
 symbolize_keys_deep!(provisioner_machine_opts)
 
 with_machine_options(provisioner_machine_opts)
