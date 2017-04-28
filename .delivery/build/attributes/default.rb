@@ -16,13 +16,13 @@ default['chef-server-acceptance']['delivery-path'] ='/opt/chefdk/embedded/bin:/u
 if node['delivery']['change']['stage'] == 'acceptance'
   default['delivery-matrix']['acceptance']['matrix'] = [
     # fresh install of chef_server_version
-    'standalone_clean_aws',
-    'tier_clean_aws',
+#    'standalone_clean_aws',
+#    'tier_clean_aws',
     'ha_clean_aws',
 
     #chef_server_latest_released_version > chef_server_version upgrade testing
-    'standalone_upgrade_aws',
-    'tier_upgrade_aws',
+#    'standalone_upgrade_aws',
+#    'tier_upgrade_aws',
     'ha_upgrade_aws',
 
     # OSC 11.latest > chef_server_version upgrade testing (standalone only)
@@ -42,22 +42,33 @@ default['chef-server-acceptance']['functional']['test_all'] = false
 
 default['chef_server_instance_size'] = 'm3.medium'
 
+#
+# Target Release
+#
 # These set the version of the Chef Server that we intend to test.
+#
 default['chef_server_test_flavor'] = 'chef_server'
-# default['chef_server_test_version'] = 'latest'
-# default['chef_server_test_channel'] = 'unstable'
+
+default['chef_server_test_version'] = '12.14.0'
+default['chef_server_test_channel'] = 'stable'
+
+default['chef_server_test_version'] = 'latest'
+default['chef_server_test_channel'] = 'unstable'
 
 # Us a specific target by URL instead:
 
 #default['chef_server_test_url_override'] = 'https://packages.chef.io/files/current/chef-server/12.13.1+20170329204017/ubuntu/14.04/chef-server-core_12.13.1+20170329204017-1_amd64.deb'
-
 #default['chef_server_test_url_override'] = 'http://artifactory.chef.co/omnibus-current-local/com/getchef/chef-server/12.14.1+20170427191809/ubuntu/14.04/chef-server-core_12.14.1+20170427191809-1_amd64.deb'
 
-default['chef_server_test_url_override'] = 'https://packages.chef.io/files/current/chef-server/12.14.1+20170427191809/ubuntu/12.04/chef-server-core_12.14.1+20170427191809-1_amd64.deb'
-
+#
+# Source Release
+#
 # In upgrade scenarios these set the version of the Chef Server you intend
 # to upgrade from. These need to be set in each test recipe but are here for
 # reference.
+
+# Source Release
+default['chef_server_upgrade_from_version'] = '12.13.0'
 #default['chef_server_upgrade_from_flavor'] = 'enterprise_chef'
 #default['chef_server_upgrade_from_version'] = '11.3.2'
 #default['chef_server_upgrade_from_channel'] = 'stable'
