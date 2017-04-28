@@ -2,7 +2,8 @@ class Chef
   class Provider
     class ChefPackage < Chef::Provider::LWRPBase
       include QaChefServerCluster::ChefPackageHelper
-
+      provides :chef_package
+      
       use_inline_resources
 
       def whyrun_supported?
