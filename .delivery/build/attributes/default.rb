@@ -52,8 +52,8 @@ default['chef_server_test_flavor'] = 'chef_server'
 default['chef_server_test_version'] = '12.14.0'
 default['chef_server_test_channel'] = 'stable'
 
-default['chef_server_test_version'] = 'latest'
-default['chef_server_test_channel'] = 'unstable'
+#default['chef_server_test_version'] = 'latest'
+#default['chef_server_test_channel'] = 'unstable'
 
 # Us a specific target by URL instead:
 
