@@ -9,9 +9,6 @@ node.default['qa-chef-server-cluster']['aws'].tap do |aws|
 end
 
 node.default['qa-chef-server-cluster']['aws']['machine_options'].tap do |machine_options|
-  machine_options['convergence_options'].tap do |convergence_options|
-    convergence_options['chef_version'] = "12.19.36"
-  end
   machine_options['aws_tags'] = { 'X-Project' => 'qa-chef-server-cluster' }
   machine_options['transport_address_location'] = :private_ip
   machine_options['ssh_username'] = 'ubuntu'
