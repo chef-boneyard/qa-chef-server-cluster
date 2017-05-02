@@ -16,23 +16,23 @@ default['chef-server-acceptance']['delivery-path'] ='/opt/chefdk/embedded/bin:/u
 if node['delivery']['change']['stage'] == 'acceptance'
   default['delivery-matrix']['acceptance']['matrix'] = [
     # fresh install of chef_server_version
-#    'standalone_clean_aws',
-#    'tier_clean_aws',
-    'ha_clean_aws'
+   'standalone_clean_aws',
+   'tier_clean_aws',
+   'ha_clean_aws',
 
     #chef_server_latest_released_version > chef_server_version upgrade testing
-#    'standalone_upgrade_aws',
-#    'tier_upgrade_aws',
-#    'ha_upgrade_aws'
+   'standalone_upgrade_aws',
+   'tier_upgrade_aws',
+   'ha_upgrade_aws',
 
     # OSC 11.latest > chef_server_version upgrade testing (standalone only)
-#    'standalone_osc_upgrade_aws',
+   'standalone_osc_upgrade_aws',
 
     # EC 11.latest > chef_server_version upgrade testing
-#    'standalone_ec_upgrade_aws',
-    #'tier_ec_upgrade_aws',
-    # Commented out because it is so unreliable as to tell us nothing useful.
-    # 'ha_ec_upgrade_aws'
+   'standalone_ec_upgrade_aws',
+   'tier_ec_upgrade_aws',
+   # Commented out because it is so unreliable as to tell us nothing useful.
+   # 'ha_ec_upgrade_aws'
   ]
 end
 
@@ -49,15 +49,15 @@ default['chef_server_instance_size'] = 'm3.medium'
 #
 default['chef_server_test_flavor'] = 'chef_server'
 
-default['chef_server_test_version'] = '12.14.0'
-default['chef_server_test_channel'] = 'stable'
+# default['chef_server_test_version'] = '12.14.0'
+# default['chef_server_test_channel'] = 'stable'
 
 #default['chef_server_test_version'] = 'latest'
 #default['chef_server_test_channel'] = 'unstable'
 
 # Us a specific target by URL instead:
 
-#default['chef_server_test_url_override'] = 'https://packages.chef.io/files/current/chef-server/12.13.1+20170329204017/ubuntu/14.04/chef-server-core_12.13.1+20170329204017-1_amd64.deb'
+default['chef_server_test_url_override'] = 'https://packages.chef.io/files/current/chef-server/12.15.0+20170502071016/ubuntu/14.04/chef-server-core_12.15.0+20170502071016-1_amd64.deb'
 #default['chef_server_test_url_override'] = 'http://artifactory.chef.co/omnibus-current-local/com/getchef/chef-server/12.14.1+20170427191809/ubuntu/14.04/chef-server-core_12.14.1+20170427191809-1_amd64.deb'
 
 #
