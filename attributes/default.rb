@@ -17,7 +17,7 @@ node.default['qa-chef-server-cluster']['aws']['machine_options'].tap do |machine
     bootstrap_options['subnet_id'] = 'subnet-6fab6818' # QA Private
     bootstrap_options['security_group_ids'] = ['sg-52a8f837'] # qa-chef-server-cluster
     bootstrap_options['image_id'] = 'ami-3d50120d' # Ubuntu 14.04
-    bootstrap_options['instance_type'] = 'm3.medium'
+    bootstrap_options['instance_type'] = 'm3.large'
   end
 end
 
