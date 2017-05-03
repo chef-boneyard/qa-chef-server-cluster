@@ -29,6 +29,10 @@ provisioner_machine_opts = node['qa-chef-server-cluster']['aws']['machine_option
 
 symbolize_keys_deep!(provisioner_machine_opts)
 
+STDOUT.puts "-------------------------------------"
+STDOUT.puts "Using the following provisioner_machine_opts"
+STDOUT.puts provisioner_machine_opts
+STDOUT.puts "-------------------------------------"
 with_machine_options(provisioner_machine_opts)
 
 chef_server_files_dir = node.default['qa-chef-server-cluster']['chef-server']['file-dir'] = File.join(Chef::Config[:chef_repo_path], 'stash')
