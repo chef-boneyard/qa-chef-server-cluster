@@ -40,7 +40,7 @@ end
 # as chef-server-ctl test is run in the smoke phase.
 default['chef-server-acceptance']['functional']['test_all'] = false
 
-default['chef_server_instance_size'] = 'm3.medium'
+default['chef_server_instance_size'] = 'm3.large'
 
 #
 # Target Release
