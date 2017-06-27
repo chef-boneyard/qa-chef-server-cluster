@@ -57,7 +57,7 @@ default['chef_server_test_flavor'] = 'chef_server'
 
 # Us a specific target by URL instead:
 
-default['chef_server_test_url_override'] = 'https://packages.chef.io/files/unstable/chef-server/12.15.8+20170622141717/ubuntu/14.04/chef-server-core_12.15.8+20170622141717-1_amd64.deb'
+default['chef_server_test_url_override'] = 'https://packages.chef.io/files/unstable/chef-server/12.15.8+20170627085616/ubuntu/14.04/chef-server-core_12.15.8+20170627085616-1_amd64.deb'
 
 #
 # Source Release
