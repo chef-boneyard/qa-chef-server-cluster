@@ -22,6 +22,8 @@ include_recipe 'qa-chef-server-cluster::standalone-server-setup'
 
 machine node['standalone'] do
   run_list ['qa-chef-server-cluster::standalone']
+  retries 1
+  retry_delay 30
   attributes lazy {
     { 'qa-chef-server-cluster' => node['qa-chef-server-cluster'] }
   }
