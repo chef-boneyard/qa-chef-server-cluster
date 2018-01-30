@@ -107,8 +107,6 @@ module ChefServerAcceptanceCookbook
           repo = node['delivery']['workspace']['repo']
 
           machines.each do |machine|
-            retries 1
-            retry_delay 30
             machine_state = ::Chef.node.run_state['delivery']['stage']['data'][identifier][machine]
             IO.write(File.join(repo, '.chef', 'nodes', "default-#{machine}.json"),
                      machine_state.to_json)
