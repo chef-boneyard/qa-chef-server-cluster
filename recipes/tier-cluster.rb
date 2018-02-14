@@ -23,6 +23,8 @@ include_recipe 'qa-chef-server-cluster::tier-cluster-setup'
 
 machine_batch do
   machines node['bootstrap-backend'], node['frontend']
+  retries 3
+  retry_delay 10
 end
 
 bootstrap = resources("aws_instance[#{node['bootstrap-backend']}]")
