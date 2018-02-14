@@ -16,9 +16,6 @@
           "X-Project": "qa-chef-server-cluster-delivery-builder"
         },
         "ssh_username": "ubuntu",
-        "convergence_options": {
-            "install_sh_url": "https://www.opscode.com/chef/install.sh"
-        },
         "bootstrap_options": {
           "image_id": "<%= node['ami']['ubuntu-14.04'] %>",
           "instance_type": "<%= node['chef_server_instance_size'] %>"
