@@ -53,7 +53,7 @@ backend_vip '#{bootstrap.aws_object.private_dns_name}',
 end
 
 machine node['bootstrap-backend'] do
-  run_list ['qa-chef-server-cluster::backend']
+  run_list ['qa-chef-server-cluster::debug','qa-chef-server-cluster::backend']
   attributes lazy {
     { 'qa-chef-server-cluster' => node['qa-chef-server-cluster'] }
   }
@@ -64,7 +64,7 @@ download_logs node['bootstrap-backend']
 download_bootstrap_files
 
 machine node['frontend'] do
-  run_list ['qa-chef-server-cluster::frontend']
+  run_list ['qa-chef-server-cluster::debug','qa-chef-server-cluster::frontend']
   files lazy { filter_existing_files node['qa-chef-server-cluster']['chef-server']['files'] }
   attributes lazy {
     { 'qa-chef-server-cluster' => node['qa-chef-server-cluster'] }
