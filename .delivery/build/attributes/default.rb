@@ -16,12 +16,12 @@ default['chef-server-acceptance']['delivery-path'] ='/opt/chefdk/embedded/bin:/u
 if node['delivery']['change']['stage'] == 'acceptance'
   default['delivery-matrix']['acceptance']['matrix'] = [
    # fresh install of chef_server_version
-   'standalone_clean_aws',
-   'tier_clean_aws',
+#   'standalone_clean_aws',
+#   'tier_clean_aws',
 #   'ha_clean_aws',
 
    # chef_server_latest_released_version > chef_server_version upgrade testing
-   'standalone_upgrade_aws',
+#   'standalone_upgrade_aws',
    'tier_upgrade_aws',
 #   'ha_upgrade_aws',
 
@@ -57,7 +57,7 @@ default['chef_server_test_flavor'] = 'chef_server'
 #default['chef_server_test_channel'] = 'unstable'
 
 # Us a specific target by URL instead:
-default['chef_server_test_url_override'] = 'https://packages.chef.io/files/current/chef-server/12.17.33/ubuntu/16.04/chef-server-core_12.17.33-1_amd64.deb'
+default['chef_server_test_url_override'] = 'https://packages.chef.io/files/current/chef-server/12.17.5/ubuntu/16.04/chef-server-core_12.17.5-1_amd64.deb'
 #
 # Source Release
 #
