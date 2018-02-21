@@ -18,18 +18,18 @@ if node['delivery']['change']['stage'] == 'acceptance'
    # fresh install of chef_server_version
    'standalone_clean_aws',
    'tier_clean_aws',
-   'ha_clean_aws',
+   #'ha_clean_aws',
 
    # chef_server_latest_released_version > chef_server_version upgrade testing
    'standalone_upgrade_aws',
-   'ha_upgrade_aws',
+   'tier_ec_upgrade_aws'
+   #'ha_upgrade_aws',
 
    ## We do not support the following scenarios anymore.
    # OSC 11.latest > chef_server_version upgrade testing (standalone only)
    # 'standalone_osc_upgrade_aws',
    #  # EC 11.latest > chef_server_version upgrade testing
    # 'standalone_ec_upgrade_aws',
-   # 'tier_ec_upgrade_aws'
    # Commented out because it is so unreliable as to tell us nothing useful.
    # 'ha_ec_upgrade_aws'
    # Tier upgrade is broken:  https://chefio.slack.com/archives/C07JP2K7F/p1519135220000414
