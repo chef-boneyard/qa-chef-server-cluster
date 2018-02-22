@@ -22,7 +22,7 @@ if node['delivery']['change']['stage'] == 'acceptance'
 
    # chef_server_latest_released_version > chef_server_version upgrade testing
    'standalone_upgrade_aws',
-   'tier_ec_upgrade_aws'
+   'tier_upgrade_aws',
    #'ha_upgrade_aws',
 
    ## We do not support the following scenarios anymore.
@@ -33,7 +33,7 @@ if node['delivery']['change']['stage'] == 'acceptance'
    # Commented out because it is so unreliable as to tell us nothing useful.
    # 'ha_ec_upgrade_aws'
    # Tier upgrade is broken:  https://chefio.slack.com/archives/C07JP2K7F/p1519135220000414
-   # 'tier_upgrade_aws',
+   # 'tier_ec_upgrade_aws'
   ]
 end
 
