@@ -22,18 +22,18 @@ if node['delivery']['change']['stage'] == 'acceptance'
 
    # chef_server_latest_released_version > chef_server_version upgrade testing
    'standalone_upgrade_aws',
-   'tier_ec_upgrade_aws'
+   'tier_upgrade_aws',
    #'ha_upgrade_aws',
 
    ## We do not support the following scenarios anymore.
    # OSC 11.latest > chef_server_version upgrade testing (standalone only)
    # 'standalone_osc_upgrade_aws',
+
    #  # EC 11.latest > chef_server_version upgrade testing
    # 'standalone_ec_upgrade_aws',
+   # 'tier_ec_upgrade_aws'
    # Commented out because it is so unreliable as to tell us nothing useful.
    # 'ha_ec_upgrade_aws'
-   # Tier upgrade is broken:  https://chefio.slack.com/archives/C07JP2K7F/p1519135220000414
-   # 'tier_upgrade_aws',
   ]
 end
 
@@ -57,7 +57,8 @@ default['chef_server_test_flavor'] = 'chef_server'
 #default['chef_server_test_channel'] = 'unstable'
 
 # Us a specific target by URL instead:
-default['chef_server_test_url_override'] = 'https://packages.chef.io/files/current/chef-server/12.17.33/ubuntu/16.04/chef-server-core_12.17.33-1_amd64.deb'
+default['chef_server_test_url_override'] = 'https://packages.chef.io/files/current/chef-server/12.17.33/ubuntu/14.04/chef-server-core_12.17.33-1_amd64.deb'
+
 #
 # Source Release
 #
