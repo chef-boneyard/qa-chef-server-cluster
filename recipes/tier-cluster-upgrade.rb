@@ -32,12 +32,14 @@ download_logs node['bootstrap-backend']
 # Add migration-level file from backend to copy to tiered frontends.
 # We do not do this for in the provisioner-setup as it is reused for
 # the HA scenarios.
-tier_files = node.default['qa-chef-server-cluster']['chef-server']['files'].tap do |file|
-  file['/var/opt/opscode/upgrades/migration-level'] = ::File.join(
-    node['qa-chef-server-cluster']['chef-server']['file-dir'],
-    'migration-level'
-  )
-end
+tier_files = node.default['qa-chef-server-cluster']['chef-server']['files'].merge(
+  {
+    '/var/opt/opscode/upgrades/migration-level' => ::File.join(
+      node['qa-chef-server-cluster']['chef-server']['file-dir'],
+      'migration-level'
+    )
+  }
+)
 
 download_bootstrap_files
 
