@@ -70,6 +70,14 @@ module QaChefServerCluster
           action :download
         end
       end
+
+      # Fetch migration-level file for tiered cluster upgrades.
+      machine_file '/var/opt/opscode/upgrades/migration-level' do
+        local_path File.join(
+          node['qa-chef-server-cluster']['chef-server']['file-dir'],
+          'migration-level'
+        )
+      end
     end
 
     def filter_existing_files(files = {})
