@@ -76,9 +76,9 @@ module QaChefServerCluster
         local_path File.join(
           node['qa-chef-server-cluster']['chef-server']['file-dir'],
           'migration-level'
-          machine machine_name
-          action :download
         )
+        machine machine_name
+        action :download
       end
     end
 
