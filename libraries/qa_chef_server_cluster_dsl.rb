@@ -77,6 +77,8 @@ module QaChefServerCluster
           node['qa-chef-server-cluster']['chef-server']['file-dir'],
           'migration-level'
         )
+        machine machine_name
+        action :download
       end
     end
 
