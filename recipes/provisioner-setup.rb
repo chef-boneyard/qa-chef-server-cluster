@@ -19,6 +19,9 @@
 # limitations under the License.
 #
 
+# Set the profile name as it is on disk when we try to read it in.
+ENV['AWS_DEFAULT_PROFILE'] = 'chef-cd'
+
 require 'chef/provisioning/aws_driver'
 
 # This requires that the desired AWS account to use is configured in
