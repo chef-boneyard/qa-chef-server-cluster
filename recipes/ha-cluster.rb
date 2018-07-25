@@ -48,6 +48,8 @@ secondary = resources("aws_instance[#{node['secondary-backend']}]")
 frontend = resources("aws_instance[#{node['frontend']}]")
 eni = resources("aws_network_interface[#{node['qa-chef-server-cluster']['provisioning-id']}-ha]")
 volume = resources("aws_ebs_volume[#{node['qa-chef-server-cluster']['provisioning-id']}-ha]")
+# Set the profile name as it is on disk when we try to read it in.
+ENV['AWS_DEFAULT_PROFILE'] = 'chef-cd'
 aws_creds = Chef::Provisioning::AWSDriver::Credentials.new
 
 ruby_block 'HA Chef Server Config' do # ~FC014
