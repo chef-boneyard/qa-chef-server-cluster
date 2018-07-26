@@ -24,8 +24,6 @@ ENV['AWS_DEFAULT_PROFILE'] = 'chef-cd'
 
 require 'chef/provisioning/aws_driver'
 
-# This requires that the desired AWS account to use is configured in
-# ~/.aws/config as `default`.
 with_driver("aws::#{node['qa-chef-server-cluster']['aws']['region']}")
 
 provisioner_machine_opts = node['qa-chef-server-cluster']['aws']['machine_options'].to_hash
