@@ -14,10 +14,10 @@ node.default['qa-chef-server-cluster']['aws']['machine_options'].tap do |machine
   machine_options['ssh_username'] = 'ubuntu'
   machine_options['bootstrap_options'].tap do |bootstrap_options|
     bootstrap_options['key_name'] = 'qa-chef-server-cluster-default'
-    bootstrap_options['subnet_id'] = 'subnet-6fab6818' # QA Private
-    bootstrap_options['security_group_ids'] = ['sg-52a8f837'] # qa-chef-server-cluster
-    bootstrap_options['image_id'] = 'ami-3d50120d' # Ubuntu 14.04
-    bootstrap_options['instance_type'] = 'm3.large'
+    bootstrap_options['subnet_id'] = 'subnet-d3d9b8b4' # chef-cd -- acceptance-us-west-2a-private
+    bootstrap_options['security_group_ids'] = ['sg-b3ed07c8'] # acceptance-default
+    bootstrap_options['image_id'] = 'ami-4218403a' # Ubuntu 14.04
+    bootstrap_options['instance_type'] = 't2.large'
   end
 end
 
