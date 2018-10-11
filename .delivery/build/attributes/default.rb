@@ -15,27 +15,28 @@ default['chef-server-acceptance']['delivery-path'] ='/opt/chefdk/embedded/bin:/u
 # in the node attribute node['delivery-matrix']['acceptance']['matrix']
 if node['delivery']['change']['stage'] == 'acceptance'
   default['delivery-matrix']['acceptance']['matrix'] = [
-   # fresh install of chef_server_version
-   'standalone_clean_aws',
-   'tier_clean_aws',
-   # The ha scenarios do not seem to be functioning anymore.
-   #'ha_clean_aws',
+    # fresh install of chef_server_version
+    'standalone_clean_aws',
+    'tier_clean_aws',
+    # The ha scenarios do not seem to be functioning anymore.
+    #'ha_clean_aws' # DEPRECATED
 
-   # chef_server_latest_released_version > chef_server_version upgrade testing
-   'standalone_upgrade_aws',
-   'tier_upgrade_aws',
-   # The ha scenarios do not seem to be functioning anymore.
-   #'ha_upgrade_aws',
+    # chef_server_latest_released_version > chef_server_version upgrade testing
+    'standalone_upgrade_aws',
+    'tier_upgrade_aws',
+    # The ha scenarios do not seem to be functioning anymore.
+    # 'ha_upgrade_aws', # DEPRECATED
 
-   ## We do not support the following scenarios anymore.
-   # OSC 11.latest > chef_server_version upgrade testing (standalone only)
-   # 'standalone_osc_upgrade_aws',
+    # # We do not support the following scenarios anymore.
+    # # OSC 11.latest > chef_server_version upgrade testing (standalone only)
+    # 'standalone_osc_upgrade_aws',
 
-   #  # EC 11.latest > chef_server_version upgrade testing
-   # 'standalone_ec_upgrade_aws',
-   # 'tier_ec_upgrade_aws'
-   # Commented out because it is so unreliable as to tell us nothing useful.
-   # 'ha_ec_upgrade_aws'
+
+    # # EC 11.latest > chef_server_version upgrade testing
+    # 'standalone_ec_upgrade_aws',
+    # 'tier_ec_upgrade_aws',
+    # Commented out because it is so unreliable as to tell us nothing useful.
+    # 'ha_ec_upgrade_aws' # DEPRECATED
   ]
 end
 
