@@ -9,13 +9,13 @@ DEPENDENCIES
     rel: .delivery/build/cookbooks/delivery-matrix
   delivery-sugar
     git: https://github.com/chef-cookbooks/delivery-sugar.git
-    revision: 1a90afaa2506c249fd79cdf4d7b7037ace3d1d4a
+    revision: 0c1f20b85d83c09d66e5a4ef83d018e90eee93ba
   delivery-sugar-extras
     git: https://github.com/opscode-cookbooks/delivery-sugar-extras.git
     revision: b08f36d55ba2fbea91a588ec7cf250426c7f4c2d
   delivery-truck
     git: https://github.com/opscode-cookbooks/delivery-truck.git
-    revision: 4044544f951225d099ce5b30d726506ad40be6b3
+    revision: b9aa78a4b9dfdf68a69a65655895e815214a5e92
 
 GRAPH
   build (0.1.8)
@@ -25,7 +25,7 @@ GRAPH
   delivery-matrix (1.0.0)
     delivery-sugar (>= 0.0.0)
     delivery-truck (>= 0.0.0)
-  delivery-sugar (1.0.2)
+  delivery-sugar (1.7.1)
   delivery-sugar-extras (0.2.1)
-  delivery-truck (2.0.7)
-    delivery-sugar (>= 1.0.2)
+  delivery-truck (2.3.2)
+    delivery-sugar (~> 1.1)
