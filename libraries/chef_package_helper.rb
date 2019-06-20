@@ -20,6 +20,7 @@ module QaChefServerCluster
     def reconfigure_product(resource)
       ensure_mixlib_versioning_gem_installed!
       chef_ingredient resource.product_name do
+        ENV['CHEF_LICENSE']="accept"
         action :reconfigure
       end
     end
