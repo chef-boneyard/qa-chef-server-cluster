@@ -60,7 +60,7 @@ default['chef_server_test_flavor'] = 'chef_server'
 #default['chef_server_test_channel'] = 'unstable'
 
 # Us a specific target by URL instead:
-default['chef_server_test_url_override'] = 'https://packages.chef.io/files/current/chef-server/12.19.26/ubuntu/14.04/chef-server-core_12.19.26-1_amd64.deb'
+default['chef_server_test_url_override'] = 'https://packages.chef.io/files/current/chef-server/13.0.10/ubuntu/16.04/chef-server-core_13.0.10-1_amd64.deb'
 
 #
 # Source Release
@@ -76,5 +76,5 @@ default['chef_server_upgrade_from_version'] = '12.13.0'
 #default['chef_server_upgrade_from_channel'] = 'stable'
 # default['chef_server_upgrade_from_url_override'] = 'http://wilson.ci.chef.co/view/Chef%20Server%2012/job/chef-server-12-build/lastSuccessfulBuild/architecture=x86_64,platform=ubuntu-10.04,project=chef-server,role=builder/artifact/omnibus/pkg/chef-server-core_12.2.0+20150901045019-1_amd64.deb'
 default['ami'] = {
-  'ubuntu-14.04' => 'ami-3d50120d'
+  'ubuntu-16.04' => 'ami-0f04cef3c22e6e05f'
 }
