@@ -118,7 +118,7 @@ GEM
     httpclient (2.6.0.1)
     inifile (2.0.2)
     ipaddress (0.8.3)
-    jmespath (1.4.0)
+    jmespath (1.6.1)
     json (1.8.6)
     libyajl2 (1.2.0)
     little-plugger (1.1.4)
